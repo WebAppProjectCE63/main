@@ -3,7 +3,9 @@ using WebApplicationProject.Models;
 using System.Net.Http;
 using System.Text.Json;
 using System.IO;
+using WebApplicationProject.Data;
 namespace WebApplicationProject.Controllers
+
 {
     public class EventController : Controller
     {
