@@ -1,13 +1,10 @@
 ﻿@model WebApplicationProject.Models.ProfilePageViewModel
 
 <link rel="stylesheet" href="~/css/style.css">
-
-@section Banner{
-
-        <div id="pagebanner">
-            <h1>Profile</h1>
-            <p>รายละเอียดข้อมูลส่วนบุคคล</p>
-        </div>
+<div id="pagebanner">
+    <h1>Profile</h1>
+    <p>รายละเอียดข้อมูลส่วนบุคคล</p>
+</div>
     @if (Model.UserInfo.Settings.PrivateAccount && WebApplicationProject.Data.MockDB.CurrentLoggedInUserId != Model.UserInfo.Id)
     {
         <div class="private-content-mock">
@@ -319,4 +316,3 @@
         </div>
     <script src="~/js/app.js"></script>
     <script src="~/js/editprofile.js"></script>
-}
