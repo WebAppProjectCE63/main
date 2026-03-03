@@ -16,17 +16,22 @@ namespace WebApplicationProject.Controllers
 
             var hosteventList = GetMyHostedEvents(MockDB.EventList, targetId);
 
-            // 3. จำลองข้อมูล Review
             var reviewList = MockDB.UsersList.FirstOrDefault(u => u.Id == targetId).Reviewslist;
 
-            // นำข้อมูลทั้ง มาใส่ใน ViewModel
+            User currentUser = MockDB.UsersList.FirstOrDefault(u => u.Id == targetId);
+
             var viewModel = new ProfilePageViewModel
             {
-                UserInfo = MockDB.UsersList.FirstOrDefault(u => u.Id == targetId),
+                UserInfo = currentUser,
                 HostedEvents = hosteventList,
                 JoinedEvents = joineventList,
             };
 
+            if (currentUser.Settings.PrivateAccount && currentUser.Id != MockDB.CurrentLoggedInUserId)
+            {
+                viewModel.HostedEvents = new List<Event>();
+                viewModel.JoinedEvents = new List<Event>();
+            }
             return View(viewModel);
         }
 
@@ -38,10 +43,13 @@ namespace WebApplicationProject.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateProfile(User editUser, IFormFile uploadImage)
+        public async Task<IActionResult> UpdateProfile(User editUser, bool IsPublic, bool ShowEmail, bool ShowJoinedEvents, bool ShowHostedEvents, IFormFile uploadImage)
         {
             var ogUser = MockDB.UsersList.FirstOrDefault(u => u.Id == editUser.Id);
-
+            if (ogUser == null)
+            {
+                return NotFound();
+            }
             if (ogUser != null)
             {
                 string newImageUrl = await UploadImageAsync(uploadImage);
@@ -53,6 +61,10 @@ namespace WebApplicationProject.Controllers
                 ogUser.FName = editUser.FName;
                 ogUser.SName = editUser.SName;
                 ogUser.Email = editUser.Email;
+                ogUser.Settings.PrivateAccount = IsPublic;
+                ogUser.Settings.ShowEmail = ShowEmail;
+                ogUser.Settings.ShowHostedEvents = ShowHostedEvents;
+                ogUser.Settings.ShowJoinedEvents = ShowJoinedEvents;
             }
 
             return RedirectToAction("profilepage", new { id = ogUser.Id });

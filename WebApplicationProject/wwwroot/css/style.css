@@ -465,3 +465,93 @@
     border-radius: 50%;
     border: 2px solid #333;
 }
+
+.setting_list {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    width: 95%;
+}
+
+.setting {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    width: 47%;
+}
+
+.lable_switch {
+    width: 60%
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+    .switch input {
+        display: none;
+    }
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+
+input:checked + .slider {
+    background: #2196F3;
+}
+
+    input:checked + .slider:before {
+        transform: translateX(26px);
+    }
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+.private-content-mock {
+    text-align: center;
+    padding: 50px 20px;
+    background-color: #f5f6f8;
+    border-radius: 15px;
+    margin-top: 20px;
+}
+
+    .private-content-mock div {
+        font-size: 50px;
+        margin-bottom: 10px;
+        color: #b0b5c1;
+    }
+
+    .private-content-mock h3 {
+        color: #6c757d;
+        margin-bottom: 5px;
+    }
+
+    .private-content-mock p {
+        color: #adb5bd;
+        font-size: 14px;
+    }
+.content-mock {
+    background-color: white;
+}
