@@ -1,15 +1,13 @@
-﻿/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
-
+﻿/* ================= Navbar (เหมือนเดิม เพิ่ม Z-index) ================= */
 #navbar {
   display: flex;
   align-items: center;
   background-color: white;
   padding: 0 20px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-
   position: sticky;
   top: 0;
+  z-index: 1000; /* กันเนื้อหาอื่นทะลุขึ้นมาทับ Navbar */
 }
 
 #navitem {
@@ -52,26 +50,11 @@ for details on configuring this project to bundle and minify static web assets. 
   object-fit: cover;
 }
 
-.border-top {
+/* ================= 🌟 Footer (แก้ปัญหาทะลุขอบจอ) ================= */
+.my-footer {
+  text-align: center;
   border-top: 1px solid #e5e5e5;
-}
-.border-bottom {
-  border-bottom: 1px solid #e5e5e5;
-}
-
-.box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
-}
-
-button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
-}
-
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px;
+  padding: 20px 0;
+  background-color: white;
+  /* ลบ position: absolute และ width: 100% ทิ้งไปเลย อาการทะลุขอบจะหายขาดครับ */
 }

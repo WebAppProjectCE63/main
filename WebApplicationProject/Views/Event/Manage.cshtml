@@ -1,110 +1,110 @@
 ﻿@model WebApplicationProject.Models.Event
 <link rel="stylesheet" href="~/css/eventPrev_eventForm.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/partiTable.css" asp-append-version="true" />
-@section Banner {
-    <div class="head">
-        <h1>Manage Event</h1>
-        <p>จัดการกิจกรรม</p>
-    </div>
-}
-<h3>กิจกรรมที่กำลังจัดการ</h3>
-<div id="eventPrev" class="eventPrev">
-    <div class="eventImage">
-        <img id="prevImage" src=@Model.Image />
-    </div>
-    <div class="eventDetail">
-        <h4><b>ชื่อ: </b><span id="prevTitle">@Model.Title</span></h4>
-        <p><b>คำอธิบาย: </b><span id="prevDesc">@Model.Description</span></p>
-        <div>
-            <b>แท็ก: </b>
-            <span id="prevTags">
-                @if (Model.Tags != null)
-                {
-                    foreach (var tag in Model.Tags)
-                    {
-                        <span class="tag-badge">#@tag</span>
-                    }
-                }
-            </span>
-        </div>
-        <div class="meta-info"><b>รับ: </b><span id="prevMaxParti">@Model.MaxParticipants</span> คน</div>
-        <div class="meta-info"><b>วันที่ - เวลา: </b><span id="prevDate">@Model.DateTime.ToString("d MMMM yyyy - HH:MM น.", new System.Globalization.CultureInfo("th-TH"))</span></div>
-        <div class="meta-info"><b>สถานที่: </b><span id="prevLocation">@Model.Location</span></div>
-        <a href="@Url.Action("Edit", "Event", new {id = Model.Id})" class="btnLink">แก้ไขกิจกรรม</a>
-    </div>
+<div class="head">
+    <h1>Manage Event</h1>
+    <p>จัดการกิจกรรม</p>
 </div>
-<div class="mngParti">
-    @{
-        var userInEvent = ViewBag.ParticipantList as List<WebApplicationProject.Models.User>;
-    }
-    <div class="partiTable">
-        <div class="tableHeader">
-            <h4>รายชื่อตัวจริง</h4>
-            <div class="numOfParti"><span id="currentParti">@Model.CurrentParticipants</span> / @Model.MaxParticipants Member</div>
+<div class="my-container">
+    <h3>กิจกรรมที่กำลังจัดการ</h3>
+    <div id="eventPrev" class="eventPrev">
+        <div class="eventImage">
+            <img id="prevImage" src=@Model.Image />
         </div>
-        <hr />
-        <table>
-            <thead>
-                <tr>
-                    <th>ลำดับ</th>
-                    <th>ชื่อ</th>
-                    <th>เวลาที่จอง</th>
-                    <th>จัดการ</th>
-                </tr>
-            </thead>
-            <tbody id="confirmedTable">
-                @if (userInEvent != null){
-                    int order = 1;
-                    @foreach (var ticket in Model.Participants.Where(p => p.Status == ParticipationStatus.Confirmed).OrderBy(p => p.JoinedAt)){
-                        var user = userInEvent.FirstOrDefault(u => u.Id == ticket.UserId);
-                        if (user != null){
-                            <tr id="row_@user.Id">
-                                <td class="seqNumber">@order</td>
-                                <td><img src="@user.Image" />@user.FName @user.SName</td>
-                                <td>@ticket.JoinedAt</td>
-                                <td><button onclick="removeUser(@Model.Id, @user.Id)">ลบ</button></td>
-                            </tr>
-                            order += 1;
-                        }
-                    }
-                }
-            </tbody>
-        </table>
-    </div>
-    <div class="partiTable">
-        <div class="tableHeader">
-            <h4>รายชื่อสำรอง</h4>
-        </div>
-        <hr />
-        <table>
-            <thead>
-                <tr>
-                    <th>ลำดับ</th>
-                    <th>ชื่อ</th>
-                    <th>เวลาที่จอง</th>
-                    <th>จัดการ</th>
-                </tr>
-            </thead>
-            <tbody id="waitingTable">
-                @if (userInEvent != null)
-                {
-                    int order = 1;
-                    @foreach (var ticket in Model.Participants.Where(p => p.Status == ParticipationStatus.Waiting).OrderBy(p => p.JoinedAt))
+        <div class="eventDetail">
+            <h4><b>ชื่อ: </b><span id="prevTitle">@Model.Title</span></h4>
+            <p><b>คำอธิบาย: </b><span id="prevDesc">@Model.Description</span></p>
+            <div>
+                <b>แท็ก: </b>
+                <span id="prevTags">
+                    @if (Model.Tags != null)
                     {
-                        var user = userInEvent.FirstOrDefault(u => u.Id == ticket.UserId);
-                        if (user != null){
-                            <tr id="row_@user.Id">
-                                <td class="seqNumber">@order</td>
-                                <td><img src="@user.Image"/>@user.FName @user.SName</td>
-                                <td>@ticket.JoinedAt</td>
-                                <td><button onclick="promoteUser(@Model.Id, @user.Id)">เพิ่ม</button></td>
-                            </tr>
-                            order += 1;
+                        foreach (var tag in Model.Tags)
+                        {
+                            <span class="tag-badge">#@tag</span>
                         }
                     }
-                }
-            </tbody>
-        </table>
+                </span>
+            </div>
+            <div class="meta-info"><b>รับ: </b><span id="prevMaxParti">@Model.MaxParticipants</span> คน</div>
+            <div class="meta-info"><b>วันที่ - เวลา: </b><span id="prevDate">@Model.DateTime.ToString("d MMMM yyyy - HH:MM น.", new System.Globalization.CultureInfo("th-TH"))</span></div>
+            <div class="meta-info"><b>สถานที่: </b><span id="prevLocation">@Model.Location</span></div>
+            <a href="@Url.Action("Edit", "Event", new {id = Model.Id})" class="btnLink">แก้ไขกิจกรรม</a>
+        </div>
+    </div>
+    <div class="mngParti">
+        @{
+            var userInEvent = ViewBag.ParticipantList as List<WebApplicationProject.Models.User>;
+        }
+        <div class="partiTable">
+            <div class="tableHeader">
+                <h4>รายชื่อตัวจริง</h4>
+                <div class="numOfParti"><span id="currentParti">@Model.CurrentParticipants</span> / @Model.MaxParticipants Member</div>
+            </div>
+            <hr />
+            <table>
+                <thead>
+                    <tr>
+                        <th>ลำดับ</th>
+                        <th>ชื่อ</th>
+                        <th>เวลาที่จอง</th>
+                        <th>จัดการ</th>
+                    </tr>
+                </thead>
+                <tbody id="confirmedTable">
+                    @if (userInEvent != null){
+                        int order = 1;
+                        @foreach (var ticket in Model.Participants.Where(p => p.Status == ParticipationStatus.Confirmed).OrderBy(p => p.JoinedAt)){
+                            var user = userInEvent.FirstOrDefault(u => u.Id == ticket.UserId);
+                            if (user != null){
+                                <tr id="row_@user.Id">
+                                    <td class="seqNumber">@order</td>
+                                    <td><img src="@user.Image" />@user.FName @user.SName</td>
+                                    <td>@ticket.JoinedAt</td>
+                                    <td><button onclick="removeUser(@Model.Id, @user.Id)">ลบ</button></td>
+                                </tr>
+                                order += 1;
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="partiTable">
+            <div class="tableHeader">
+                <h4>รายชื่อสำรอง</h4>
+            </div>
+            <hr />
+            <table>
+                <thead>
+                    <tr>
+                        <th>ลำดับ</th>
+                        <th>ชื่อ</th>
+                        <th>เวลาที่จอง</th>
+                        <th>จัดการ</th>
+                    </tr>
+                </thead>
+                <tbody id="waitingTable">
+                    @if (userInEvent != null)
+                    {
+                        int order = 1;
+                        @foreach (var ticket in Model.Participants.Where(p => p.Status == ParticipationStatus.Waiting).OrderBy(p => p.JoinedAt))
+                        {
+                            var user = userInEvent.FirstOrDefault(u => u.Id == ticket.UserId);
+                            if (user != null){
+                                <tr id="row_@user.Id">
+                                    <td class="seqNumber">@order</td>
+                                    <td><img src="@user.Image"/>@user.FName @user.SName</td>
+                                    <td>@ticket.JoinedAt</td>
+                                    <td><button onclick="promoteUser(@Model.Id, @user.Id)">เพิ่ม</button></td>
+                                </tr>
+                                order += 1;
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 @section Scripts{
