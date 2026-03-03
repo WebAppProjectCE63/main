@@ -6,121 +6,143 @@
     <title>Event Page</title>
     <link rel="stylesheet" href="~/css/myevent.css">
 </head>
-@section Banner {
-    <body>
-        <div id="event-header">
-            <h1>Event</h1>
-            <p>Event</p>
+<body>
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div id="errorAlert" style="background-color: #f8d7da; color: #842029; padding: 15px; border: 1px solid #f5c2c7; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+
+            <span>@TempData["ErrorMessage"]</span>
+
+            <button onclick="document.getElementById('errorAlert').style.display='none'" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #842029; font-weight: bold;">&times;</button>
         </div>
 
-        <div class="content-container bg-gray">
-            <div class="calendar-wrapper">
-                <div class="calendar-card">
-                    <div class="calendar-header">
-                        <button class="nav-btn" id="prevMonth"><i class="fa-solid fa-chevron-left"></i></button>
-                        <div class="date-selectors">
-                            <select id="monthSelect">
-                                <option value="0">Jan</option>
-                                <option value="1">Feb</option>
-                                <option value="2">Mar</option>
-                                <option value="3">Apr</option>
-                                <option value="4">May</option>
-                                <option value="5">Jun</option>
-                                <option value="6">Jul</option>
-                                <option value="7">Aug</option>
-                                <option value="8">Sep</option>
-                                <option value="9">Oct</option>
-                                <option value="10">Nov</option>
-                                <option value="11">Dec</option>
-                            </select>
-                            <select id="yearSelect">
-                                <option value="2025">2025</option>
-                                <option value="2026" selected>2026</option>
-                                <option value="2027">2027</option>
-                            </select>
-                        </div>
-                        <button class="nav-btn" id="nextMonth"><i class="fa-solid fa-chevron-right"></i></button>
-                    </div>
-
-                    <div class="calendar-body">
-                        <div class="day-names">
-                            <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
-                        </div>
-                        <div class="days-grid" id="calendarGrid"></div>
-                    </div>
-                </div>
-
-                <div class="filter-bar">
-                    <div class="search-input">
-                        <input type="text" id="searchInput" placeholder="ค้นหาชื่อกิจกรรม..." style="border:none; outline:none; width:100%; background:transparent; font-family:inherit;">
-                    </div>
-                    <select id="sortSelect" class="pill-select">
-                        <option value="date-desc">เวลา (ไกลสุด)</option>
-                        <option value="date-asc">เวลา (ใกล้สุด)</option>
-                        <option value="members-desc">ผู้เข้าร่วม (มากสุด)</option>
-                        <option value="members-asc">ผู้เข้าร่วม (น้อยสุด)</option>
-                        <option value="name-asc">ชื่อ (A - Z)</option>
-                        <option value="name-desc">ชื่อ (Z - A)</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <div class="content-container">
-            <div class="recommend-section" id="eventContainer">
-                <div class="section-title">
-                    <h2 id="sectionHeader">Recommended Events</h2>
-                    <p>Subheading</p>
-                </div>
-
-                @foreach (var ev in Model)
-                {
-                    <div class="event-card" data-date="@ev.DateTime.ToString("yyyy-MM-dd")">
-                        <div class="card-img">
-                            <img src="@ev.Image" alt="@ev.Title" />
-                        </div>
-                        <div class="card-content">
-                            <h3>@ev.Title</h3>
-                            <p class="desc">@ev.Description</p>
-
-                            <div class="tags">
-                                @if (ev.Tags != null && ev.Tags.Any())
-                                {
-                                    @foreach (var tagName in ev.Tags)
-                                    {
-                                        <span class="tag black">#@tagName</span>
-                                    }
-                                }
-                                else
-                                {
-                                    <span class="tag dark">ไม่มีแท็ก</span>
-                                }
-                            </div>
-                            <div class="time-control">
-                                <span class="date-box-static">@ev.DateTime.ToString("HH:mm")</span>
-                                <span class="date-box-static">@ev.DateTime.ToString("dd")</span>
-                                <span class="date-box-static">@ev.DateTime.ToString("MMM")</span>
-                                <span class="date-box-static">@ev.DateTime.ToString("yyyy")</span>
-                            </div>
-                            <div class="card-footer">
-                                <div class="actions">
-                                    <button class="btn-gray">View Info</button>
-                                    <div class="avatars">
-                                        <img src="https://ui-avatars.com/api/?name=A&background=orange" class="avatar-sm">
-                                        <img src="https://ui-avatars.com/api/?name=B&background=blue" class="avatar-sm">
-                                        <img src="https://ui-avatars.com/api/?name=C&background=green" class="avatar-sm">
-                                        <span class="avatar-sm more">+1</span>
-                                    </div>
-                                </div>
-                                <div class="members">@ev.CurrentParticipants / @ev.MaxParticipants Members</div>
-                            </div>
-                        </div>
-                    </div>
+        <script>
+            setTimeout(function() {
+                var alertElement = document.getElementById('errorAlert');
+                if (alertElement) {
+                    alertElement.style.transition = "opacity 0.5s ease";
+                    alertElement.style.opacity = "0";
+                    setTimeout(function() { alertElement.style.display = 'none'; }, 500);
                 }
+            }, 5000);
+        </script>
+    }
+    <div id="event-header">
+        <h1>Event</h1>
+        <p>Event</p>
+    </div>
+    <div class="content-container bg-gray">
+        <div class="calendar-wrapper">
+            <div class="calendar-card">
+                <div class="calendar-header">
+                    <button class="nav-btn" id="prevMonth"><i class="fa-solid fa-chevron-left"></i></button>
+                    <div class="date-selectors">
+                        <select id="monthSelect">
+                            <option value="0">Jan</option>
+                            <option value="1">Feb</option>
+                            <option value="2">Mar</option>
+                            <option value="3">Apr</option>
+                            <option value="4">May</option>
+                            <option value="5">Jun</option>
+                            <option value="6">Jul</option>
+                            <option value="7">Aug</option>
+                            <option value="8">Sep</option>
+                            <option value="9">Oct</option>
+                            <option value="10">Nov</option>
+                            <option value="11">Dec</option>
+                        </select>
+                        <select id="yearSelect">
+                            <option value="2025">2025</option>
+                            <option value="2026" selected>2026</option>
+                            <option value="2027">2027</option>
+                        </select>
+                    </div>
+                    <button class="nav-btn" id="nextMonth"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+
+                <div class="calendar-body">
+                    <div class="day-names">
+                        <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+                    </div>
+                    <div class="days-grid" id="calendarGrid"></div>
+                </div>
+            </div>
+
+            <div class="filter-bar">
+                <div class="search-input">
+                    <input type="text" id="searchInput" placeholder="ค้นหาชื่อกิจกรรม..." style="border:none; outline:none; width:100%; background:transparent; font-family:inherit;">
+                </div>
+                <select id="sortSelect" class="pill-select">
+                    <option value="date-desc">เวลา (ไกลสุด)</option>
+                    <option value="date-asc">เวลา (ใกล้สุด)</option>
+                    <option value="members-desc">ผู้เข้าร่วม (มากสุด)</option>
+                    <option value="members-asc">ผู้เข้าร่วม (น้อยสุด)</option>
+                    <option value="name-asc">ชื่อ (A - Z)</option>
+                    <option value="name-desc">ชื่อ (Z - A)</option>
+                </select>
             </div>
         </div>
+    </div>
 
-        <script src="~/js/myevent.js"></script>
-    </body>
-}
+    <div class="content-container">
+        <div class="recommend-section" id="eventContainer">
+            <div class="section-title">
+                <h2 id="sectionHeader">Recommended Events</h2>
+                <p>Subheading</p>
+            </div>
+
+            @foreach (var ev in Model)
+            {
+                <div class="event-card" data-date="@ev.DateTime.ToString("yyyy-MM-dd")">
+                    <div class="card-img">
+                        <img src="@ev.Image" alt="@ev.Title" />
+                    </div>
+                    <div class="card-content">
+                        <h3>@ev.Title</h3>
+                        <p class="desc">@ev.Description</p>
+
+                        <div class="tags">
+                            @if (ev.Tags != null && ev.Tags.Any())
+                            {
+                                @foreach (var tagName in ev.Tags)
+                                {
+                                    <span class="tag black">#@tagName</span>
+                                }
+                            }
+                            else
+                            {
+                                <span class="tag dark">ไม่มีแท็ก</span>
+                            }
+                        </div>
+                        <div class="time-control">
+                            <span class="date-box-static">@ev.DateTime.ToString("HH:mm")</span>
+                            <span class="date-box-static">@ev.DateTime.ToString("dd")</span>
+                            <span class="date-box-static">@ev.DateTime.ToString("MMM")</span>
+                            <span class="date-box-static">@ev.DateTime.ToString("yyyy")</span>
+                        </div>
+                        <div class="card-footer">
+                            <div class="actions">
+                                <button class="btn-gray">View Info</button>
+                                <div class="avatars">
+                                    <img src="https://ui-avatars.com/api/?name=A&background=orange" class="avatar-sm">
+                                    <img src="https://ui-avatars.com/api/?name=B&background=blue" class="avatar-sm">
+                                    <img src="https://ui-avatars.com/api/?name=C&background=green" class="avatar-sm">
+                                    <span class="avatar-sm more">+1</span>
+                                </div>
+                            </div>
+                            <div class="members">@ev.CurrentParticipants / @ev.MaxParticipants Members</div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div style="background-color: #f8d7da; color: #842029; padding: 15px; margin-bottom: 20px; border: 1px solid #f5c2c7; border-radius: 6px; text-align: center; font-weight: bold;">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+    <script src="~/js/myevent.js"></script>
+</body>
 </html>
