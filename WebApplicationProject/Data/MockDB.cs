@@ -71,10 +71,7 @@ namespace WebApplicationProject.Data
         // 2. จำลองข้อมูล User 
         public static List<User> UsersList = new List<User>()
         {
-            // 👑 Host: ก้องเกียรติ
             new User { Id = 101, Username = "music_host", Password = "123", FName = "ก้องเกียรติ", SName = "ใจดี", Email = "kong@test.com", Gender = "Male", Birthday = new DateTime(1990, 5, 20), Image = "https://ui-avatars.com/api/?name=Kong+J&background=random" },
-    
-            // 👑 Host: ปั้นจั่น (จำลองได้รับ 3 รีวิวจาก วีระ, ชูใจ และ สมชาย)
             new User
             {
                 Id = 102, Username = "art_host", Password = "123", FName = "ปั้นจั่น", SName = "งานละเอียด", Email = "pun@test.com", Gender = "Female", Birthday = new DateTime(1995, 8, 15), Image = "https://ui-avatars.com/api/?name=Pun+N&background=random",
@@ -108,9 +105,36 @@ namespace WebApplicationProject.Data
             },
 
             // 👤 Users เดิม
-            new User { Id = 103, Username = "somchai", Password = "123", FName = "สมชาย", SName = "เข็มกลัด", Email = "somchai@test.com", Gender = "Male", Birthday = new DateTime(1985, 1, 1), Image = "https://ui-avatars.com/api/?name=Somchai+K&background=0D8ABC&color=fff" },
-            new User { Id = 104, Username = "nancy", Password = "123", FName = "แนนซี่", SName = "มีตังค์", Email = "nancy@test.com", Gender = "Female", Birthday = new DateTime(2000, 12, 25), Image = "https://ui-avatars.com/api/?name=Nancy+M&background=FFC107" },
-            new User { Id = 105, Username = "piti", Password = "123", FName = "ปิติ", SName = "พอใจ", Email = "piti@test.com", Gender = "Male", Birthday = new DateTime(1998, 3, 10), Image = "https://ui-avatars.com/api/?name=Piti+P&background=8E44AD&color=fff" },
+            new User { Id = 103, Username = "somchai", Password = "123", FName = "สมชาย", SName = "เข็มกลัด", Email = "somchai@test.com", Gender = "Male", Birthday = new DateTime(1985, 1, 1), Image = "https://ui-avatars.com/api/?name=Somchai+K&background=0D8ABC&color=fff",
+            Settings  = new UserSettings
+            { 
+                PrivateAccount = false,
+                ShowEmail = true,
+                ShowHostedEvents = false,
+                ShowJoinedEvents = true
+            },
+                MyEvents = new List<EventParticipation>
+                {
+                    new EventParticipation { Id = 1, EventId = 1, UserId = 103, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-2) },
+                    new EventParticipation { Id = 4, EventId = 2, UserId = 103, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-10) }
+                }
+            },
+            new User { Id = 104, Username = "nancy", Password = "123", FName = "แนนซี่", SName = "มีตังค์", Email = "nancy@test.com", Gender = "Female", Birthday = new DateTime(2000, 12, 25), Image = "https://ui-avatars.com/api/?name=Nancy+M&background=FFC107",
+            Settings = new UserSettings
+            {
+                PrivateAccount = true,
+                ShowEmail = false,
+                ShowHostedEvents = true,
+                ShowJoinedEvents = true
+            },},
+            new User { Id = 105, Username = "piti", Password = "123", FName = "ปิติ", SName = "พอใจ", Email = "piti@test.com", Gender = "Male", Birthday = new DateTime(1998, 3, 10), Image = "https://ui-avatars.com/api/?name=Piti+P&background=8E44AD&color=fff",
+            Settings = new UserSettings
+            {
+                PrivateAccount = false,
+                ShowEmail = true,
+                ShowHostedEvents = true,
+                ShowJoinedEvents = false
+            },},
             new User { Id = 106, Username = "chujai", Password = "123", FName = "ชูใจ", SName = "เลิศล้ำ", Email = "chujai@test.com", Gender = "LGBTQ+", Birthday = new DateTime(1992, 11, 5), Image = "https://ui-avatars.com/api/?name=Chujai+L&background=E74C3C&color=fff" },
 
             // 🌟 Users ใหม่
