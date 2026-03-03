@@ -1,60 +1,60 @@
 ﻿@model WebApplicationProject.Models.Event
 <link rel="stylesheet" href="~/css/eventPrev_eventForm.css" asp-append-version="true" />
-@section Banner{
-    <div class="head">
-        <h1>Create Event</h1>
-        <p>สร้างกิจกรรม</p>
-    </div>
-}
-<form asp-action="Create" method="post" class="eventForm" id="eventForm" enctype="multipart/form-data">
-    <div class="title">
-        <label>ชื่อ Event:</label>
-        <input asp-for="Title" id="inputTitle" placeholder="เช่น งานดนตรีในสวน, ติวหนังสือสอบปลายภาค" required />
-    </div>
-    <div class="description">
-        <label>คำอธิบาย</label>
-        <input asp-for="Description" id="inputDesc" placeholder="เช่น รายละเอียดกิจกรรม สิ่งที่ต้องเตรียมมา..." required />
-    </div>
-    <div class="imageUpload">
-        <label>อัพโหลดรูปภาพ</label>
-        <input type="file" name="uploadImage" id="inputImg" class="form-control" accept="image/*" />
-    </div>
-    <div class="tag">
-        <label>ใส่ Tag (คั่นด้วยลูกน้ำ)</label>
-        <input name="Tag" id="inputTag" placeholder="เช่น ดนตรี, กลางแจ้ง, สวนสาธารณะ" />
-    </div>
-    <div class="maxParti">
-        <label>จำนวนคน</label>
-        <input asp-for="MaxParticipants" id="inputMaxParti" placeholder="ใส่ตัวเลข(ไม่รวมตนเอง)" required />
-    </div>
-    <div class="time">
-        <label>วันที่ - เวลา</label>
-        <input asp-for="DateTime" id="inputDateTime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" type="datetime-local" required />
-    </div>
-    <div class="location">
-        <label>สถานที่</label>
-        <input asp-for="Location" id="inputLocation" placeholder="ระบุสถานที่จัดงาน หรือ ลิงก์ Google Maps" required />
-    </div>
-    <button type="submit">บันทึก</button>
-    <button id="btnRst" type="button">รีเซ็ท</button>
-</form>
-<h3>ตัวอย่างที่จะแสดงผล</h3>
-<div id="eventPrev" class="eventPrev">
-    <div class="eventImage">
-        <img id="prevImage" src="https://img2.pic.in.th/image-icon-symbol-design-illustration-vector.md.jpg" />
-    </div>
-    <div class="eventDetail">
-        <h4><b>ชื่อ: </b><span id="prevTitle">(ชื่อกิจกรรมจะปรากฏที่นี่)</span></h4>
-        <p><b>คำอธิบาย: </b><span id="prevDesc">รายละเอียดต่างๆ ของกิจกรรม...</span></p>
-        <div>
-            <b>Tag(s): </b>
-            <span id="prevTags"><span class="tag-badge">#ตัวอย่างแท็ก</span></span>
+<div class="head">
+    <h1>Create Event</h1>
+    <p>สร้างกิจกรรม</p>
+</div>
+<div class="my-container">
+    <form asp-action="Create" method="post" class="eventForm" id="eventForm" enctype="multipart/form-data">
+        <div class="title">
+            <label>ชื่อ Event:</label>
+            <input asp-for="Title" id="inputTitle" placeholder="เช่น งานดนตรีในสวน, ติวหนังสือสอบปลายภาค" required />
         </div>
-        <div class="meta-info"><b>จำนวนคน: </b><span id="prevMaxParti">XX</span> คน</div>
-        <div class="meta-info"><b>วันที่ - เวลา: </b><span id="prevDate">XX เดือน XXXX - XX:XX น.</span></div>
-        <div class="meta-info"><b>สถานที่: </b><span id="prevLocation">ระบุสถานที่จัดงาน</span></div>
-    </div>
-</div> 
+        <div class="description">
+            <label>คำอธิบาย</label>
+            <input asp-for="Description" id="inputDesc" placeholder="เช่น รายละเอียดกิจกรรม สิ่งที่ต้องเตรียมมา..." required />
+        </div>
+        <div class="imageUpload">
+            <label>อัพโหลดรูปภาพ</label>
+            <input type="file" name="uploadImage" id="inputImg" class="form-control" accept="image/*" />
+        </div>
+        <div class="tag">
+            <label>ใส่ Tag (คั่นด้วยลูกน้ำ)</label>
+            <input name="Tag" id="inputTag" placeholder="เช่น ดนตรี, กลางแจ้ง, สวนสาธารณะ" />
+        </div>
+        <div class="maxParti">
+            <label>จำนวนคน</label>
+            <input asp-for="MaxParticipants" id="inputMaxParti" placeholder="ใส่ตัวเลข(ไม่รวมตนเอง)" required />
+        </div>
+        <div class="time">
+            <label>วันที่ - เวลา</label>
+            <input asp-for="DateTime" id="inputDateTime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" type="datetime-local" required />
+        </div>
+        <div class="location">
+            <label>สถานที่</label>
+            <input asp-for="Location" id="inputLocation" placeholder="ระบุสถานที่จัดงาน หรือ ลิงก์ Google Maps" required />
+        </div>
+        <button type="submit">บันทึก</button>
+        <button id="btnRst" type="button">รีเซ็ท</button>
+    </form>
+    <h3>ตัวอย่างที่จะแสดงผล</h3>
+    <div id="eventPrev" class="eventPrev">
+        <div class="eventImage">
+            <img id="prevImage" src="https://img2.pic.in.th/image-icon-symbol-design-illustration-vector.md.jpg" />
+        </div>
+        <div class="eventDetail">
+            <h4><b>ชื่อ: </b><span id="prevTitle">(ชื่อกิจกรรมจะปรากฏที่นี่)</span></h4>
+            <p><b>คำอธิบาย: </b><span id="prevDesc">รายละเอียดต่างๆ ของกิจกรรม...</span></p>
+            <div>
+                <b>Tag(s): </b>
+                <span id="prevTags"><span class="tag-badge">#ตัวอย่างแท็ก</span></span>
+            </div>
+            <div class="meta-info"><b>จำนวนคน: </b><span id="prevMaxParti">XX</span> คน</div>
+            <div class="meta-info"><b>วันที่ - เวลา: </b><span id="prevDate">XX เดือน XXXX - XX:XX น.</span></div>
+            <div class="meta-info"><b>สถานที่: </b><span id="prevLocation">ระบุสถานที่จัดงาน</span></div>
+        </div>
+    </div> 
+</div>
 @section Scripts {
     <script src="~/js/showPreview.js" asp-append-version="true"></script>
 }
