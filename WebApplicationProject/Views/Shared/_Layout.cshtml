@@ -1,5 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+
+<!DOCTYPE html>
 <html lang="en">
+@{
+        var username = Context.Session.GetString("Username");
+}
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -26,8 +32,26 @@
             </div>
 
             <div id="navprofile">
-                <div id="profilename">
+                @*<div id="profilename">
                     <h4>ชื่อ</h4> <p>นามสกุล</p>
+                </div>*@
+                @{
+                    var username = Context.Session.GetString("Username");
+                }
+
+                <div id="profilename">
+                    @if (!string.IsNullOrEmpty(username))
+                    {
+                        <h4>@username</h4>
+                        @if (username != null)
+                        {
+                            <a asp-controller="Account" asp-action="Logout">Logout</a>
+                        }
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login">Login</a>
+                    }
                 </div>
                 <img src="https://ui-avatars.com/api/?name=John+Doe&background=random&color=fff&size=128" alt="Profile">
             </div>
