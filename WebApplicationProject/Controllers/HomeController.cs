@@ -19,7 +19,7 @@ namespace WebApplicationProject.Controllers
 
         public IActionResult Home()
         {
-            var events = EventStore.Events;
+            var events = MockDB.EventList;
             return View(events);
         }
 
