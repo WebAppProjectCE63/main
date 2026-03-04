@@ -9,11 +9,6 @@ function openEditModal() {
         email: document.getElementById("prevEmail")?.innerText || "",
         img: document.getElementById("prevImg")?.src || ""
     };
-
-    if (document.getElementById("inputFname")) document.getElementById("inputFname").value = originalData.fname;
-    if (document.getElementById("inputSname")) document.getElementById("inputSname").value = originalData.sname;
-    if (document.getElementById("inputEmail")) document.getElementById("inputEmail").value = originalData.email;
-
     modal.style.display = "block";
 }
 function closeEditModal() {

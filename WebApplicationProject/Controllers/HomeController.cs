@@ -23,16 +23,6 @@ namespace WebApplicationProject.Controllers
             return View(events);
         }
 
-        public IActionResult Login()
-        {
-            return View();
-        }
-
-        public IActionResult Signup()
-        {
-            return View();
-        }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

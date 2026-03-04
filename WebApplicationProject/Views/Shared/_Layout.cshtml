@@ -1,11 +1,17 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+
+<!DOCTYPE html>
 <html lang="en">
+@{
+        var username = Context.Session.GetString("Username");
+}
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - WebApplicationProject</title>
     <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/WebApplicationProject.styles.css" asp-append-version="true" />
 </head>
@@ -26,27 +32,43 @@
             </div>
 
             <div id="navprofile">
-                <div id="profilename">
+                @*<div id="profilename">
                     <h4>ชื่อ</h4> <p>นามสกุล</p>
+                </div>*@
+                @{
+                    var username = Context.Session.GetString("Username");
+                }
+
+                <div id="profilename">
+                    @if (!string.IsNullOrEmpty(username))
+                    {
+                        <h4>@username</h4>
+                        @if (username != null)
+                        {
+                            <a asp-controller="Account" asp-action="Logout">Logout</a>
+                        }
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login">Login</a>
+                    }
                 </div>
                 <img src="https://ui-avatars.com/api/?name=John+Doe&background=random&color=fff&size=128" alt="Profile">
             </div>
         </nav>
     </header>
-    @await RenderSectionAsync("Banner", required: false)
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
+    <main role="main">
+        @RenderBody()
+    </main>
+
+    <footer class="my-footer">
+        <div>
             &copy; 2569 - WebApplicationProject - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

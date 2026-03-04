@@ -26,27 +26,27 @@
     right: 250px;
 }
 
-    #navitem ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        gap: 20px;
-    }
+#navitem ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
 
-        #navitem ul li a {
-            display: block;
-            color: #666;
-            text-align: center;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 14px;
-        }
+#navitem ul li a {
+    display: block;
+    color: #666;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+}
 
-            #navitem ul li a.active, #navitem ul li a:hover {
-                color: #000;
-            }
+#navitem ul li a.active, #navitem ul li a:hover {
+    color: #000;
+}
 
 #navprofile {
     display: flex;
@@ -85,17 +85,17 @@
     background-color: #f9f9f9;
 }
 
-    #event-header h1 {
-        font-size: 48px;
-        margin: 0;
-        font-weight: bold;
-    }
+#event-header h1 {
+    font-size: 48px;
+    margin: 0;
+    font-weight: bold;
+}
 
-    #event-header p {
-        font-size: 24px;
-        color: #999;
-        margin: 10px 0 0 0;
-    }
+#event-header p {
+    font-size: 24px;
+    color: #999;
+    margin: 10px 0 0 0;
+}
 
 .content-container {
     padding: 40px;
@@ -134,14 +134,14 @@
     padding: 0 20px;
 }
 
-    .date-selectors select {
-        border: 1px solid #ddd;
-        padding: 8px;
-        border-radius: 6px;
-        background: white;
-        width: 100%;
-        color: #333;
-    }
+.date-selectors select {
+    border: 1px solid #ddd;
+    padding: 8px;
+    border-radius: 6px;
+    background: white;
+    width: 100%;
+    color: #333;
+}
 
 .nav-btn {
     border: none;
@@ -167,31 +167,31 @@
     row-gap: 20px;
 }
 
-    .days-grid span {
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-        width: 30px;
-        height: 30px;
-        margin: 0 auto;
-        font-size: 14px;
-        cursor: pointer;
-    }
+.days-grid span {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    margin: 0 auto;
+    font-size: 14px;
+    cursor: pointer;
+}
 
-    .days-grid .active-day {
-        background-color: #222;
-        color: white;
-        border-radius: 6px;
-    }
+.days-grid .active-day {
+    background-color: #222;
+    color: white;
+    border-radius: 6px;
+}
 
-    .days-grid .highlight-day {
-        background-color: #ddd;
-        border-radius: 6px;
-    }
+.days-grid .highlight-day {
+    background-color: #ddd;
+    border-radius: 6px;
+}
 
-    .days-grid .text-muted {
-        color: #ccc;
-    }
+.days-grid .text-muted {
+    color: #ccc;
+}
 
 .filter-bar {
     display: flex;
@@ -218,11 +218,11 @@
     gap: 10px;
 }
 
-    .sort-filter span {
-        font-weight: bold;
-        color: #666;
-        font-size: 14px;
-    }
+.sort-filter span {
+    font-weight: bold;
+    color: #666;
+    font-size: 14px;
+}
 
 .pill-select, .pill-btn {
     background: white;
@@ -242,16 +242,16 @@
     margin-bottom: 30px;
 }
 
-    .section-title h2 {
-        font-size: 20px;
-        margin: 0 0 5px 0;
-    }
+.section-title h2 {
+    font-size: 20px;
+    margin: 0 0 5px 0;
+}
 
-    .section-title p {
-        color: #888;
-        font-size: 14px;
-        margin: 0;
-    }
+.section-title p {
+    color: #888;
+    font-size: 14px;
+    margin: 0;
+}
 
 .event-card {
     border: 1px solid #eee;
@@ -264,16 +264,19 @@
 }
 
 .card-img {
-    width: 120px;
-    height: 120px;
+    width: 260px;
+    height: 160px;
     background-color: #e0e0e0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 30px;
-    color: #bbb;
     flex-shrink: 0;
+    overflow: hidden;
+    border-radius: 8px;
 }
+
+    .card-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
 
 .card-content {
     flex-grow: 1;
@@ -281,23 +284,23 @@
     flex-direction: column;
 }
 
-    .card-content h3 {
-        margin: 0 0 5px 0;
-        font-size: 18px;
-    }
+.card-content h3 {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+}
 
-    .card-content .desc {
-        color: #666;
-        font-size: 14px;
-        margin: 0 0 10px 0;
-    }
+.card-content .desc {
+    color: #666;
+    font-size: 14px;
+    margin: 0 0 10px 0;
+}
 
-    .card-content .sub-desc {
-        color: #333;
-        font-weight: bold;
-        font-size: 14px;
-        margin: 0;
-    }
+.card-content .sub-desc {
+    color: #333;
+    font-weight: bold;
+    font-size: 14px;
+    margin: 0;
+}
 
 .tags {
     display: flex;
@@ -315,13 +318,13 @@
     gap: 5px;
 }
 
-    .tag.black {
-        background-color: #222;
-    }
+.tag.black {
+    background-color: #222;
+}
 
-    .tag.dark {
-        background-color: #444;
-    }
+.tag.dark {
+    background-color: #444;
+}
 
 .time-control {
     display: flex;
@@ -330,18 +333,23 @@
     margin-bottom: 15px;
 }
 
-    .time-control select, .time-control input {
-        border: 1px solid #ddd;
-        padding: 5px 10px;
-        border-radius: 6px;
-        font-size: 12px;
-        color: #666;
-    }
 
-    .time-control .date-box {
-        width: 40px;
-        text-align: center;
-    }
+.time-control .date-box-static {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ddd;
+    padding: 8px 12px; 
+    border-radius: 6px;
+    font-size: 14px;
+    color: #666;
+    background-color: #fff;
+    min-width: 60px;
+    height: 35px;
+    box-sizing: border-box;
+}
+
+  
 
 .card-footer {
     margin-top: auto;
@@ -379,18 +387,18 @@
     margin-left: -8px;
 }
 
-    .avatar-sm:first-child {
-        margin-left: 0;
-    }
+.avatar-sm:first-child {
+    margin-left: 0;
+}
 
-    .avatar-sm.more {
-        background: #eee;
-        font-size: 10px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: #666;
-    }
+.avatar-sm.more {
+    background: #eee;
+    font-size: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #666;
+}
 
 .members {
     background-color: #f5f5f5;
@@ -427,27 +435,27 @@ body {
     right: 250px;
 }
 
-    #navitem ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        gap: 20px;
-    }
+#navitem ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
 
-        #navitem ul li a {
-            display: block;
-            color: #666;
-            text-align: center;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 14px;
-        }
+#navitem ul li a {
+    display: block;
+    color: #666;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+}
 
-            #navitem ul li a.active, #navitem ul li a:hover {
-                color: #000;
-            }
+#navitem ul li a.active, #navitem ul li a:hover {
+    color: #000;
+}
 
 #navprofile {
     display: flex;
@@ -460,17 +468,17 @@ body {
     text-align: right;
 }
 
-    #profilename h4 {
-        font-size: 14px;
-        margin: 0;
-        color: #333;
-    }
+#profilename h4 {
+    font-size: 14px;
+    margin: 0;
+    color: #333;
+}
 
-    #profilename p {
-        font-size: 12px;
-        margin: 0;
-        color: #aaa;
-    }
+#profilename p {
+    font-size: 12px;
+    margin: 0;
+    color: #aaa;
+}
 
 #navprofile img {
     border-radius: 50%;
@@ -486,17 +494,17 @@ body {
     background-color: #f9f9f9;
 }
 
-    #event-header h1 {
-        font-size: 48px;
-        margin: 0;
-        font-weight: bold;
-    }
+#event-header h1 {
+    font-size: 48px;
+    margin: 0;
+    font-weight: bold;
+}
 
-    #event-header p {
-        font-size: 24px;
-        color: #999;
-        margin: 10px 0 0 0;
-    }
+#event-header p {
+    font-size: 24px;
+    color: #999;
+    margin: 10px 0 0 0;
+}
 
 .content-container {
     padding: 40px;
@@ -535,14 +543,14 @@ body {
     padding: 0 20px;
 }
 
-    .date-selectors select {
-        border: 1px solid #ddd;
-        padding: 8px;
-        border-radius: 6px;
-        background: white;
-        width: 100%;
-        color: #333;
-    }
+.date-selectors select {
+    border: 1px solid #ddd;
+    padding: 8px;
+    border-radius: 6px;
+    background: white;
+    width: 100%;
+    color: #333;
+}
 
 .nav-btn {
     border: none;
@@ -568,31 +576,31 @@ body {
     row-gap: 20px;
 }
 
-    .days-grid span {
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-        width: 30px;
-        height: 30px;
-        margin: 0 auto;
-        font-size: 14px;
-        cursor: pointer;
-    }
+.days-grid span {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    margin: 0 auto;
+    font-size: 14px;
+    cursor: pointer;
+}
 
-    .days-grid .active-day {
-        background-color: #222;
-        color: white;
-        border-radius: 6px;
-    }
+.days-grid .active-day {
+    background-color: #222;
+    color: white;
+    border-radius: 6px;
+}
 
-    .days-grid .highlight-day {
-        background-color: #ddd;
-        border-radius: 6px;
-    }
+.days-grid .highlight-day {
+    background-color: #ddd;
+    border-radius: 6px;
+}
 
-    .days-grid .text-muted {
-        color: #ccc;
-    }
+.days-grid .text-muted {
+    color: #ccc;
+}
 
 .filter-bar {
     display: flex;
@@ -619,11 +627,11 @@ body {
     gap: 10px;
 }
 
-    .sort-filter span {
-        font-weight: bold;
-        color: #666;
-        font-size: 14px;
-    }
+.sort-filter span {
+    font-weight: bold;
+    color: #666;
+    font-size: 14px;
+}
 
 .pill-select, .pill-btn {
     background: white;
@@ -643,16 +651,16 @@ body {
     margin-bottom: 30px;
 }
 
-    .section-title h2 {
-        font-size: 20px;
-        margin: 0 0 5px 0;
-    }
+.section-title h2 {
+    font-size: 20px;
+    margin: 0 0 5px 0;
+}
 
-    .section-title p {
-        color: #888;
-        font-size: 14px;
-        margin: 0;
-    }
+.section-title p {
+    color: #888;
+    font-size: 14px;
+    margin: 0;
+}
 
 .event-card {
     border: 1px solid #eee;
@@ -682,23 +690,23 @@ body {
     flex-direction: column;
 }
 
-    .card-content h3 {
-        margin: 0 0 5px 0;
-        font-size: 18px;
-    }
+.card-content h3 {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+}
 
-    .card-content .desc {
-        color: #666;
-        font-size: 14px;
-        margin: 0 0 10px 0;
-    }
+.card-content .desc {
+    color: #666;
+    font-size: 14px;
+    margin: 0 0 10px 0;
+}
 
-    .card-content .sub-desc {
-        color: #333;
-        font-weight: bold;
-        font-size: 14px;
-        margin: 0;
-    }
+.card-content .sub-desc {
+    color: #333;
+    font-weight: bold;
+    font-size: 14px;
+    margin: 0;
+}
 
 .tags {
     display: flex;
@@ -716,13 +724,13 @@ body {
     gap: 5px;
 }
 
-    .tag.black {
-        background-color: #222;
-    }
+.tag.black {
+    background-color: #222;
+}
 
-    .tag.dark {
-        background-color: #444;
-    }
+.tag.dark {
+    background-color: #444;
+}
 
 .time-control {
     display: flex;
@@ -731,18 +739,18 @@ body {
     margin-bottom: 15px;
 }
 
-    .time-control select, .time-control input {
-        border: 1px solid #ddd;
-        padding: 5px 10px;
-        border-radius: 6px;
-        font-size: 12px;
-        color: #666;
-    }
+.time-control select, .time-control input {
+    border: 1px solid #ddd;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #666;
+}
 
-    .time-control .date-box {
-        width: 40px;
-        text-align: center;
-    }
+.time-control .date-box {
+    width: 40px;
+    text-align: center;
+}
 
 .card-footer {
     margin-top: auto;
@@ -780,18 +788,18 @@ body {
     margin-left: -8px;
 }
 
-    .avatar-sm:first-child {
-        margin-left: 0;
-    }
+.avatar-sm:first-child {
+    margin-left: 0;
+}
 
-    .avatar-sm.more {
-        background: #eee;
-        font-size: 10px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: #666;
-    }
+.avatar-sm.more {
+    background: #eee;
+    font-size: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #666;
+}
 
 .members {
     background-color: #f5f5f5;

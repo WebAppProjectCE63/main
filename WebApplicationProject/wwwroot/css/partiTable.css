@@ -14,27 +14,31 @@
     padding: 10px;
 }
 
-    .partiTable th, .partiTable td {
-        padding: 10px;
-    }
+.partiTable th, .partiTable td {
+    padding: 10px;
+}
 
-        .partiTable th:last-child, .partiTable td:last-child {
-            text-align: right;
-        }
+.partiTable th:first-child, .partiTable td:first-child {
+    text-align: center;
+}
+.partiTable th:last-child, .partiTable td:last-child {
+    text-align: right;
+}
 
-        .partiTable td img {
-            border-radius: 50%;
-            object-fit: cover;
-            height: 40px;
-            width: 40px;
-            margin-right: 10px;
-        }
+.partiTable td img {
+    border-radius: 50%;
+    object-fit: cover;
+    height: 40px;
+    width: 40px;
+    margin-right: 10px;
+    vertical-align: middle;
+}
 
-        .partiTable td button {
-            border-radius: 8px;
-            background-color: black;
-            color: white;
-        }
+.partiTable td button {
+    border-radius: 8px;
+    background-color: black;
+    color: white;
+}
 
 .tableHeader {
     display: flex;
@@ -50,4 +54,8 @@
 
 table {
     width: 100%
+}
+
+.tableHeader h4{
+    margin: 0;
 }

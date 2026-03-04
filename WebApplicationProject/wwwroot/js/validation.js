@@ -67,3 +67,17 @@ allInputs.forEach(input => {
         }
     })
 })
+function login() {
+    $.ajax({
+        url: '/Account/LoginAjax',
+        type: 'POST',
+        data: {
+            username: $('#username').val(),
+            password: $('#password').val()
+        },
+        success: function (res) {
+            if (res.success)
+                window.location = "/Home";
+        }
+    });
+}
