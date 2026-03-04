@@ -1,8 +1,10 @@
 name: Branch Update Check
 
 on:
+  push:
+    branches: [ "main", "Debug-Mixed-Code" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "Debug-Mixed-Code" ]
 
 jobs:
   bypass-check:
@@ -10,4 +12,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Auto-pass
-        run: echo "ผ่านจ้า! บังคับให้อัปเดต Branch แล้ว"
+        run: echo "Work!"
