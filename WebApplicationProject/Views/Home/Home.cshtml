@@ -1,104 +1,171 @@
 ﻿@model IEnumerable<WebApplicationProject.Models.Event>
-<!DOCTYPE html>
 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="~/css/homestyle.css">
-</head>
+    </head>
 
-@section Banner{
-<body>
-        <div class="homepage-box">
-        <h2>Homepage</h2>
-        <p>Subtitle</p>
-    </div>
-    <div class="filter">
-        <button class="add-btn">+</button>
-        <input type="text" placeholder="Value" class="search">
-        <select class="sort">
-            <option>Value</option>
-            <option>Name</option>
-            <option>Date</option>
-        </select>
-        <input type="text" placeholder="DD" class="date">
-        <input type="text" placeholder="MM" class="date">
-        <input type="text" placeholder="YYYY" class="date">
-    </div>
-    <div class="rec-event">
-        <h2>Recommended Events</h2>
-        <p>Subheading</p>
-    </div>
-    <div class="event-list">
-    <div class="Event">
-        <div class="event-card">
-            <div class="event-image"></div>
-
-            <div class="event-main">
-                <h3 class="event-title">Event</h3>
-                <p class="event-desc">
-                    desc
-                </p>
-
-                <div class="event-chips">
-                    <button class="chip">✓ Label</button>
-                    <button class="chip">Tag x</button>
-                </div>
-
-                <div class="event-row">
-                    <select>
-                        <option selected disabled>เวลา</option>
-                        <option>เช้า</option>
-                        <option>บ่าย</option>
-                        <option>เย็น</option>
-                    </select>
-
-                    <input type="text" placeholder="วัน">
-                    <input type="text" placeholder="เดือน">
-                    <input type="text" placeholder="ปี">
-                </div>
-
-                <div class="event-actions">
-                    <button class="view-btn">View Info</button>
-                </div>
+    @section Banner {
+        <body>
+            <div class="homepage-box">
+                <h2>Homepage</h2>
+                <p>Subtitle</p>
             </div>
 
-            <div class="members">30/60 Members</div>
-        </div>
-    </div>
-    <div class="Event-ex">
-        <div class="eventcard-ex">
-            <div class="eventimage-ex"></div>
-            <div class="eventex-main">
-                <h3 class="eventtile-ex">Event (เมื่อขยาย)</h3>
-                <p class="eventdesc-ex">
-                    desc
-                </p>
-                <div class="event-chips">
-                    <button class="chip">✓ Label</button>
-                    <button class="chip">Tag x</button>
-                </div>
-                <div class="event-row">
-                    <select>
-                        <option selected disabled>เวลา</option>
-                        <option>เช้า</option>
-                        <option>บ่าย</option>
-                        <option>เย็น</option>
-                    </select>
-
-                    <input type="text" placeholder="วัน">
-                    <input type="text" placeholder="เดือน">
-                    <input type="text" placeholder="ปี">
-                </div>
-                <div class="join">
-                    <button class="join-btn">Join</button>
-                </div>
-
+            <div class="filter">
+                <button class="add-btn" id="searchBtn">+</button>
+                <input type="text" placeholder="Value" class="search">
+                <select class="sort" id="filtertype">
+                    <option value="" disabled selected hidden>Value</option>
+                    <option>Name</option>
+                    <option>Date</option>
+                    <option>Label</option>
+                </select>
+                <input type="text" placeholder="DD" class="date" id="dayinput">
+                <input type="text" placeholder="MM" class="date" id="monthinput">
+                <input type="text" placeholder="YYYY" class="date" id="yearinput">
             </div>
-            <div class="members-ex">30/60 Members</div>
-        </div>
-     </div>
-     </div>
-</body>
-}
+
+            <div class="rec-event">
+                <h2>Recommended Events</h2>
+                <p>Subheading</p>
+            </div>
+
+            <div class="event-list">
+                @foreach (var item in Model)
+                {
+                    <div class="Event"
+                         data-title="@item.Title.ToLower()"
+                         data-tags="@(item.Tags != null ? string.Join(",", item.Tags).ToLower() : "")"
+                         data-day="@item.DateTime.Day"
+                         data-month="@item.DateTime.Month"
+                         data-year="@(item.DateTime.Year + 543)">
+
+                    
+                        <div class="event-card">
+                            <div class="event-image">
+                                @if (!string.IsNullOrEmpty(item.Image))
+                                {
+                                    <img src="@item.Image" alt="event image"
+                                         style="width:110px;height:110px;object-fit:cover;border-radius:8px;" />
+                                }
+                            </div>
+
+                            <div class="event-main">
+                                <h3 class="event-title">@item.Title</h3>
+                                <p class="event-desc">@item.Description</p>
+
+                                <div class="event-chips">
+                                    @if (item.Tags != null && item.Tags.Count > 0)
+                                    {
+                                        foreach (var tag in item.Tags)
+                                        {
+                                            <button type="button" class="chip">@tag</button>
+                                        }
+                                    }
+                                </div>
+
+                                <div class="event-row">
+                                    <span>@item.Location</span>
+                                    <span>@item.DateTime.ToString("dd/MM/yyyy")</span>
+                                </div>
+
+                                <div class="event-actions">
+                                    <button type="button" class="view-btn" onclick="toggleExpand(this)">
+                                        View Info
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="members">@item.CurrentParticipants/@item.MaxParticipants Members</div>
+                        </div>
+
+                 
+                        <div class="Event-ex">
+                            <div class="eventcard-ex">
+                                <div class="eventimage-ex">
+                                    @if (!string.IsNullOrEmpty(item.Image))
+                                    {
+                                        <img src="@item.Image" alt="event image"
+                                             style="width:110px;height:110px;object-fit:cover;border-radius:8px;" />
+                                    }
+                                </div>
+
+                                <div style="flex:1;">
+                                    <h3>@item.Title (Expanded)</h3>
+                                    <p>@item.Description</p>
+
+                                    <p><strong>Location:</strong> @item.Location</p>
+                                    <p><strong>Date:</strong> @item.DateTime.ToString("dd MMM yyyy HH:mm")</p>
+
+                                    <div class="event-chips">
+                                        @if (item.Tags != null && item.Tags.Count > 0)
+                                        {
+                                            foreach (var tag in item.Tags)
+                                            {
+                                                <button type="button" class="chip">@tag</button>
+                                            }
+                                        }
+                                    </div>
+
+                                    <button type="button" class="join-btn">Join</button>
+                                </div>
+
+                                <div class="members-ex">@item.CurrentParticipants/@item.MaxParticipants Members</div>
+                            </div>
+                        </div>
+
+                    </div>
+                }
+            </div>
+
+            <script>
+                    function toggleExpand(button) {
+                        const wrapper = button.closest(".Event");
+                        const expandSection = wrapper.querySelector(".Event-ex");
+                        expandSection.classList.toggle("active");
+                    }
+            </script>
+           
+            <script>
+                    document.getElementById("searchBtn").addEventListener("click", function () {
+                        const filterType = document.getElementById("filtertype").value;
+                        const events = document.querySelectorAll(".Event");
+                        const keyword = document.querySelector(".search").value.trim().toLowerCase();
+
+                        if (filterType === "Date") {
+                            const d = document.getElementById("dayinput").value.trim().replace(/^0+/, "");
+                            const m = document.getElementById("monthinput").value.trim().replace(/^0+/, "");
+                            const y = document.getElementById("yearinput").value.trim();
+
+                            events.forEach(ev => {
+                                const evD = ev.getAttribute("data-day");
+                                const evM = ev.getAttribute("data-month");
+                                const evY = ev.getAttribute("data-year");
+
+                                const dayMatch = (d === "" || evD === d);
+                                const monthMatch = (m === "" || evM === m);
+                                const yearMatch = (y === "" || evY === y);
+
+                                ev.style.display = (dayMatch && monthMatch && yearMatch) ? "block" : "none";
+                            });
+                        }
+                        else if (filterType === "Label") {
+                            events.forEach(ev => {
+                                const tags = ev.getAttribute("data-tags") || "";
+                                ev.style.display = (keyword === "" || tags.includes(keyword)) ? "block" : "none";
+                            });
+                        }
+                        else if (filterType === "Name") {
+                            events.forEach(ev => {
+                                const title = (ev.getAttribute("data-title") || "").toLowerCase();
+                                ev.style.display = (keyword === "" || title === keyword) ? "block" : "none";  
+                            });
+                        }
+                    });
+            </script>
+        </body>
+    }
 </html>

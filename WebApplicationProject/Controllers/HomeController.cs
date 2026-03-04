@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using WebApplicationProject.Models;
+using WebApplicationProject.Data;
 
 namespace WebApplicationProject.Controllers
 {
@@ -18,7 +19,8 @@ namespace WebApplicationProject.Controllers
 
         public IActionResult Home()
         {
-            return View();
+            var events = EventStore.Events;
+            return View(events);
         }
 
         public IActionResult Login()
