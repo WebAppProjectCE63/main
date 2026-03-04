@@ -28,7 +28,7 @@
         </div>
         <div class="time">
             <label>วันที่ - เวลา</label>
-            <input asp-for="DateTime" id="inputDateTime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" type="datetime-local" required />
+            <input asp-for="DateTime" id="inputDateTime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm", new System.Globalization.CultureInfo("en-US"))" type="datetime-local" required />
         </div>
         <div class="location">
             <label>สถานที่</label>
