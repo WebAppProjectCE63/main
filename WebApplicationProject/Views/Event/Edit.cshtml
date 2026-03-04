@@ -26,7 +26,7 @@
                 </span>
             </div>
             <div class="meta-info"><b>จำนวนคน: </b><span id="prevMaxParti">@Model.MaxParticipants</span> คน</div>
-            <div class="meta-info"><b>วันที่ - เวลา: </b><span id="prevDate">@Model.DateTime.ToString("d MMMM yyyy - HH:mm น.", new System.Globalization.CultureInfo("th-TH"))</span></div>
+            <div class="meta-info"><b>วันที่ - เวลา: </b><span id="prevDate">@Model.DateTime.ToString("d MMMM yyyy - HH:mm น.")</span></div>
             <div class="meta-info"><b>สถานที่: </b><span id="prevLocation">@Model.Location</span></div>
             <a href="@Url.Action("Manage", "Event", new { id = Model.Id })" class="btnLink">จัดการกิจกรรม</a>
         </div>
@@ -57,8 +57,7 @@
         </div>
         <div class="time">
             <label>วันที่ - เวลา</label>
-            <input asp-for="DateTime" id="inputDateTime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm", new System.Globalization.CultureInfo("en-US"))" type="datetime-local" value="@Model.DateTime.ToString("yyyy-MM-ddTHH:mm", System.Globalization.CultureInfo.InvariantCulture)" required />
-        </div>
+            <input asp-for="DateTime" id="inputDateTime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" type="datetime-local" value="@Model.DateTime.ToString("yyyy-MM-ddTHH:mm")" required />
         <div class="location">
             <label>สถานที่</label>
             <input asp-for="Location" id="inputLocation" required />
