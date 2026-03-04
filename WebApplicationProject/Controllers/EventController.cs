@@ -20,6 +20,7 @@ namespace WebApplicationProject.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Event newEvent, IFormFile uploadImage)
         {
+            if (newEvent.MaxParticipants < 1) return BadRequest("จำนวนผู้เข้าร่วมไม่ถูกต้อง");
             string ImageUrl = await UploadImageAsync(uploadImage);
             newEvent.Image = ImageUrl ?? "https://img2.pic.in.th/image-icon-symbol-design-illustration-vector.md.jpg";
             newEvent.Tags = ProcessTags(Request.Form["Tag"]);
@@ -58,7 +59,7 @@ namespace WebApplicationProject.Controllers
                     return RedirectToAction("Myevent");
                     //return Unauthorized("ไม่มีสิทธิ์เข้าถึง");
                 }
-
+                if (editEvent.MaxParticipants < ogEvent.CurrentParticipants || editEvent.MaxParticipants < 1) return BadRequest("จำนวนผู้เข้าร่วมไม่ถูกต้อง");
                 string newImageUrl = await UploadImageAsync(uploadImage);
                 if (newImageUrl != null)
                 {

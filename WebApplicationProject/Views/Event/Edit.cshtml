@@ -37,11 +37,11 @@
         <input type="hidden" asp-for="Image" id="oldImageUrl" />
         <div class="title">
             <label>ชื่อ Event:</label>
-            <input asp-for="Title" id="inputTitle" />
+            <input asp-for="Title" id="inputTitle" required />
         </div>
         <div class="description">
             <label>คำอธิบาย</label>
-            <input asp-for="Description" id="inputDesc" />
+            <input asp-for="Description" id="inputDesc" required />
         </div>
         <div class="imageUpload">
             <label>อัพโหลดรูปภาพ</label>
@@ -53,15 +53,15 @@
         </div>
         <div class="maxParti">
             <label>จำนวนคน</label>
-            <input asp-for="MaxParticipants" id="inputMaxParti" />
+            <input asp-for="MaxParticipants" id="inputMaxParti" min="@Math.Max(1, Model.CurrentParticipants)" required />
         </div>
         <div class="time">
             <label>วันที่ - เวลา</label>
-            <input asp-for="DateTime" id="inputDateTime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" type="datetime-local" value="@Model.DateTime.ToString("yyyy-MM-ddTHH:MM", System.Globalization.CultureInfo.InvariantCulture)" />
+            <input asp-for="DateTime" id="inputDateTime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" type="datetime-local" value="@Model.DateTime.ToString("yyyy-MM-ddTHH:mm", System.Globalization.CultureInfo.InvariantCulture)" required />
         </div>
         <div class="location">
             <label>สถานที่</label>
-            <input asp-for="Location" id="inputLocation" />
+            <input asp-for="Location" id="inputLocation" required />
         </div>
         <button type="submit">บันทึก</button>
         <button id="btnRst" type="button">รีเซ็ท</button>
