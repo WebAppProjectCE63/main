@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.IO;
 using WebApplicationProject.Data;
 namespace WebApplicationProject.Controllers
+
 {
     public class EventController : Controller
     {
@@ -19,28 +20,30 @@ namespace WebApplicationProject.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Event newEvent, IFormFile uploadImage)
         {
+            if (newEvent.MaxParticipants < 1) return BadRequest("จำนวนผู้เข้าร่วมไม่ถูกต้อง");
             string ImageUrl = await UploadImageAsync(uploadImage);
             newEvent.Image = ImageUrl ?? "https://img2.pic.in.th/image-icon-symbol-design-illustration-vector.md.jpg";
             newEvent.Tags = ProcessTags(Request.Form["Tag"]);
             newEvent.UserHostId = MockDB.CurrentLoggedInUserId;
             newEvent.Id = MockDB.EventList.Count + 1;
             MockDB.EventList.Add(newEvent);
-            return RedirectToAction("Manage", new {id = newEvent.Id});
+            return RedirectToAction("Manage", new { id = newEvent.Id });
         }
 
         private bool IsHost(Event ev)
         {
             return ev != null && ev.UserHostId == MockDB.CurrentLoggedInUserId;
         }
+
         public IActionResult Edit(int id)
-        {   
+        {
             var eventToEdit = MockDB.EventList.FirstOrDefault(e => e.Id == id);
             if (eventToEdit == null) return NotFound("ไม่พบกิจกรรมนี้");
             if (!IsHost(eventToEdit))
             {
-                //TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
-                //return RedirectToAction("Myevent");
-                return Unauthorized("ไม่มีสิทธิ์เข้าถึง");
+                TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
+                return RedirectToAction("Myevent");
+                //return Unauthorized("ไม่มีสิทธิ์เข้าถึง");
             }
             return View(eventToEdit);
         }
@@ -52,11 +55,11 @@ namespace WebApplicationProject.Controllers
             {
                 if (!IsHost(ogEvent))
                 {
-                    //TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
-                    //return RedirectToAction("Myevent");
-                    return Unauthorized("ไม่มีสิทธิ์เข้าถึง");
+                    TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
+                    return RedirectToAction("Myevent");
+                    //return Unauthorized("ไม่มีสิทธิ์เข้าถึง");
                 }
-
+                if (editEvent.MaxParticipants < ogEvent.CurrentParticipants || editEvent.MaxParticipants < 1) return BadRequest("จำนวนผู้เข้าร่วมไม่ถูกต้อง");
                 string newImageUrl = await UploadImageAsync(uploadImage);
                 if (newImageUrl != null)
                 {
@@ -73,7 +76,7 @@ namespace WebApplicationProject.Controllers
             {
                 return NotFound("ไม่พบกิจกรรมนี้");
             }
-            return RedirectToAction("Edit", new {id = editEvent.Id});
+            return RedirectToAction("Edit", new { id = editEvent.Id });
 
         }
 
@@ -83,9 +86,9 @@ namespace WebApplicationProject.Controllers
             if (eventToManage == null) return NotFound("ไม่พบกิจกรรมนี้");
             if (!IsHost(eventToManage))
             {
-                //TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
-                //return RedirectToAction("Myevent");
-                return Unauthorized("ไม่มีสิทธิ์เข้าถึง");
+                TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
+                return RedirectToAction("Myevent");
+                //return Unauthorized("ไม่มีสิทธิ์เข้าถึง");
             }
             var participantIds = eventToManage.Participants.Select(p => p.UserId).ToList();
             var participants = MockDB.UsersList.Where(u => participantIds.Contains(u.Id)).ToList();
@@ -100,9 +103,9 @@ namespace WebApplicationProject.Controllers
             if (eventToManage == null) return NotFound("ไม่มีกิจกรรมนี้");
             if (!IsHost(eventToManage))
             {
-                //TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
-                //return RedirectToAction("Myevent");
-                return Unauthorized("ไม่มีสิทธิ์เข้าถึง");
+                TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
+                return RedirectToAction("Myevent");
+                //return Unauthorized("ไม่มีสิทธิ์เข้าถึง");
             }
             var ticket = eventToManage.Participants.FirstOrDefault(t => t.UserId == userId);
             if (ticket == null) return NotFound("ไม่มีผู้ใช้นี้ในกิจกรรม");
@@ -117,9 +120,9 @@ namespace WebApplicationProject.Controllers
             if (eventToManage == null) return NotFound("ไม่มีกิจกรรมนี้");
             if (!IsHost(eventToManage))
             {
-                //TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
-                //return RedirectToAction("Myevent");
-                return Unauthorized("ไม่มีสิทธิ์เข้าถึง");
+                TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
+                return RedirectToAction("Myevent");
+                //return Unauthorized("ไม่มีสิทธิ์เข้าถึง");
             }
             if (eventToManage.CurrentParticipants >= eventToManage.MaxParticipants) return BadRequest("ผู้เข้าร่วมตัวจริงเต็มแล้ว ไม่สามารถเพิ่มได้");
             var ticket = eventToManage.Participants.FirstOrDefault(t => t.UserId == userId);
