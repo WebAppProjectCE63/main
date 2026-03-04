@@ -148,22 +148,23 @@
                             const monthMatch = (m === "" || evM === m);
                             const yearMatch = (y === "" || evY === y);
 
-                            ev.style.display = (dayMatch && monthMatch && yearMatch) ? "block" : "none";
+                                    ev.style.display = (dayMatch && monthMatch && yearMatch) ? "block" : "none";
+                                });
+                            }
+                            else if (filterType === "Label") {
+                                events.forEach(ev => {
+                                    const tags = ev.getAttribute("data-tags") || "";
+                                    ev.style.display = (keyword === "" || tags.includes(keyword)) ? "block" : "none";
+                                });
+                            }
+                            else if (filterType === "Name") {
+                                events.forEach(ev => {
+                                    const title = (ev.getAttribute("data-title") || "").toLowerCase();
+                                    ev.style.display = (keyword === "" || title === keyword) ? "block" : "none";  
+                                });
+                            }
                         });
-                    }
-                    else if (filterType === "Label") {
-                        events.forEach(ev => {
-                            const tags = ev.getAttribute("data-tags") || "";
-                            ev.style.display = (keyword === "" || tags.includes(keyword)) ? "block" : "none";
-                        });
-                    }
-                    else if (filterType === "Name") {
-                        events.forEach(ev => {
-                            const title = (ev.getAttribute("data-title") || "").toLowerCase();
-                            ev.style.display = (keyword === "" || title === keyword) ? "block" : "none";  
-                        });
-                    }
-                });
-        </script>
-    </body>
-</html>
+                </script>
+            </body>
+        }
+    </html>
