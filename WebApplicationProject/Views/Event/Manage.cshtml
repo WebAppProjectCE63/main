@@ -27,7 +27,19 @@
                 </span>
             </div>
             <div class="meta-info"><b>รับ: </b><span id="prevMaxParti">@Model.MaxParticipants</span> คน</div>
-            <div class="meta-info"><b>วันที่ - เวลา: </b><span id="prevDate">@Model.DateTime.ToString("d MMMM yyyy - HH:mm น.")</span></div>
+            <div class="meta-info">
+                <b>ระยะเวลากิจกรรม: </b>
+                <span>
+                    @if (Model.DateTime.Date == Model.EndDateTime.Date)
+                    {
+                        <text>@Model.DateTime.ToString("d MMMM yyyy ( HH:mm") - @Model.EndDateTime.ToString("HH:mm )")</text>
+                    }
+                    else
+                    {
+                        <text>@Model.DateTime.ToString("d MMMM yyyy ( HH:mm )") - @Model.EndDateTime.ToString("d MMMM yyyy ( HH:mm )")</text>
+                    }
+                </span>
+            </div>
             <div class="meta-info"><b>สถานที่: </b><span id="prevLocation">@Model.Location</span></div>
             <a href="@Url.Action("Edit", "Event", new {id = Model.Id})" class="btnLink">แก้ไขกิจกรรม</a>
 
@@ -61,7 +73,7 @@
                                 <tr id="row_@user.Id">
                                     <td class="seqNumber">@order</td>
                                     <td><img src="@user.Image" />@user.FName @user.SName</td>
-                                    <td>@ticket.JoinedAt</td>
+                                    <td>@ticket.JoinedAt.ToString("dd/MMM/yyyy HH:mm")</td>
                                     <td><button onclick="removeUser(@Model.Id, @user.Id)">ลบ</button></td>
                                 </tr>
                                 order += 1;
@@ -96,7 +108,7 @@
                                 <tr id="row_@user.Id">
                                     <td class="seqNumber">@order</td>
                                     <td><img src="@user.Image"/>@user.FName @user.SName</td>
-                                    <td>@ticket.JoinedAt</td>
+                                    <td>@ticket.JoinedAt.ToString("dd/MMM/yyyy HH:mm")</td>
                                     <td><button onclick="promoteUser(@Model.Id, @user.Id)">เพิ่ม</button></td>
                                 </tr>
                                 order += 1;
