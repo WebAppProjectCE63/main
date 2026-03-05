@@ -26,7 +26,7 @@ app.UseAuthorization();
 
 app.MapStaticAssets();
 
-var defaultCulture = new CultureInfo("en-US");
+var defaultCulture = new CultureInfo("en-GB");
 var localizationOptions = new RequestLocalizationOptions
 {
     DefaultRequestCulture = new RequestCulture(defaultCulture),
