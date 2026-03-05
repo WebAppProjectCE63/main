@@ -57,10 +57,10 @@ document.addEventListener("DOMContentLoaded", function () {
     inputTag.addEventListener("input", function () {
         let tagText = this.value
         if (!tagText) {
-            prevTags.innerHTML = '<span class="tag-badge">#ตัวอย่างแท็ก</span>';
+            prevTags.innerHTML = '<span class="tag-badge">ตัวอย่างแท็ก</span>';
             return;
         }
-        let badges = tagText.split(',').map(tag => `<span class="tag-badge">#${tag.trim()}</span>`).join(" ");
+        let badges = tagText.split(',').map(tag => `<span class="tag-badge">${tag.trim()}</span>`).join(" ");
         prevTags.innerHTML = badges;
     });
 
@@ -79,12 +79,12 @@ document.addEventListener("DOMContentLoaded", function () {
             prevDate.innerHTML = 'XX เดือน XXXX - XX:XX น.';
             return;
         }
-        const datePart = dateObj.toLocaleDateString('th-TH', {
+        const datePart = dateObj.toLocaleDateString('en-GB', {
             day: 'numeric',
             month: 'long',
             year: 'numeric'
         });
-        const timePart = dateObj.toLocaleTimeString('th-TH', {
+        const timePart = dateObj.toLocaleTimeString('en-GB', {
             hour: '2-digit',
             minute: '2-digit'
         });
