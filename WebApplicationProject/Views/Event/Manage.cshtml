@@ -27,7 +27,19 @@
                 </span>
             </div>
             <div class="meta-info"><b>รับ: </b><span id="prevMaxParti">@Model.MaxParticipants</span> คน</div>
-            <div class="meta-info"><b>วันที่ - เวลา: </b><span id="prevDate">@Model.DateTime.ToString("d MMMM yyyy - HH:mm น.")</span></div>
+            <div class="meta-info">
+                <b>วันที่ - เวลา: </b>
+                <span>
+                    @if (Model.DateTime.Date == Model.EndDateTime.Date)
+                    {
+                        <text>@Model.DateTime.ToString("d MMMM yyyy ( HH:mm") - @Model.EndDateTime.ToString("HH:mm น. )")</text>
+                    }
+                    else
+                    {
+                        <text>@Model.DateTime.ToString("d MMMM yyyy ( HH:mm น. )") - @Model.EndDateTime.ToString("d MMMM yyyy ( HH:mm น. )")</text>
+                    }
+                </span>
+            </div>
             <div class="meta-info"><b>สถานที่: </b><span id="prevLocation">@Model.Location</span></div>
             <a href="@Url.Action("Edit", "Event", new {id = Model.Id})" class="btnLink">แก้ไขกิจกรรม</a>
 

@@ -56,8 +56,18 @@
             <input asp-for="MaxParticipants" id="inputMaxParti" min="@Math.Max(1, Model.CurrentParticipants)" required />
         </div>
         <div class="time">
-            <label>วันที่ - เวลา</label>
-            <input asp-for="DateTime" id="inputDateTime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" type="datetime-local" value="@Model.DateTime.ToString("yyyy-MM-ddTHH:mm")" required />
+            <label>ระยะเวลากิจกรรม</label>
+            <div class="period">
+                <div class="start">
+                    <label>เริ่มต้น</label>
+                    <input asp-for="DateTime" id="inputDateTime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" type="datetime-local" value="@Model.DateTime.ToString("yyyy-MM-ddTHH:mm")" required />
+                </div>
+                <div class="end">
+                    <label>สิ้นสุด</label>
+                    <input asp-for="EndDateTime" id="inputEndDateTime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" type="datetime-local" value="@Model.EndDateTime.ToString("yyyy-MM-ddTHH:mm")" disabled required />
+                </div>
+            </div>
+        </div>
         <div class="location">
             <label>สถานที่</label>
             <input asp-for="Location" id="inputLocation" required />
