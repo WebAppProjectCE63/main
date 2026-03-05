@@ -14,14 +14,17 @@
         </div>
 
         <div class="filter">
-            <button class="add-btn" id="searchBtn">+</button>
-            <input type="text" placeholder="Value" class="search">
+            <button class="add-btn" id="searchBtn" type="button">+</button>
+
+            <input type="text" placeholder="Value" class="search" id="keywordInput">
+
             <select class="sort" id="filtertype">
                 <option value="" disabled selected hidden>Value</option>
-                <option>Name</option>
-                <option>Date</option>
-                <option>Label</option>
+                <option value="Name">Name</option>
+                <option value="Date">Date</option>
+                <option value="Label">Label</option>
             </select>
+
             <input type="text" placeholder="DD" class="date" id="dayinput">
             <input type="text" placeholder="MM" class="date" id="monthinput">
             <input type="text" placeholder="YYYY" class="date" id="yearinput">
@@ -36,19 +39,19 @@
             @foreach (var item in Model)
             {
                 <div class="Event"
-                        data-title="@item.Title.ToLower()"
-                        data-tags="@(item.Tags != null ? string.Join(",", item.Tags).ToLower() : "")"
-                        data-day="@item.DateTime.Day"
-                        data-month="@item.DateTime.Month"
-                        data-year="@(item.DateTime.Year + 543)">
+                     data-title="@item.Title.ToLower()"
+                     data-tags="@(item.Tags != null ? string.Join(",", item.Tags).ToLower() : "")"
+                     data-day="@item.DateTime.Day"
+                     data-month="@item.DateTime.Month"
+                     data-year="@(item.DateTime.Year + 543)">
 
-                    
+               
                     <div class="event-card">
                         <div class="event-image">
                             @if (!string.IsNullOrEmpty(item.Image))
                             {
                                 <img src="@item.Image" alt="event image"
-                                        style="width:110px;height:110px;object-fit:cover;border-radius:8px;" />
+                                     style="width:110px;height:110px;object-fit:cover;border-radius:8px;" />
                             }
                         </div>
 
@@ -81,14 +84,14 @@
                         <div class="members">@item.CurrentParticipants/@item.MaxParticipants Members</div>
                     </div>
 
-                 
+            
                     <div class="Event-ex">
                         <div class="eventcard-ex">
                             <div class="eventimage-ex">
                                 @if (!string.IsNullOrEmpty(item.Image))
                                 {
                                     <img src="@item.Image" alt="event image"
-                                            style="width:110px;height:110px;object-fit:cover;border-radius:8px;" />
+                                         style="width:110px;height:110px;object-fit:cover;border-radius:8px;" />
                                 }
                             </div>
 
@@ -109,7 +112,10 @@
                                     }
                                 </div>
 
-                                <button type="button" class="join-btn">Join</button>
+                                <form asp-controller="Event" asp-action="Join" method="post">
+                                    <input type="hidden" name="eventId" value="@item.Id" />
+                                    <button type="submit" class="join-btn">Join</button>
+                                </form>
                             </div>
 
                             <div class="members-ex">@item.CurrentParticipants/@item.MaxParticipants Members</div>
@@ -127,12 +133,16 @@
                     expandSection.classList.toggle("active");
                 }
         </script>
-           
+
         <script>
                 document.getElementById("searchBtn").addEventListener("click", function () {
                     const filterType = document.getElementById("filtertype").value;
                     const events = document.querySelectorAll(".Event");
-                    const keyword = document.querySelector(".search").value.trim().toLowerCase();
+                    const keyword = document.getElementById("keywordInput").value.trim().toLowerCase();
+
+                   
+                    const show = (el) => el.style.display = "";   
+                    const hide = (el) => el.style.display = "none";
 
                     if (filterType === "Date") {
                         const d = document.getElementById("dayinput").value.trim().replace(/^0+/, "");
@@ -148,23 +158,23 @@
                             const monthMatch = (m === "" || evM === m);
                             const yearMatch = (y === "" || evY === y);
 
-                                    ev.style.display = (dayMatch && monthMatch && yearMatch) ? "block" : "none";
-                                });
-                            }
-                            else if (filterType === "Label") {
-                                events.forEach(ev => {
-                                    const tags = ev.getAttribute("data-tags") || "";
-                                    ev.style.display = (keyword === "" || tags.includes(keyword)) ? "block" : "none";
-                                });
-                            }
-                            else if (filterType === "Name") {
-                                events.forEach(ev => {
-                                    const title = (ev.getAttribute("data-title") || "").toLowerCase();
-                                    ev.style.display = (keyword === "" || title === keyword) ? "block" : "none";  
-                                });
-                            }
+                            (dayMatch && monthMatch && yearMatch) ? show(ev) : hide(ev);
                         });
-                </script>
-            </body>
-        }
-    </html>
+
+                    } else if (filterType === "Label") {
+                        events.forEach(ev => {
+                            const tags = (ev.getAttribute("data-tags") || "");
+                            (keyword === "" || tags.includes(keyword)) ? show(ev) : hide(ev);
+                        });
+
+                    } else if (filterType === "Name") {
+                        events.forEach(ev => {
+                            const title = (ev.getAttribute("data-title") || "").toLowerCase();
+                            (keyword === "" || title === keyword) ? show(ev) : hide(ev);
+                        });
+                    }
+                });
+        </script>
+
+    </body>
+</html>

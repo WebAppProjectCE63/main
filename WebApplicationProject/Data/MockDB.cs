@@ -65,8 +65,84 @@ namespace WebApplicationProject.Data
                     new EventParticipation { Id = 15, EventId = 2, UserId = 116, Status = ParticipationStatus.Waiting, JoinedAt = DateTime.Now.AddHours(-10) },// เดชา (คิว 4)
                     new EventParticipation { Id = 16, EventId = 2, UserId = 117, Status = ParticipationStatus.Waiting, JoinedAt = DateTime.Now.AddHours(-5) } // อารยา (คิว 5)
                 }
+            },
+            new Event
+            {
+                Id = 5,
+                Title = "Morning Run & Coffee",
+                Description = "วิ่งเบา ๆ 5K แล้วไปกินกาแฟด้วยกัน",
+                Image = "https://images.unsplash.com/photo-1520975661595-6453be3f7070",
+                Location = "สวนเบญจกิติ",
+                DateTime = DateTime.Now.AddDays(12),
+                Tags = new List<string> { "กีฬา", "สุขภาพ", "coffee" },
+                MaxParticipants = 6,
+                CurrentParticipants = 6, // เต็มพอดี เพื่อทดสอบ Waiting
+                UserHostId = 105,
+
+                Participants = new List<EventParticipation>
+                {
+                    // 🟢 Confirmed 6 คน (เต็มแล้ว)
+                    new EventParticipation { Id = 40, EventId = 5, UserId = 103, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-6) },
+                    new EventParticipation { Id = 41, EventId = 5, UserId = 104, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-5) },
+                    new EventParticipation { Id = 42, EventId = 5, UserId = 106, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-4) },
+                    new EventParticipation { Id = 43, EventId = 5, UserId = 107, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-3) },
+                    new EventParticipation { Id = 44, EventId = 5, UserId = 108, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-2) },
+                    new EventParticipation { Id = 45, EventId = 5, UserId = 109, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-1) },
+
+                    // 🟡 Waiting 3 คน
+                    new EventParticipation { Id = 46, EventId = 5, UserId = 110, Status = ParticipationStatus.Waiting, JoinedAt = DateTime.Now.AddHours(-20) },
+                    new EventParticipation { Id = 47, EventId = 5, UserId = 111, Status = ParticipationStatus.Waiting, JoinedAt = DateTime.Now.AddHours(-12) },
+                    new EventParticipation { Id = 48, EventId = 5, UserId = 112, Status = ParticipationStatus.Waiting, JoinedAt = DateTime.Now.AddHours(-6) }
+                }
+            },
+             // ----------------------------------------------------
+    // 🎮 Event 3: Board Game Night
+    // ----------------------------------------------------
+            new Event
+            {
+                Id = 3,
+                Title = "Board Game Night",
+                Description = "เล่นบอร์ดเกมกับเพื่อนใหม่หลังเลิกงาน",
+                Image = "https://images.unsplash.com/photo-1606509036992-4399d5c5afe4",
+                Location = "Samyan Mitrtown",
+                DateTime = DateTime.Now.AddDays(5),
+                Tags = new List<string> { "เกม", "สังคม", "บอร์ดเกม" },
+                MaxParticipants = 5,
+                CurrentParticipants = 2,
+                UserHostId = 103,
+                Participants = new List<EventParticipation>
+                {
+                    new EventParticipation { Id = 20, EventId = 3, UserId = 104, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-1) },
+                    new EventParticipation { Id = 21, EventId = 3, UserId = 105, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddHours(-5) }
+                }
+            },
+
+            // ----------------------------------------------------
+            // 🍔 Event 4: Street Food Tour
+            // ----------------------------------------------------
+            new Event
+            {
+                Id = 4,
+                Title = "Street Food Tour เยาวราช",
+                Description = "พาเดินกินของอร่อยยามค่ำคืน",
+                Image = "https://images.unsplash.com/photo-1550547660-d9450f859349",
+                Location = "Yaowarat Road",
+                DateTime = DateTime.Now.AddDays(7),
+                Tags = new List<string> { "อาหาร", "เที่ยวกลางคืน", "streetfood" },
+                MaxParticipants = 3,
+                CurrentParticipants = 3,
+                UserHostId = 104,
+                Participants = new List<EventParticipation>
+                {
+                    new EventParticipation { Id = 30, EventId = 4, UserId = 103, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-2) },
+                    new EventParticipation { Id = 31, EventId = 4, UserId = 105, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-1) },
+                    new EventParticipation { Id = 32, EventId = 4, UserId = 106, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddHours(-3) }
+                }
             }
         };
+ 
+
+        // ----------------------------------------------------
 
         // 2. จำลองข้อมูล User 
         public static List<User> UsersList = new List<User>()
