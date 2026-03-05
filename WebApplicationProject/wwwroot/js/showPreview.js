@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
         Tag: inputTag.value,
         MaxParti: inputMaxParti.value,
         DateTime: inputDateTime.value,
+        EndDateTime: inputEndDateTime ? inputEndDateTime.value : "",
         Location: inputLocation.value,
     };
 
@@ -94,9 +95,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         if (startDate === endDate) {
-            prevDate.innerHTML = `${startDate} ( ${startTime} - ${endTime} น. )`;
+            prevDate.innerHTML = `${startDate} ( ${startTime} - ${endTime} )`;
         } else {
-            prevDate.innerHTML = `${startDate} ( ${startTime} น. ) - ${endDate} ( ${endTime} น. )`;
+            prevDate.innerHTML = `${startDate} ( ${startTime} ) - ${endDate} ( ${endTime} )`;
         }
     }
 
@@ -139,6 +140,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (inputTag) inputTag.value = originalData.Tag;
         if (inputMaxParti) inputMaxParti.value = originalData.MaxParti;
         if (inputDateTime) inputDateTime.value = originalData.DateTime;
+        if (inputEndDateTime) inputEndDateTime.value = originalData.EndDateTime;
         if (inputLocation) inputLocation.value = originalData.Location;
         if (inputImg) {
             inputImg.value = "";
@@ -152,6 +154,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (inputTag) inputTag.dispatchEvent(event);
         if (inputMaxParti) inputMaxParti.dispatchEvent(event);
         if (inputDateTime) inputDateTime.dispatchEvent(event);
+        if (inputEndDateTime) inputEndDateTime.dispatchEvent(event);
         if (inputLocation) inputLocation.dispatchEvent(event);
     })
     if (inputTag) inputTag.dispatchEvent(new Event('input'));
