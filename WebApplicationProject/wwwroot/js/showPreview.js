@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const inputTag = document.getElementById("inputTag");
     const inputMaxParti = document.getElementById("inputMaxParti");
     const inputDateTime = document.getElementById("inputDateTime");
+    const inputEndDateTime = document.getElementById("inputEndDateTime");
     const inputLocation = document.getElementById("inputLocation");
 
     const prevImage = document.getElementById("prevImage");
@@ -25,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
         Tag: inputTag.value,
         MaxParti: inputMaxParti.value,
         DateTime: inputDateTime.value,
+        EndDateTime: inputEndDateTime ? inputEndDateTime.value : "",
         Location: inputLocation.value,
     };
 
@@ -72,24 +74,57 @@ document.addEventListener("DOMContentLoaded", function () {
         prevMaxParti.innerHTML = this.value
     });
 
-    inputDateTime.addEventListener("input", function () {
-        const rawDate = this.value;
-        const dateObj = new Date(rawDate);
-        if (!this.value) {
+    function updateDatePreview() {
+        if (!inputDateTime.value) {
             prevDate.innerHTML = 'XX เดือน XXXX - XX:XX น.';
             return;
         }
-        const datePart = dateObj.toLocaleDateString('en-GB', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric'
-        });
-        const timePart = dateObj.toLocaleTimeString('en-GB', {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-        prevDate.innerHTML = `${datePart} - ${timePart} น.`
+
+        const startObj = new Date(inputDateTime.value);
+        const startDate = startObj.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+        const startTime = startObj.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
+        if (!inputEndDateTime || !inputEndDateTime.value) {
+            prevDate.innerHTML = `${startDate} ( ${startTime} น. )`;
+            return;
+        }
+
+        const endObj = new Date(inputEndDateTime.value);
+        const endDate = endObj.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+        const endTime = endObj.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
+
+        if (startDate === endDate) {
+            prevDate.innerHTML = `${startDate} ( ${startTime} - ${endTime} )`;
+        } else {
+            prevDate.innerHTML = `${startDate} ( ${startTime} ) - ${endDate} ( ${endTime} )`;
+        }
+    }
+
+    inputDateTime.addEventListener("input", function () {
+        if (this.value) {
+            inputEndDateTime.disabled = false;
+            inputEndDateTime.min = this.value;
+            if (inputEndDateTime.value && inputEndDateTime.value < this.value) {
+                inputEndDateTime.value = "";
+            }
+        } else {
+            inputEndDateTime.disabled = true;
+            inputEndDateTime.value = "";
+        }
+        updateDatePreview();
     });
+
+
+    if (inputEndDateTime) {
+        inputEndDateTime.addEventListener("input", updateDatePreview);
+    }
+
+    if (inputDateTime && inputEndDateTime && inputDateTime.value) {
+        inputEndDateTime.min = inputDateTime.value;
+        inputEndDateTime.disabled = false;
+        updateDatePreview();
+    }
 
     inputLocation.addEventListener("input", function () {
         if (!this.value) {
@@ -105,6 +140,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (inputTag) inputTag.value = originalData.Tag;
         if (inputMaxParti) inputMaxParti.value = originalData.MaxParti;
         if (inputDateTime) inputDateTime.value = originalData.DateTime;
+        if (inputEndDateTime) inputEndDateTime.value = originalData.EndDateTime;
         if (inputLocation) inputLocation.value = originalData.Location;
         if (inputImg) {
             inputImg.value = "";
@@ -118,6 +154,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (inputTag) inputTag.dispatchEvent(event);
         if (inputMaxParti) inputMaxParti.dispatchEvent(event);
         if (inputDateTime) inputDateTime.dispatchEvent(event);
+        if (inputEndDateTime) inputEndDateTime.dispatchEvent(event);
         if (inputLocation) inputLocation.dispatchEvent(event);
     })
     if (inputTag) inputTag.dispatchEvent(new Event('input'));
