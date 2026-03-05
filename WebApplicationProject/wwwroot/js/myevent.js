@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const monthSelect = document.getElementById('monthSelect');
     const yearSelect = document.getElementById('yearSelect');
     const calendarGrid = document.getElementById('calendarGrid');
-    const eventCards = document.querySelectorAll('.event-card');
+    const eventCards = document.querySelectorAll('.Event');
     const selectedDateText = document.getElementById('selectedDateText');
     const sectionHeader = document.getElementById('sectionHeader');
     const searchInput = document.getElementById('searchInput');
@@ -47,36 +47,63 @@ document.addEventListener('DOMContentLoaded', function () {
                     span.classList.add('active-day');
                     currentSelectedDate = dateStr;
                 }
-                applyFilters(); 
+                applyFilters();
             });
 
             calendarGrid.appendChild(span);
         }
     }
 
+    const searchTagInput = document.getElementById('searchTagInput');
+
     function applyFilters() {
         const searchText = searchInput ? searchInput.value.toLowerCase().trim() : '';
+        const searchTagText = searchTagInput ? searchTagInput.value.toLowerCase().trim() : '';
+
+        const searchTags = searchTagText.split(/[\s,]+/).filter(tag => tag.length > 0);
+
         let found = 0;
+        const eventCards = document.querySelectorAll('.Event');
 
         eventCards.forEach(card => {
             const dateStr = card.getAttribute('data-date');
-            const title = card.querySelector('h3') ? card.querySelector('h3').textContent.toLowerCase() : '';
+            const title = card.querySelector('.event-title') ? card.querySelector('.event-title').textContent.toLowerCase() : '';
+
+            const eventTags = Array.from(card.querySelectorAll('.chip')).map(tag => tag.textContent.toLowerCase());
 
             const matchDate = !currentSelectedDate || dateStr === currentSelectedDate;
-            const matchSearch = !searchText || title.includes(searchText);
+            const matchName = !searchText || title.includes(searchText);
 
-            if (matchDate && matchSearch) {
-                card.style.display = 'flex';
+            const matchTag = searchTags.length === 0 || searchTags.every(searchTag =>
+                eventTags.some(eventTag => eventTag === searchTag)
+            );
+
+            if (matchDate && matchName && matchTag) {
+                card.style.display = 'block';
                 found++;
             } else {
                 card.style.display = 'none';
             }
         });
 
-        if (sectionHeader) sectionHeader.textContent = found > 0 ? "Events" : "No events found";
-        if (selectedDateText) {
-            selectedDateText.textContent = currentSelectedDate ? `Events for: ${new Date(currentSelectedDate).toLocaleDateString('en-GB')}` : "All Events";
+        const sectionHeader = document.getElementById('sectionHeader');
+        if (sectionHeader) {
+            sectionHeader.textContent = found > 0 ? "Events" : "No events found";
         }
+    }
+
+    if (searchInput) searchInput.addEventListener('input', applyFilters);
+    const searchTagBtn = document.getElementById('searchTagBtn');
+    if (searchTagBtn) {
+        searchTagBtn.addEventListener('click', applyFilters);
+    }
+    if (searchTagInput) {
+        searchTagInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                applyFilters();
+            }
+        });
     }
 
     const sortSelect = document.getElementById('sortSelect');
@@ -84,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (sortSelect && eventContainer) {
         sortSelect.addEventListener('change', function () {
-            const cards = Array.from(document.querySelectorAll('.event-card'));
+            const cards = Array.from(document.querySelectorAll('.Event'));
             const sortBy = this.value;
 
             cards.sort((a, b) => {
@@ -94,22 +121,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 const memA = a.querySelector('.members') ? parseInt(a.querySelector('.members').textContent.split('/')[0]) || 0 : 0;
                 const memB = b.querySelector('.members') ? parseInt(b.querySelector('.members').textContent.split('/')[0]) || 0 : 0;
 
-                const nameA = a.querySelector('h3') ? a.querySelector('h3').textContent.trim() : '';
-                const nameB = b.querySelector('h3') ? b.querySelector('h3').textContent.trim() : '';
+                const nameA = a.querySelector('.event-title') ? a.querySelector('.event-title').textContent.trim() : '';
+                const nameB = b.querySelector('.event-title') ? b.querySelector('.event-title').textContent.trim() : '';
 
                 switch (sortBy) {
                     case 'date-asc':
-                        return dateA - dateB; 
+                        return dateA - dateB;
                     case 'date-desc':
-                        return dateB - dateA; 
+                        return dateB - dateA;
                     case 'members-asc':
-                        return memA - memB; 
+                        return memA - memB;
                     case 'members-desc':
-                        return memB - memA; 
+                        return memB - memA;
                     case 'name-asc':
-                        return nameA.localeCompare(nameB); 
+                        return nameA.localeCompare(nameB);
                     case 'name-desc':
-                        return nameB.localeCompare(nameA); 
+                        return nameB.localeCompare(nameA);
                     default:
                         return 0;
                 }
@@ -123,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (searchInput) {
         searchInput.addEventListener('input', applyFilters);
     }
- 
+
     const today = new Date();
     monthSelect.value = today.getMonth();
     yearSelect.value = today.getFullYear();
@@ -131,4 +158,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
     monthSelect.addEventListener('change', renderCalendar);
     yearSelect.addEventListener('change', renderCalendar);
+
+    document.addEventListener('click', function (e) {
+
+        if (e.target.classList.contains('view-info-btn')) {
+            const wrapper = e.target.closest('.Event');
+            if (wrapper) {
+                const expandSection = wrapper.querySelector('.Event-ex');
+                if (expandSection) expandSection.classList.toggle('active');
+            }
+        }
+
+        if (e.target.classList.contains('close-info-btn')) {
+            const wrapper = e.target.closest('.Event');
+            if (wrapper) {
+                const expandSection = wrapper.querySelector('.Event-ex');
+                if (expandSection) expandSection.classList.remove('active');
+            }
+        }
+    });
 });
