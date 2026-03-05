@@ -25,6 +25,9 @@ namespace WebApplicationProject.Controllers
 
         public IActionResult Logout()
         {
+            // ✅ Clear the logged-in user
+            MockDB.CurrentLoggedInUserId = 0; // or default value
+            
             HttpContext.Session.Clear();
             return RedirectToAction("Login");
         }
@@ -32,10 +35,15 @@ namespace WebApplicationProject.Controllers
         [HttpPost]
         public IActionResult Signup(User user)
         {
-            user.Id = MockDB.UsersList.Count + 1;
+            user.Id = MockDB.UsersList.Max(u => u.Id) + 1;
             //สร้าง user
             MockDB.UsersList.Add(user);
 
+            // ✅ Set the newly created user as the current logged-in user
+            MockDB.CurrentLoggedInUserId = user.Id;
+            
+            // ✅ Store user ID in session for persistence
+            HttpContext.Session.SetInt32("UserId", user.Id);
             HttpContext.Session.SetString("Username", user.Username);
 
             return RedirectToAction("Login", new { success = true });
@@ -50,7 +58,11 @@ namespace WebApplicationProject.Controllers
 
             if (user != null)
             {
-                //จำว่า user login แล้ว redirect ไป index
+                // ✅ Set the logged-in user as current
+                MockDB.CurrentLoggedInUserId = user.Id;
+                
+                // ✅ Store both username and user ID in session
+                HttpContext.Session.SetInt32("UserId", user.Id);
                 HttpContext.Session.SetString("Username", user.Username);
 
                 return RedirectToAction("Index", "Home");
