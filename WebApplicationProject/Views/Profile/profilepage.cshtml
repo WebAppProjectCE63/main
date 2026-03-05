@@ -1,68 +1,83 @@
 ﻿@model WebApplicationProject.Models.ProfilePageViewModel
 
 <link rel="stylesheet" href="~/css/style.css">
-<div id="pagebanner">
+<div class="pagebanner">
     <h1>Profile</h1>
     <p>รายละเอียดข้อมูลส่วนบุคคล</p>
 </div>
-    @if (Model.UserInfo.Settings.PrivateAccount && WebApplicationProject.Data.MockDB.CurrentLoggedInUserId != Model.UserInfo.Id)
     {
-        <div class="private-content-mock">
-            <div>🔒</div>
-            <h2>บัญชีนี้เป็นบัญชีส่วนตัว</h2>
-        </div>
-    }
-    else
-    {
-        <div id="profilebanner">
-            <div id="profileimg">
+        <div class="profilebanner">
+            <div class="profileimg">
                 <img src=@Model.UserInfo.Image alt="Profile" id="prevImg">
             </div>
-            <div id="profileinfo">
-                <h1>
-                    <span id="prevFname">@Model.UserInfo.FName</span>
-                    <span id="prevSname">@Model.UserInfo.SName</span>
-                </h1>
-                @if (Model.UserInfo.Settings.ShowEmail)
+            <div class="profileinfo">
+                @if (Model.UserInfo.Settings.PrivateAccount && WebApplicationProject.Data.MockDB.CurrentLoggedInUserId != Model.UserInfo.Id)
                 {
-                    <p id="prevEmail">Email: @Model.UserInfo.Email</p>
+                    <div class="moreinfo">
+                <div class="Gender">
+                    <h1>
+                        <span id="prevFname">@Model.UserInfo.FName</span>
+                        <span id="prevSname">@Model.UserInfo.SName</span>
+                    </h1>
+                </div>
+                <div class="age">
+                        <h3>Gender</h3>
+                        <p>@Model.UserInfo.Gender</p>
+                    </div>
+                    </div>
+                    <div class="private-content-mock">
+                        <div>🔒</div>
+                        <h2>บัญชีนี้เป็นบัญชีส่วนตัว</h2>
+                    </div>
                 }
                 else
                 {
-                    <p id="prevEmail">Email: Private</p>
-                }
-                <div class="moreinfo">
-                    <div class="sex">
-                        <h3>Sex</h3>
-                        <p>@Model.UserInfo.Gender</p>
-                    </div>
-                    <div class="age">
-                        <h3>Age</h3>
-                        @{
-                            var today = DateTime.Today;
-                            var age = today.Year - Model.UserInfo.Birthday.Year;
-                            if (Model.UserInfo.Birthday.Date > today.AddYears(-age))
-                            {
-                                age--;
+            <h1>
+                <span id="prevFname">@Model.UserInfo.FName</span>
+                <span id="prevSname">@Model.UserInfo.SName</span>
+            </h1>
+                    @if (Model.UserInfo.Settings.ShowEmail)
+                    {
+                        <p id="prevEmail">Email: @Model.UserInfo.Email</p>
+                    }
+                    else
+                    {
+                        <p id="prevEmail">Email: Private</p>
+                    }
+                    <div class="moreinfo">
+                        <div class="Gender">
+                            <h3>Gender</h3>
+                            <p>@Model.UserInfo.Gender</p>
+                        </div>
+                        <div class="age">
+                            <h3>Age</h3>
+                            @{
+                                var today = DateTime.Today;
+                                var age = today.Year - Model.UserInfo.Birthday.Year;
+                                if (Model.UserInfo.Birthday.Date > today.AddYears(-age))
+                                {
+                                    age--;
+                                }
                             }
-                        }
-                        <p>@age</p>
+                            <p>@age</p>
+                        </div>
                     </div>
-                </div>
-                @if (WebApplicationProject.Data.MockDB.CurrentLoggedInUserId == Model.UserInfo.Id)
+                    @if (WebApplicationProject.Data.MockDB.CurrentLoggedInUserId == Model.UserInfo.Id)
 
-                {
-                    <button class="edit-btn" onclick="openEditModal()">Edit Profile</button>
+                    {
+                        <button class="edit-btn" onclick="openEditModal()">Edit Profile</button>
+                    }
                 }
+        
             </div>
         </div>
     }
     <div class="activitycolumn">
         <h2>Recent Host Activity</h2>
         <p>กิจกรรมที่เคยสร้าง</p>
-        @if ((WebApplicationProject.Data.MockDB.CurrentLoggedInUserId == Model.UserInfo.Id ||
+        @if (((WebApplicationProject.Data.MockDB.CurrentLoggedInUserId == Model.UserInfo.Id ||
             (!Model.UserInfo.Settings.PrivateAccount && Model.UserInfo.Settings.ShowHostedEvents))
-            && (Model.HostedEvents != null && Model.HostedEvents.Any()))
+            && (Model.HostedEvents != null && Model.HostedEvents.Any())))
         {
             <div class="activitylist">
                 @foreach (var ev in Model.HostedEvents)
@@ -97,10 +112,19 @@
                             </div>
                             <div class="member-row">
                                 <div class="avatars">
-                                    <img src="https://i.pravatar.cc/150?img=11" alt="User 1">
-                                    <img src="https://i.pravatar.cc/150?img=12" alt="User 2">
-                                    <img src="https://i.pravatar.cc/150?img=13" alt="User 3">
-                                    <span class="more-users">+1</span>
+                                @foreach (var ticket in ev.Participants.Take(3))
+                                {
+                                    var userID = ticket.UserId;
+                                    var user = WebApplicationProject.Data.MockDB.UsersList.FirstOrDefault(u => u.Id == userID);
+                                    if (user != null)
+                                    {
+                                        <img src="@(user.Image)" alt="@user.FName" title="@user.FName @user.SName">
+                                    }
+                                }
+                                @if (ev.CurrentParticipants > 3)
+                                {
+                                    <span class="more-users">+@(ev.CurrentParticipants - 3)</span>
+                                }
                                 </div>
                                 <button class="member-count">@ev.CurrentParticipants / @ev.MaxParticipants Members</button>
                             </div>
@@ -169,10 +193,19 @@
                             </div>
                             <div class="member-row">
                                 <div class="avatars">
-                                    <img src="https://i.pravatar.cc/150?img=11" alt="User 1">
-                                    <img src="https://i.pravatar.cc/150?img=12" alt="User 2">
-                                    <img src="https://i.pravatar.cc/150?img=13" alt="User 3">
-                                    <span class="more-users">+1</span>
+                                @foreach (var ticket in ev.Participants.Take(3))
+                                {
+                                    var userID = ticket.UserId;
+                                    var user = WebApplicationProject.Data.MockDB.UsersList.FirstOrDefault(u => u.Id == userID);
+                                    if (user != null)
+                                    {
+                                        <img src="@(user.Image)" alt="@user.FName" title="@user.FName @user.SName">
+                                    }
+                                }
+                                @if (ev.CurrentParticipants > 3)
+                                {
+                                    <span class="more-users">+@(ev.CurrentParticipants - 3)</span>
+                                }
                                 </div>
                                 <button class="member-count">@ev.CurrentParticipants / @ev.MaxParticipants Members</button>
                             </div>
@@ -269,7 +302,7 @@
                     <label>Last Name</label>
                     <input type="text" name="SName" id="inputSname" value="@Model.UserInfo.SName" class="form-control" />
                     <label>Profile Image</label>
-                    <input type="file" name="uploadImage" id="inputImg" class="form-control" />
+                <input type="file" name="uploadImage" id="inputImg" class="form-control" accept="image/*" />
                     <label>Email</label>
                     <input type="text" name="Email" id="inputEmail" value="@Model.UserInfo.Email" class="form-control" />
                     <br>
