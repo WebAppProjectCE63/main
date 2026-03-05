@@ -168,5 +168,39 @@ namespace WebApplicationProject.Controllers
 
             return null; // ถ้าอัปโหลดล้มเหลว
         }
+            [HttpPost]
+            public IActionResult Join(int eventId)
+            {
+                var ev = MockDB.EventList.FirstOrDefault(e => e.Id == eventId);
+                if (ev == null) return NotFound("ไม่พบกิจกรรมนี้");
+
+                int userId = MockDB.CurrentLoggedInUserId;
+
+                if (ev.UserHostId == userId)
+                    return BadRequest("Host ไม่ต้องกด Join");
+
+                var existing = ev.Participants.FirstOrDefault(p => p.UserId == userId && p.Status != ParticipationStatus.Remove);
+                if (existing != null)
+                    return BadRequest("คุณเข้าร่วมกิจกรรมนี้แล้ว");
+
+                var status = ev.CurrentParticipants < ev.MaxParticipants
+                    ? ParticipationStatus.Confirmed
+                    : ParticipationStatus.Waiting;
+
+                int newId = (ev.Participants.Count == 0) ? 1 : ev.Participants.Max(p => p.Id) + 1;
+
+                ev.Participants.Add(new EventParticipation
+                {
+                    Id = newId,
+                    EventId = ev.Id,
+                    UserId = userId,
+                    Status = status,
+                    JoinedAt = DateTime.Now
+                });
+
+                ev.CurrentParticipants = ev.Participants.Count(p => p.Status == ParticipationStatus.Confirmed);
+
+                return RedirectToAction("Home", "Home"); 
+            }
+        }
     }
-}
