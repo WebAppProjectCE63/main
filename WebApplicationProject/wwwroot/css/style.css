@@ -1,80 +1,4 @@
-﻿body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-}
-
-#navbar {
-    display: flex;
-    align-items: center;
-    background-color: white;
-    padding: 0 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    position: sticky;
-    top: 0;
-}
-
-#navitem {
-    margin-left: auto;
-    margin-right: 70px;
-}
-
-    #navitem ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-self: flex-end;
-        gap: 5px;
-    }
-
-        #navitem ul li a {
-            display: block;
-            color: black;
-            text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-            border-radius: 4px;
-        }
-
-            #navitem ul li a:hover {
-                background-color: #f5f5f5;
-            }
-
-#navprofile {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-#profilename {
-    text-align: right;
-}
-
-    #profilename h4,
-    #profilename p {
-        margin: 0;
-        line-height: 1.2;
-    }
-
-    #profilename h4 {
-        font-size: 16px;
-        color: #333;
-    }
-
-    #profilename p {
-        font-size: 12px;
-        color: #888;
-    }
-
-#navprofile img {
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    object-fit: cover;
-}
-
-#pagebanner {
+﻿.pagebanner {
     display: flex;
     flex-direction: column;
     justify-items: center;
@@ -84,23 +8,23 @@
     padding: 20px;
 }
 
-    #pagebanner h1,
-    #pagebanner p {
+    .pagebanner h1,
+    .pagebanner p {
         margin-bottom: 0;
         line-height: 1.2;
     }
 
-    #pagebanner h1 {
+    .pagebanner h1 {
         font-size: 64px;
         color: #333;
     }
 
-    #pagebanner p {
+    .pagebanner p {
         font-size: 24px;
         color: #888;
     }
 
-#profilebanner {
+.profilebanner {
     display: grid;
     width: 90%;
     align-items: center;
@@ -108,18 +32,20 @@
     grid-template-columns: repeat(12, 1fr);
 }
 
-#profileimg {
-    grid-column: 1 / span 6;
+.profileimg {
+    grid-column: 2 / span 5;
 }
 
-    #profileimg img {
-        margin-top: 5%;
-        width: 80%;
+    .profileimg img {
+        width: 350px;
         height: 350px;
         object-fit: cover;
+        overflow: hidden;
+        border-radius: 50%;
+        border: 2px solid #333;
     }
 
-#profileinfo {
+.profileinfo {
     grid-column: span 6;
     display: grid;
     text-align: left;
@@ -135,7 +61,7 @@
     font-size: large;
 }
 
-        #profileinfo button:hover {
+        .profileinfo button:hover {
             background-color: #888;
         }
 
@@ -146,7 +72,7 @@
     grid-row-gap: 0px;
 }
 
-.sex {
+.Gender {
     grid-area: 1 / 1 / 2 / 3;
 }
 
@@ -179,11 +105,11 @@
     overflow-y: auto;
     padding-right: 10px;
     scrollbar-width: thin;
+    align-items: center;
 }
 
 .activity {
     display: grid;
-    width: 100%;
     align-items: center;
     padding: 20px;
     grid-template-columns: repeat(12, 1fr);
@@ -408,11 +334,11 @@
 
 .modal-content {
     background-color: #fff;
-    margin: 5% auto;
+    margin: 2% auto;
     padding: 30px;
     border-radius: 16px;
     width: 90%;
-    max-width: 900px;
+    max-width: 40%;
     max-height: 90%;
     overflow-y: auto;
     padding-right: 10px;
@@ -421,11 +347,14 @@
     position: relative;
     animation: slideDown 0.3s ease-out;
 }
+    .modal-content h1 {
+        margin-top: 0.5%;
+    }
 
-.bigavatars {
-    display: flex;
-    align-items: center;
-}
+    .bigavatars {
+        display: flex;
+        align-items: center;
+    }
 
     .bigavatars img {
         width: 80px;
@@ -439,8 +368,11 @@
 .exampleprofile {
     display: flex;
     align-items: center;
+    align-self: center;
     gap: 20px;
     padding: 15px;
+    margin: auto;
+    padding-top: 0%;
 }
 
 .preview-img {
@@ -451,16 +383,16 @@
 }
 
 .profile-rect {
-    width: 600px;
-    height: 360px;
+    width: 450px;
+    height: 270px;
     overflow: hidden;
     border-radius: 8px;
     border: 1px solid #ddd;
 }
 
 .profile-circle {
-    width: 200px;
-    height: 200px;
+    width: 150px;
+    height: 150px;
     overflow: hidden;
     border-radius: 50%;
     border: 2px solid #333;
@@ -554,4 +486,52 @@ input:focus + .slider {
     }
 .content-mock {
     background-color: white;
+}
+
+.modal-body {
+    color: #212529;
+}
+
+    .modal-body label {
+        display: block;
+        margin-bottom: 0.5rem;
+        margin-top: 0.75rem;
+        font-weight: bold;
+        font-size: 1rem;
+    }
+
+        .modal-body label:first-child {
+            margin-top: 0;
+        }
+
+.form-control {
+    display: block;
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 1rem;
+    font-weight: 400;
+    color: #495057;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    box-sizing: border-box;
+}
+
+    .form-control:focus {
+        color: #495057;
+        background-color: #fff;
+        border-color: #80bdff;
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+input[type="file"].form-control {
+    padding: 0.3rem 0.4rem;
+    line-height: 1.2;
+}
+
+.modal-body br {
+    display: block;
+    content: "";
+    margin-top: 10px;
 }
