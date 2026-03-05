@@ -70,6 +70,7 @@ namespace WebApplicationProject.Controllers
                 ogEvent.Tags = ProcessTags(Request.Form["Tag"]);
                 ogEvent.MaxParticipants = editEvent.MaxParticipants;
                 ogEvent.DateTime = editEvent.DateTime;
+                ogEvent.EndDateTime = editEvent.EndDateTime;
                 ogEvent.Location = editEvent.Location;
             }
             else

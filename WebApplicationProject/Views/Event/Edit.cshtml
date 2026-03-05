@@ -26,7 +26,19 @@
                 </span>
             </div>
             <div class="meta-info"><b>จำนวนคน: </b><span id="prevMaxParti">@Model.MaxParticipants</span> คน</div>
-            <div class="meta-info"><b>วันที่ - เวลา: </b><span id="prevDate">@Model.DateTime.ToString("d MMMM yyyy - HH:mm น.")</span></div>
+            <div class="meta-info">
+                <b>ระยะเวลากิจกรรม: </b>
+                <span id="prevDate">
+                    @if (Model.DateTime.Date == Model.EndDateTime.Date)
+                    {
+                        <text>@Model.DateTime.ToString("d MMMM yyyy ( HH:mm") - @Model.EndDateTime.ToString("HH:mm )")</text>
+                    }
+                    else
+                    {
+                        <text>@Model.DateTime.ToString("d MMMM yyyy ( HH:mm )") - @Model.EndDateTime.ToString("d MMMM yyyy ( HH:mm )")</text>
+                    }
+                </span>
+            </div>
             <div class="meta-info"><b>สถานที่: </b><span id="prevLocation">@Model.Location</span></div>
             <a href="@Url.Action("Manage", "Event", new { id = Model.Id })" class="btnLink">จัดการกิจกรรม</a>
         </div>
@@ -56,8 +68,18 @@
             <input asp-for="MaxParticipants" id="inputMaxParti" min="@Math.Max(1, Model.CurrentParticipants)" required />
         </div>
         <div class="time">
-            <label>วันที่ - เวลา</label>
-            <input asp-for="DateTime" id="inputDateTime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" type="datetime-local" value="@Model.DateTime.ToString("yyyy-MM-ddTHH:mm")" required />
+            <label>ระยะเวลากิจกรรม</label>
+            <div class="period">
+                <div class="start">
+                    <label>เริ่มต้น</label>
+                    <input asp-for="DateTime" id="inputDateTime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" type="datetime-local" value="@Model.DateTime.ToString("yyyy-MM-ddTHH:mm")" required />
+                </div>
+                <div class="end">
+                    <label>สิ้นสุด</label>
+                    <input asp-for="EndDateTime" id="inputEndDateTime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" type="datetime-local" value="@Model.EndDateTime.ToString("yyyy-MM-ddTHH:mm")" required />
+                </div>
+            </div>
+        </div>
         <div class="location">
             <label>สถานที่</label>
             <input asp-for="Location" id="inputLocation" required />
