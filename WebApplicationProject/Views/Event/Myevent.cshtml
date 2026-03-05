@@ -72,14 +72,23 @@
                 <div class="search-input">
                     <input type="text" id="searchInput" placeholder="ค้นหาชื่อกิจกรรม..." style="border:none; outline:none; width:100%; background:transparent; font-family:inherit;">
                 </div>
-                <select id="sortSelect" class="pill-select">
-                    <option value="date-desc">เวลา (ไกลสุด)</option>
-                    <option value="date-asc">เวลา (ใกล้สุด)</option>
-                    <option value="members-desc">ผู้เข้าร่วม (มากสุด)</option>
-                    <option value="members-asc">ผู้เข้าร่วม (น้อยสุด)</option>
-                    <option value="name-asc">ชื่อ (A - Z)</option>
-                    <option value="name-desc">ชื่อ (Z - A)</option>
-                </select>
+
+                <div class="search-input">
+                    <input type="text" id="searchTagInput" placeholder="ค้นหาตาม Tag (เช่น music)..." style="border:none; outline:none; width:100%; background:transparent; font-family:inherit;">
+                    <button id="searchTagBtn" style="background:none; border:none; cursor:pointer; font-weight:bold; color:#333;">ค้นหา</button>
+                </div>
+
+                <div class="sort-filter">
+                    <span>Sort By</span>
+                    <select id="sortSelect" class="pill-select">
+                        <option value="date-desc">เวลา (ใหม่ - เก่า)</option>
+                        <option value="date-asc">เวลา (เก่า - ใหม่)</option>
+                        <option value="members-desc">ผู้เข้าร่วม (มาก - น้อย)</option>
+                        <option value="members-asc">ผู้เข้าร่วม (น้อย - มาก)</option>
+                        <option value="name-asc">ชื่อ (A - Z)</option>
+                        <option value="name-desc">ชื่อ (Z - A)</option>
+                    </select>
+                </div>
             </div>
         </div>
     </div>
@@ -93,44 +102,72 @@
 
             @foreach (var ev in Model)
             {
-                <div class="event-card" data-date="@ev.DateTime.ToString("yyyy-MM-dd")">
-                    <div class="card-img">
-                        <img src="@ev.Image" alt="@ev.Title" />
-                    </div>
-                    <div class="card-content">
-                        <h3>@ev.Title</h3>
-                        <p class="desc">@ev.Description</p>
+                <div class="Event" data-date="@ev.DateTime.ToString("yyyy-MM-dd")">
+                    <div class="event-card">
+                        <div class="event-image">
+                            @if (!string.IsNullOrEmpty(ev.Image))
+                            {
+                                <img src="@ev.Image" alt="event image" style="width:110px;height:110px;object-fit:cover;border-radius:8px;" />
+                            }
+                        </div>
 
-                        <div class="tags">
-                            @if (ev.Tags != null && ev.Tags.Any())
-                            {
-                                @foreach (var tagName in ev.Tags)
+                        <div class="event-main">
+                            <h3 class="event-title">@ev.Title</h3>
+                            <p class="event-desc">@ev.Description</p>
+
+                            <div class="event-chips">
+                                @if (ev.Tags != null && ev.Tags.Any())
                                 {
-                                    <span class="tag black">#@tagName</span>
+                                    foreach (var tag in ev.Tags)
+                                    {
+                                        <button type="button" class="chip">@tag</button>
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                <span class="tag dark">ไม่มีแท็ก</span>
-                            }
-                        </div>
-                        <div class="time-control">
-                            <span class="date-box-static">@ev.DateTime.ToString("HH:mm")</span>
-                            <span class="date-box-static">@ev.DateTime.ToString("dd")</span>
-                            <span class="date-box-static">@ev.DateTime.ToString("MMM")</span>
-                            <span class="date-box-static">@ev.DateTime.ToString("yyyy")</span>
-                        </div>
-                        <div class="card-footer">
-                            <div class="actions">
-                                <button class="btn-gray">View Info</button>
-                                <div class="avatars">
-                                    <img src="https://ui-avatars.com/api/?name=A&background=orange" class="avatar-sm">
-                                    <img src="https://ui-avatars.com/api/?name=B&background=blue" class="avatar-sm">
-                                    <img src="https://ui-avatars.com/api/?name=C&background=green" class="avatar-sm">
-                                    <span class="avatar-sm more">+1</span>
-                                </div>
                             </div>
-                            <div class="members">@ev.CurrentParticipants / @ev.MaxParticipants Members</div>
+
+                            <div class="event-row">
+                                <span>@ev.Location</span>
+                                <span>@ev.DateTime.ToString("dd/MM/yyyy")</span>
+                            </div>
+
+                            <div class="event-actions">
+                                <button type="button" class="view-btn view-info-btn">View Info</button>
+                            </div>
+                        </div>
+
+                        <div class="members">@ev.CurrentParticipants/@ev.MaxParticipants Members</div>
+                    </div>
+
+                    <div class="Event-ex">
+                        <div class="eventcard-ex">
+                            <div class="eventimage-ex">
+                                @if (!string.IsNullOrEmpty(ev.Image))
+                                {
+                                    <img src="@ev.Image" alt="event image" style="width:110px;height:110px;object-fit:cover;border-radius:8px;" />
+                                }
+                            </div>
+
+                            <div style="flex:1;">
+                                <h3>@ev.Title (Expanded)</h3>
+                                <p>@ev.Description</p>
+
+                                <p><strong>Location:</strong> @ev.Location</p>
+                                <p><strong>Date:</strong> @ev.DateTime.ToString("dd MMM yyyy HH:mm")</p>
+
+                                <div class="event-chips">
+                                    @if (ev.Tags != null && ev.Tags.Any())
+                                    {
+                                        foreach (var tag in ev.Tags)
+                                        {
+                                            <button type="button" class="chip">@tag</button>
+                                        }
+                                    }
+                                </div>
+
+                                <button type="button" class="join-btn close-info-btn">Join</button>
+                            </div>
+
+                            <div class="members-ex">@ev.CurrentParticipants/@ev.MaxParticipants Members</div>
                         </div>
                     </div>
                 </div>
