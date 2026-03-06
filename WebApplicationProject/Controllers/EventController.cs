@@ -220,6 +220,6 @@ namespace WebApplicationProject.Controllers
 
             return RedirectToAction("Myevent");
         }
-
+         
     }
     }
