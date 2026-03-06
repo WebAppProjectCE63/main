@@ -25,7 +25,15 @@
                     }
                 </span>
             </div>
-            <div class="meta-info"><b>จำนวนคน: </b><span id="prevMaxParti">@Model.MaxParticipants</span> คน</div>
+            <div class="meta-info">
+                <b>จำนวนคน: </b><span id="prevMaxParti">
+                    @Model.MaxParticipants
+                    @if (Model.MaxWaiting > 0)
+                    {
+                        <text>(สำรอง @Model.MaxWaiting)</text>
+                    }
+                </span> คน
+            </div>
             <div class="meta-info">
                 <b>ระยะเวลากิจกรรม: </b>
                 <span id="prevDate">
@@ -61,11 +69,20 @@
         </div>
         <div class="tag">
             <label>ใส่ Tag (คั่นด้วยลูกน้ำ)</label>
-            <input name="Tag" id="inputTag" value="@string.Join(",", Model.Tags)"/>
+            <input name="Tag" id="inputTag" value="@(Model.Tags != null ? string.Join(", ", Model.Tags) : "")" />
         </div>
         <div class="maxParti">
             <label>จำนวนคน</label>
-            <input asp-for="MaxParticipants" id="inputMaxParti" min="@Math.Max(1, Model.CurrentParticipants)" required />
+            <div class="parti">
+                <div class="start">
+                    <label>ตัวจริง</label>
+                    <input asp-for="MaxParticipants" id="inputMaxParti" placeholder="ใส่ตัวเลข(ไม่รวมตนเอง)" min="1" required />
+                </div>
+                <div class="waiting">
+                    <label>ตัวสำรอง</label>
+                    <input asp-for="MaxWaiting" id="inputMaxWait" placeholder="กรอกจำนวนตัวจริงก่อน" min="0" required />
+                </div>
+            </div>
         </div>
         <div class="time">
             <label>ระยะเวลากิจกรรม</label>

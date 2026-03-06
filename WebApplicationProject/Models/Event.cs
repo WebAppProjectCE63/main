@@ -11,7 +11,9 @@
         public DateTime EndDateTime { get; set; }
         public List<string> Tags { get; set; } = new List<string>();
         public int MaxParticipants { get; set; }
+        public int MaxWaiting { get; set; }
         public int CurrentParticipants { get; set; }
+        public int CurrentWaiting { get; set; }
         public int UserHostId { get; set; }
         public List<EventParticipation> Participants { get; set; } = new List<EventParticipation>();
     }

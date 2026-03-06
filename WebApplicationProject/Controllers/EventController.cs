@@ -21,6 +21,11 @@ namespace WebApplicationProject.Controllers
         public async Task<IActionResult> Create(Event newEvent, IFormFile uploadImage)
         {
             if (newEvent.MaxParticipants < 1) return BadRequest("จำนวนผู้เข้าร่วมไม่ถูกต้อง");
+            int maxAllowedWait = (int)Math.Ceiling(newEvent.MaxParticipants / 2.0);
+            if (newEvent.MaxWaiting > maxAllowedWait || newEvent.MaxWaiting < 0)
+            {
+                return BadRequest("จำนวนตัวสำรองเกินขีดจำกัดที่กำหนดไว้");
+            }
             string ImageUrl = await UploadImageAsync(uploadImage);
             newEvent.Image = ImageUrl ?? "https://img2.pic.in.th/image-icon-symbol-design-illustration-vector.md.jpg";
             newEvent.Tags = ProcessTags(Request.Form["Tag"]);
@@ -43,7 +48,6 @@ namespace WebApplicationProject.Controllers
             {
                 TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
                 return RedirectToAction("Myevent");
-                //return Unauthorized("ไม่มีสิทธิ์เข้าถึง");
             }
             return View(eventToEdit);
         }
@@ -57,9 +61,13 @@ namespace WebApplicationProject.Controllers
                 {
                     TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
                     return RedirectToAction("Myevent");
-                    //return Unauthorized("ไม่มีสิทธิ์เข้าถึง");
                 }
                 if (editEvent.MaxParticipants < ogEvent.CurrentParticipants || editEvent.MaxParticipants < 1) return BadRequest("จำนวนผู้เข้าร่วมไม่ถูกต้อง");
+                int maxAllowedWait = (int)Math.Ceiling(editEvent.MaxParticipants / 2.0);
+                if (editEvent.MaxWaiting > maxAllowedWait || editEvent.MaxWaiting < 0)
+                {
+                    return BadRequest("จำนวนตัวสำรองเกินขีดจำกัดที่กำหนดไว้");
+                }
                 string newImageUrl = await UploadImageAsync(uploadImage);
                 if (newImageUrl != null)
                 {
@@ -69,6 +77,7 @@ namespace WebApplicationProject.Controllers
                 ogEvent.Description = editEvent.Description;
                 ogEvent.Tags = ProcessTags(Request.Form["Tag"]);
                 ogEvent.MaxParticipants = editEvent.MaxParticipants;
+                ogEvent.MaxWaiting = editEvent.MaxWaiting;
                 ogEvent.DateTime = editEvent.DateTime;
                 ogEvent.EndDateTime = editEvent.EndDateTime;
                 ogEvent.Location = editEvent.Location;
@@ -89,7 +98,6 @@ namespace WebApplicationProject.Controllers
             {
                 TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
                 return RedirectToAction("Myevent");
-                //return Unauthorized("ไม่มีสิทธิ์เข้าถึง");
             }
             var participantIds = eventToManage.Participants.Select(p => p.UserId).ToList();
             var participants = MockDB.UsersList.Where(u => participantIds.Contains(u.Id)).ToList();
@@ -106,7 +114,6 @@ namespace WebApplicationProject.Controllers
             {
                 TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
                 return RedirectToAction("Myevent");
-                //return Unauthorized("ไม่มีสิทธิ์เข้าถึง");
             }
             var ticket = eventToManage.Participants.FirstOrDefault(t => t.UserId == userId);
             if (ticket == null) return NotFound("ไม่มีผู้ใช้นี้ในกิจกรรม");
@@ -123,13 +130,13 @@ namespace WebApplicationProject.Controllers
             {
                 TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
                 return RedirectToAction("Myevent");
-                //return Unauthorized("ไม่มีสิทธิ์เข้าถึง");
             }
             if (eventToManage.CurrentParticipants >= eventToManage.MaxParticipants) return BadRequest("ผู้เข้าร่วมตัวจริงเต็มแล้ว ไม่สามารถเพิ่มได้");
             var ticket = eventToManage.Participants.FirstOrDefault(t => t.UserId == userId);
             if (ticket == null) return NotFound("ไม่มีผู้ใช้นี้ในกิจกรรม");
             ticket.Status = ParticipationStatus.Confirmed;
             eventToManage.CurrentParticipants = eventToManage.Participants.Count(p => p.Status == ParticipationStatus.Confirmed);
+            eventToManage.CurrentWaiting = eventToManage.Participants.Count(p => p.Status == ParticipationStatus.Waiting);
             return Ok();
         }
         private List<string> ProcessTags(string rawTags)
@@ -167,7 +174,7 @@ namespace WebApplicationProject.Controllers
                 return doc.RootElement.GetProperty("data").GetProperty("url").GetString();
             }
 
-            return null; // ถ้าอัปโหลดล้มเหลว
+            return null;
         }
             [HttpPost]
             public IActionResult Join(int eventId)
@@ -184,12 +191,25 @@ namespace WebApplicationProject.Controllers
                 if (existing != null)
                     return BadRequest("คุณเข้าร่วมกิจกรรมนี้แล้ว");
 
-                var status = ev.CurrentParticipants < ev.MaxParticipants
-                    ? ParticipationStatus.Confirmed
-                    : ParticipationStatus.Waiting;
+                ParticipationStatus status;
+                if (ev.CurrentParticipants < ev.MaxParticipants)
+                {
+                    status = ParticipationStatus.Confirmed;
+                    ev.CurrentParticipants++;
+                }
+                else if (ev.CurrentWaiting < ev.MaxWaiting)
+                {
+                    status = ParticipationStatus.Waiting;
+                    ev.CurrentWaiting++;
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "กิจกรรมนี้เต็มแล้วทั้งตัวจริงและตัวสำรอง";
+                    return RedirectToAction("Home", "Home");
+                }
 
                 int newId = (ev.Participants.Count == 0) ? 1 : ev.Participants.Max(p => p.Id) + 1;
-
+                    
                 ev.Participants.Add(new EventParticipation
                 {
                     Id = newId,
@@ -200,7 +220,7 @@ namespace WebApplicationProject.Controllers
                 });
 
                 ev.CurrentParticipants = ev.Participants.Count(p => p.Status == ParticipationStatus.Confirmed);
-
+                ev.CurrentWaiting = ev.Participants.Count(p => p.Status == ParticipationStatus.Waiting);
                 return RedirectToAction("Home", "Home"); 
             }
         }
