@@ -147,6 +147,14 @@
                                     }
                                 }
                             </div>
+                            @if (ev.EndDateTime < DateTime.Now)
+                            {
+                                <button type="button" class="join-btn" style="background-color: #ffc107; color: black; border: none;">Review</button>
+                            }
+                            else
+                            {
+                                <button type="button" class="join-btn close-info-btn">Join</button>
+                            }
 
                             <div class="event-row">
                                 <span>@ev.Location</span>
