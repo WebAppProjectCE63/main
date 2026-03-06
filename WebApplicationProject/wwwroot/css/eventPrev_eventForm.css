@@ -81,3 +81,16 @@ h3 {
 .period .end{
     flex: 1;
 }
+
+.parti{
+    display: flex;
+    gap: 15px
+}
+
+.parti .start{
+    flex: 1;
+}
+
+.parti .waiting{
+    flex: 1;
+}
