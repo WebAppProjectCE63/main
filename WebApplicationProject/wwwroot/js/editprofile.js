@@ -21,6 +21,9 @@ function closeEditModal() {
 
     modal.style.display = "none";
 }
+function scorrInto(ID) {
+    document.getElementById(ID).scrollIntoView({ behavior: 'smooth' });
+}
 
 document.addEventListener("DOMContentLoaded", function () {
     const inputFname = document.getElementById("inputFname");

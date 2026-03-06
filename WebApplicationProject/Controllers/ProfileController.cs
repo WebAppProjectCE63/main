@@ -67,7 +67,7 @@ namespace WebApplicationProject.Controllers
                 ogUser.Settings.ShowJoinedEvents = ShowJoinedEvents;
             }
 
-            return RedirectToAction("profilepage", new { id = ogUser.Id });
+            return RedirectToAction("profilepage");
         }
 
         private async Task<string> UploadImageAsync(IFormFile uploadImage)
