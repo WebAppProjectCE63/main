@@ -12,7 +12,11 @@ namespace WebApplicationProject.Controllers
         {
             int targetId = id ?? MockDB.CurrentLoggedInUserId;
 
-            var joineventList = MockDB.EventList.Where(ev => ev.Participants.Any(p => p.UserId == targetId)).ToList();
+            var joineventList = MockDB.EventList
+                .Where(ev => ev.Participants.Any(p =>
+                    p.UserId == targetId &&
+                    p.Status == ParticipationStatus.Confirmed))
+                .ToList();
 
             var hosteventList = GetMyHostedEvents(MockDB.EventList, targetId);
 
@@ -61,6 +65,7 @@ namespace WebApplicationProject.Controllers
                 ogUser.FName = editUser.FName;
                 ogUser.SName = editUser.SName;
                 ogUser.Email = editUser.Email;
+                ogUser.Gender = editUser.Gender;
                 ogUser.Settings.PrivateAccount = IsPublic;
                 ogUser.Settings.ShowEmail = ShowEmail;
                 ogUser.Settings.ShowHostedEvents = ShowHostedEvents;

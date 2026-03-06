@@ -275,6 +275,7 @@ namespace WebApplicationProject.Controllers
                 reviewtitle = reviewtitle,
                 reviewbody = reviewbody,
                 stars = stars,
+                IsAnonymous = showname,
             };
             var user = MockDB.UsersList.FirstOrDefault(u => u.Id == TargetUserId);
             user.Reviewslist.Add(newreview);
