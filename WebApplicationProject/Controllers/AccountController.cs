@@ -25,7 +25,7 @@ namespace WebApplicationProject.Controllers
 
         public IActionResult Logout()
         {
-            // ✅ Clear the logged-in user
+            //Clear the logged-in user
             MockDB.CurrentLoggedInUserId = 0; // or default value
             
             HttpContext.Session.Clear();
@@ -35,14 +35,44 @@ namespace WebApplicationProject.Controllers
         [HttpPost]
         public IActionResult Signup(User user)
         {
-            user.Id = MockDB.UsersList.Max(u => u.Id) + 1;
-            //สร้าง user
-            MockDB.UsersList.Add(user);
+            if (string.IsNullOrEmpty(user.Username))
+            {
+                ViewBag.Error = "Username required";
+                return View();
+            }
 
-            // ✅ Set the newly created user as the current logged-in user
+            if (string.IsNullOrEmpty(user.Email))
+            {
+                ViewBag.Error = "Email required";
+                return View();
+            }
+
+            if (string.IsNullOrEmpty(user.Password))
+            {
+                ViewBag.Error = "Password required";
+                return View();
+            }
+
+            if (MockDB.UsersList.Any(u => u.Email == user.Email))
+            {
+                ViewBag.Error = "Email already exists";
+                return View();
+            }
+            if (MockDB.UsersList.Any(u => u.Username == user.Username))
+            {
+                ViewBag.Error = "Username already exists";
+                return View();
+            }
+
+            user.Id = MockDB.UsersList.Max(u => u.Id) + 1;
+            user.Image = "https://ui-avatars.com/api/?name=" + user.FName + user.SName + "&background=random";
+            //create user
+            MockDB.UsersList.Add(user);
+            
+            //Set the newly created user as the current logged-in user
             MockDB.CurrentLoggedInUserId = user.Id;
             
-            // ✅ Store user ID in session for persistence
+            //Store user ID in session for persistence
             HttpContext.Session.SetInt32("UserId", user.Id);
             HttpContext.Session.SetString("Username", user.Username);
 

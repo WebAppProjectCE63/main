@@ -5,7 +5,13 @@
         public int Id { get; set; }
         public string FName { get; set; }
         public string SName { get; set; }
-        public string Gender { get; set; }
+        public enum Gender
+        {
+             Male,
+             Female,
+             Other,
+             
+        }
         public DateTime Birthday { get; set; }
         public string Email { get; set; }
         public string Username { get; set; }
