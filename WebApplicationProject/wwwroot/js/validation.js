@@ -1,4 +1,7 @@
 ﻿const form = document.getElementById("form");
+const fname_input = document.getElementById("fname-input")
+const sname_input = document.getElementById("sname-input")
+const birthday_input = document.getElementById("birthday-input")
 const username_input = document.getElementById("username-input");
 const email_input = document.getElementById("email-input");
 const password_input = document.getElementById("password-input");
@@ -22,6 +25,17 @@ form.addEventListener("submit", (e) => {
 })
 function getSignupFormErrors(username, email, password, repeat_password){
     let errors = []
+    if (fname === "") {
+        errors.push("First name required")
+    }
+
+    if (sname === "") {
+        errors.push("Surname required")
+    }
+
+    if (birthday === "") {
+        errors.push("Birthday required")
+    }
 
     if(username === "" || username === null){
         errors.push("Username is required")
