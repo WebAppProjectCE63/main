@@ -220,8 +220,8 @@ namespace WebApplicationProject.Controllers
                 });
 
                 ev.CurrentParticipants = ev.Participants.Count(p => p.Status == ParticipationStatus.Confirmed);
-
-                return RedirectToAction("Myevent", "Event");
-        }
+                ev.CurrentWaiting = ev.Participants.Count(p => p.Status == ParticipationStatus.Waiting);
+                return RedirectToAction("Home", "Home"); 
+            }
         }
     }
