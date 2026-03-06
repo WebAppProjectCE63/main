@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const inputImg = document.getElementById("inputImg");
     const inputTag = document.getElementById("inputTag");
     const inputMaxParti = document.getElementById("inputMaxParti");
+    const inputMaxWait = document.getElementById("inputMaxWait");
     const inputDateTime = document.getElementById("inputDateTime");
     const inputEndDateTime = document.getElementById("inputEndDateTime");
     const inputLocation = document.getElementById("inputLocation");
@@ -25,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
         Img: document.getElementById("oldImageUrl") ? document.getElementById("oldImageUrl").value : "",
         Tag: inputTag.value,
         MaxParti: inputMaxParti.value,
+        MaxWait: inputMaxWait.value,
         DateTime: inputDateTime.value,
         EndDateTime: inputEndDateTime ? inputEndDateTime.value : "",
         Location: inputLocation.value,
@@ -65,14 +67,35 @@ document.addEventListener("DOMContentLoaded", function () {
         let badges = tagText.split(',').map(tag => `<span class="tag-badge">${tag.trim()}</span>`).join(" ");
         prevTags.innerHTML = badges;
     });
-
-    inputMaxParti.addEventListener("input", function () {
-        if (!this.value) {
-            prevMaxParti.innerHTML = 'XX';
-            return;
+    function updateParticipantInfo() {
+        if (inputMaxParti.value && parseInt(inputMaxParti.value) > 0) {
+            inputMaxWait.disabled = false;
+            let maxAllowed= Math.ceil(parseInt(inputMaxParti.value) / 2);
+            inputMaxWait.max = maxAllowed;
+            inputMaxWait.placeholder = `สูงสุด ${maxAllowed} คน`;
+            if (inputMaxWait.value && parseInt(inputMaxWait.value) > maxAllowed) {
+                inputMaxWait.value = maxAllowed;
+            }
+        } else {
+            inputMaxWait.disabled = true;
+            inputMaxWait.value = "";
+            inputMaxWait.placeholder = "กรอกจำนวนตัวจริงก่อน";
         }
-        prevMaxParti.innerHTML = this.value
-    });
+        if (!inputMaxParti.value) {
+            prevMaxParti.innerHTML = 'XX';
+        } else {
+            let waitText = inputMaxWait && inputMaxWait.value ? ` (สำรอง ${inputMaxWait.value})` : "";
+            prevMaxParti.innerHTML = inputMaxParti.value + waitText;
+        }
+    }
+
+    inputMaxParti.addEventListener("input", updateParticipantInfo);
+    if (inputMaxWait) {
+        inputMaxWait.addEventListener("input", updateParticipantInfo);
+    }
+    if (inputMaxParti && inputMaxParti.value) {
+        updateParticipantInfo();
+    }
 
     function updateDatePreview() {
         if (!inputDateTime.value) {
@@ -139,6 +162,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (inputDesc) inputDesc.value = originalData.Desc;
         if (inputTag) inputTag.value = originalData.Tag;
         if (inputMaxParti) inputMaxParti.value = originalData.MaxParti;
+        if (inputMaxWait) inputMaxWait.value = originalData.MaxWait;
         if (inputDateTime) inputDateTime.value = originalData.DateTime;
         if (inputEndDateTime) inputEndDateTime.value = originalData.EndDateTime;
         if (inputLocation) inputLocation.value = originalData.Location;
@@ -153,6 +177,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (inputDesc) inputDesc.dispatchEvent(event);
         if (inputTag) inputTag.dispatchEvent(event);
         if (inputMaxParti) inputMaxParti.dispatchEvent(event);
+        if (inputMaxWait) inputMaxWait.dispatchEvent(event);
         if (inputDateTime) inputDateTime.dispatchEvent(event);
         if (inputEndDateTime) inputEndDateTime.dispatchEvent(event);
         if (inputLocation) inputLocation.dispatchEvent(event);

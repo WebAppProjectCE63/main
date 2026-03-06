@@ -6,7 +6,7 @@ namespace WebApplicationProject.Data
     {
         public static int CurrentLoggedInUserId = 102;
 
-        // 1. จำลองข้อมูล Event (ที่มีทั้ง DateTime และ EndDateTime)
+        // 1. จำลองข้อมูล Event (ที่มีทั้ง DateTime, EndDateTime, MaxWaiting และ CurrentWaiting)
         public static List<Event> EventList = new List<Event>()
         {
             // 🎵 Event 1: ดนตรีในสวน
@@ -22,6 +22,8 @@ namespace WebApplicationProject.Data
                 Tags = new List<string> { "ดนตรี", "ผ่อนคลาย", "กลางแจ้ง" },
                 MaxParticipants = 2,
                 CurrentParticipants = 2,
+                MaxWaiting = 1, // เพิ่ม: รับสำรองได้ 1 คน
+                CurrentWaiting = 1, // เพิ่ม: ตอนนี้มีคนสำรอง 1 คน (User 104)
                 UserHostId = 101,
                 Participants = new List<EventParticipation>
                 {
@@ -44,6 +46,8 @@ namespace WebApplicationProject.Data
                 Tags = new List<string> { "Workshop", "ศิลปะ", "งานฝีมือ" },
                 MaxParticipants = 10,
                 CurrentParticipants = 8,
+                MaxWaiting = 5, // เพิ่ม: รับสำรองได้ 5 คน
+                CurrentWaiting = 2, // เพิ่ม: ตอนนี้มีคนสำรอง 2 คน (User 106, 114)
                 UserHostId = 102,
                 Participants = new List<EventParticipation>
                 {
@@ -73,6 +77,8 @@ namespace WebApplicationProject.Data
                 Tags = new List<string> { "กีฬา", "สุขภาพ", "coffee" },
                 MaxParticipants = 6,
                 CurrentParticipants = 6,
+                MaxWaiting = 3, // เพิ่ม
+                CurrentWaiting = 0, // เพิ่ม
                 UserHostId = 105,
                 Participants = new List<EventParticipation>()
             },
@@ -90,6 +96,8 @@ namespace WebApplicationProject.Data
                 Tags = new List<string> { "เกม", "สังคม", "บอร์ดเกม" },
                 MaxParticipants = 5,
                 CurrentParticipants = 2,
+                MaxWaiting = 3, // เพิ่ม
+                CurrentWaiting = 0, // เพิ่ม
                 UserHostId = 103,
                 Participants = new List<EventParticipation>()
             },
@@ -107,6 +115,8 @@ namespace WebApplicationProject.Data
                 Tags = new List<string> { "อาหาร", "เที่ยวกลางคืน", "streetfood" },
                 MaxParticipants = 3,
                 CurrentParticipants = 3,
+                MaxWaiting = 2, // เพิ่ม
+                CurrentWaiting = 0, // เพิ่ม
                 UserHostId = 104,
                 Participants = new List<EventParticipation>()
             }

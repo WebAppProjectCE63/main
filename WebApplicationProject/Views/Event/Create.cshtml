@@ -24,7 +24,16 @@
         </div>
         <div class="maxParti">
             <label>จำนวนคน</label>
-            <input asp-for="MaxParticipants" id="inputMaxParti" placeholder="ใส่ตัวเลข(ไม่รวมตนเอง)" min="1" required />
+            <div class="parti">
+                <div class="start">
+                    <label>ตัวจริง</label>
+                    <input asp-for="MaxParticipants" id="inputMaxParti" placeholder="ใส่ตัวเลข(ไม่รวมตนเอง)" min="1" required />
+                </div>
+                <div class="waiting">
+                    <label>ตัวสำรอง</label>
+                    <input asp-for="MaxWaiting" id="inputMaxWait" placeholder="กรอกจำนวนตัวจริงก่อน" min="0" disabled required />
+                </div>
+            </div>
         </div>
         <div class="time">
             <label>ระยะเวลากิจกรรม</label>
@@ -58,7 +67,7 @@
                 <b>Tag(s): </b>
                 <span id="prevTags"><span class="tag-badge">ตัวอย่างแท็ก</span></span>
             </div>
-            <div class="meta-info"><b>จำนวนคน: </b><span id="prevMaxParti">XX</span> คน</div>
+            <div class="meta-info"><b>จำนวนคน: </b><span id="prevMaxParti">XX สำรอง XX</span> คน</div>
             <div class="meta-info"><b>ระยะเวลากิจกรรม: </b><span id="prevDate">XX เดือน XXXX ( XX:XX น. )</span></div>
             <div class="meta-info"><b>สถานที่: </b><span id="prevLocation">ระบุสถานที่จัดงาน</span></div>
         </div>

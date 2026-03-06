@@ -33,13 +33,22 @@ function promoteUser(eventId, userId) {
             if (response.ok) {
                 const countSpan = document.getElementById("currentParti");
                 let currentNumber = parseInt(countSpan.innerText);
+                countSpan.innerText = currentNumber + 1;
+
                 const confirmedTable = document.getElementById("confirmedTable");
                 const rowToPromote = document.getElementById(`row_${userId}`);
                 confirmedTable.appendChild(rowToPromote);
+
                 const actionBtn = rowToPromote.querySelector("button");
                 actionBtn.setAttribute("onclick", `removeUser(${eventId}, ${userId})`);
                 actionBtn.innerText = "ลบ";
-                countSpan.innerText = currentNumber + 1;
+
+                const waitSpan = document.getElementById("currentWait");
+                if (waitSpan) {
+                    let currentWaitNumber = parseInt(waitSpan.innerText);
+                    waitSpan.innerText = currentWaitNumber - 1;
+                }
+
                 const confirmedSeqNumbers = confirmedTable.querySelectorAll(".seqNumber");
                 confirmedSeqNumbers.forEach((td, index) => {
                     td.innerText = index + 1;

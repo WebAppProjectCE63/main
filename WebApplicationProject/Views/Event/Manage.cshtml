@@ -26,7 +26,16 @@
                     }
                 </span>
             </div>
-            <div class="meta-info"><b>รับ: </b><span id="prevMaxParti">@Model.MaxParticipants</span> คน</div>
+            <div class="meta-info">
+                <b>จำนวนคน: </b>
+                <span id="prevMaxParti">
+                    @Model.MaxParticipants
+                    @if (Model.MaxWaiting > 0)
+                    {
+                        <text>(สำรอง @Model.MaxWaiting)</text>
+                    }
+                </span> คน
+            </div>
             <div class="meta-info">
                 <b>ระยะเวลากิจกรรม: </b>
                 <span>
@@ -83,41 +92,45 @@
                 </tbody>
             </table>
         </div>
-        <div class="partiTable">
-            <div class="tableHeader">
-                <h4>รายชื่อสำรอง</h4>
-            </div>
-            <hr />
-            <table>
-                <thead>
-                    <tr>
-                        <th>ลำดับ</th>
-                        <th>ชื่อ</th>
-                        <th>เวลาที่จอง</th>
-                        <th>จัดการ</th>
-                    </tr>
-                </thead>
-                <tbody id="waitingTable">
-                    @if (userInEvent != null)
-                    {
-                        int order = 1;
-                        @foreach (var ticket in Model.Participants.Where(p => p.Status == ParticipationStatus.Waiting).OrderBy(p => p.JoinedAt))
+        @if (Model.MaxWaiting > 0)
+        {
+            <div class="partiTable">
+                <div class="tableHeader">
+                    <h4>รายชื่อสำรอง</h4>
+                    <div class="numOfParti"><span id="currentWait">@Model.CurrentWaiting</span> / @Model.MaxWaiting Member</div>
+                </div>
+                <hr />
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ลำดับ</th>
+                            <th>ชื่อ</th>
+                            <th>เวลาที่จอง</th>
+                            <th>จัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="waitingTable">
+                        @if (userInEvent != null)
                         {
-                            var user = userInEvent.FirstOrDefault(u => u.Id == ticket.UserId);
-                            if (user != null){
-                                <tr id="row_@user.Id">
-                                    <td class="seqNumber">@order</td>
-                                    <td><img src="@user.Image"/>@user.FName @user.SName</td>
-                                    <td>@ticket.JoinedAt.ToString("dd/MMM/yyyy HH:mm")</td>
-                                    <td><button onclick="promoteUser(@Model.Id, @user.Id)">เพิ่ม</button></td>
-                                </tr>
-                                order += 1;
+                            int order = 1;
+                            @foreach (var ticket in Model.Participants.Where(p => p.Status == ParticipationStatus.Waiting).OrderBy(p => p.JoinedAt))
+                            {
+                                var user = userInEvent.FirstOrDefault(u => u.Id == ticket.UserId);
+                                if (user != null){
+                                    <tr id="row_@user.Id">
+                                        <td class="seqNumber">@order</td>
+                                        <td><img src="@user.Image"/>@user.FName @user.SName</td>
+                                        <td>@ticket.JoinedAt.ToString("dd/MMM/yyyy HH:mm")</td>
+                                        <td><button onclick="promoteUser(@Model.Id, @user.Id)">เพิ่ม</button></td>
+                                    </tr>
+                                    order += 1;
+                                }
                             }
                         }
-                    }
-                </tbody>
-            </table>
-        </div>
+                    </tbody>
+                </table>
+            </div>
+        }
     </div>
 </div>
 @section Scripts{
