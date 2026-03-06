@@ -63,6 +63,15 @@ namespace WebApplicationProject.Controllers
                     return RedirectToAction("Myevent");
                 }
                 if (editEvent.MaxParticipants < ogEvent.CurrentParticipants || editEvent.MaxParticipants < 1) return BadRequest("จำนวนผู้เข้าร่วมไม่ถูกต้อง");
+                int minRequiredPartiForWait = ogEvent.CurrentWaiting > 0 ? (ogEvent.CurrentWaiting * 2 - 1) : 1;
+                if (editEvent.MaxParticipants < minRequiredPartiForWait)
+                {
+                    return BadRequest($"ไม่สามารถลดจำนวนตัวจริงได้ ต้องตั้งไว้อย่างน้อย {minRequiredPartiForWait} คน เพื่อให้สอดคล้องกับตัวสำรองที่มีอยู่แล้ว ({ogEvent.CurrentWaiting} คน)");
+                }
+                if (editEvent.MaxWaiting < ogEvent.CurrentWaiting)
+                {
+                    return BadRequest("ไม่สามารถลดจำนวนรับสำรองให้น้อยกว่าคนที่อยู่ในคิวปัจจุบันได้");
+                }
                 int maxAllowedWait = (int)Math.Ceiling(editEvent.MaxParticipants / 2.0);
                 if (editEvent.MaxWaiting > maxAllowedWait || editEvent.MaxWaiting < 0)
                 {
@@ -176,51 +185,67 @@ namespace WebApplicationProject.Controllers
 
             return null;
         }
-            [HttpPost]
-            public IActionResult Join(int eventId)
+        [HttpPost]
+        public IActionResult Join(int eventId)
+        {
+            var ev = MockDB.EventList.FirstOrDefault(e => e.Id == eventId);
+            if (ev == null) return NotFound("ไม่พบกิจกรรมนี้");
+
+            int userId = MockDB.CurrentLoggedInUserId;
+
+            var existing = ev.Participants.FirstOrDefault(p =>
+                p.UserId == userId &&
+                p.Status != ParticipationStatus.Remove);
+
+            if (existing != null)
+                return BadRequest("คุณเข้าร่วมกิจกรรมนี้แล้ว");
+
+            bool hasTimeConflict = MockDB.EventList.Any(otherEvent =>
+                otherEvent.Id != ev.Id &&
+                otherEvent.DateTime < ev.EndDateTime &&
+                otherEvent.EndDateTime > ev.DateTime &&
+                otherEvent.Participants.Any(p =>
+                    p.UserId == userId &&
+                    p.Status == ParticipationStatus.Confirmed)
+            );
+
+            if (hasTimeConflict)
             {
-                var ev = MockDB.EventList.FirstOrDefault(e => e.Id == eventId);
-                if (ev == null) return NotFound("ไม่พบกิจกรรมนี้");
+                return BadRequest("คุณมีกิจกรรมอื่นในเวลาเดียวกันแล้ว");
+            }
 
-                int userId = MockDB.CurrentLoggedInUserId;
+            ParticipationStatus status;
 
-                if (ev.UserHostId == userId)
-                    return BadRequest("Host ไม่ต้องกด Join");
+            if (ev.CurrentParticipants < ev.MaxParticipants)
+            {
+                status = ParticipationStatus.Confirmed;
+                ev.CurrentParticipants++;
+            }
+            else if (ev.CurrentWaiting < ev.MaxWaiting)
+            {
+                status = ParticipationStatus.Waiting;
+                ev.CurrentWaiting++;
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "กิจกรรมนี้เต็มแล้วทั้งตัวจริงและตัวสำรอง";
+                return RedirectToAction("Home", "Home");
+            }
 
-                var existing = ev.Participants.FirstOrDefault(p => p.UserId == userId && p.Status != ParticipationStatus.Remove);
-                if (existing != null)
-                    return BadRequest("คุณเข้าร่วมกิจกรรมนี้แล้ว");
+            int newId = (ev.Participants.Count == 0) ? 1 : ev.Participants.Max(p => p.Id) + 1;
 
-                ParticipationStatus status;
-                if (ev.CurrentParticipants < ev.MaxParticipants)
-                {
-                    status = ParticipationStatus.Confirmed;
-                    ev.CurrentParticipants++;
-                }
-                else if (ev.CurrentWaiting < ev.MaxWaiting)
-                {
-                    status = ParticipationStatus.Waiting;
-                    ev.CurrentWaiting++;
-                }
-                else
-                {
-                    TempData["ErrorMessage"] = "กิจกรรมนี้เต็มแล้วทั้งตัวจริงและตัวสำรอง";
-                    return RedirectToAction("Home", "Home");
-                }
+            ev.Participants.Add(new EventParticipation
+            {
+                Id = newId,
+                EventId = ev.Id,
+                UserId = userId,
+                Status = status,
+                JoinedAt = DateTime.Now
+            });
 
-                int newId = (ev.Participants.Count == 0) ? 1 : ev.Participants.Max(p => p.Id) + 1;
-                    
-                ev.Participants.Add(new EventParticipation
-                {
-                    Id = newId,
-                    EventId = ev.Id,
-                    UserId = userId,
-                    Status = status,
-                    JoinedAt = DateTime.Now
-                });
+            ev.CurrentParticipants = ev.Participants.Count(p => p.Status == ParticipationStatus.Confirmed);
+            ev.CurrentWaiting = ev.Participants.Count(p => p.Status == ParticipationStatus.Waiting);
 
-                ev.CurrentParticipants = ev.Participants.Count(p => p.Status == ParticipationStatus.Confirmed);
-                ev.CurrentWaiting = ev.Participants.Count(p => p.Status == ParticipationStatus.Waiting);
                 return RedirectToAction("Home", "Home"); 
             }
 
@@ -257,4 +282,24 @@ namespace WebApplicationProject.Controllers
             return RedirectToAction("Review", new { id = EventId });
         }
      }
+        [HttpPost]
+        public IActionResult CancelJoin(int eventId)
+        {
+            var ev = MockDB.EventList.FirstOrDefault(e => e.Id == eventId);
+            if (ev == null) return NotFound("ไม่พบกิจกรรมนี้");
+
+            int userId = MockDB.CurrentLoggedInUserId;
+            var ticket = ev.Participants.FirstOrDefault(p => p.UserId == userId && p.Status != ParticipationStatus.Remove);
+
+            if (ticket != null)
+            {
+                ticket.Status = ParticipationStatus.Remove;
+
+                ev.CurrentParticipants = ev.Participants.Count(p => p.Status == ParticipationStatus.Confirmed);
+            }
+
+            return RedirectToAction("Myevent");
+        }
+         
+    }
     }
