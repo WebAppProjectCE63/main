@@ -1,0 +1,190 @@
+﻿@model WebApplicationProject.Models.Event
+<link rel="stylesheet" href="~/css/eventPrev_eventForm.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/partiTable.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/reviewstyle.css" asp-append-version="true" />
+<div class="head">
+    <h1>Review Event</h1>
+    <p>รีวิวกิจกรรม</p>
+</div>
+<div class="my-container">
+    <h3>กิจกรรมที่กำลังรีวิว</h3>
+    <div id="eventPrev" class="eventPrev">
+        <div class="eventImage">
+            <img id="prevImage" src=@Model.Image />
+        </div>
+        <div class="eventDetail">
+            <h4><b>ชื่อ: </b><span id="prevTitle">@Model.Title</span></h4>
+            <p><b>คำอธิบาย: </b><span id="prevDesc">@Model.Description</span></p>
+            <div>
+                <b>แท็ก: </b>
+                <span id="prevTags">
+                    @if (Model.Tags != null)
+                    {
+                        foreach (var tag in Model.Tags)
+                        {
+                            <span class="tag-badge">@tag</span>
+                        }
+                    }
+                </span>
+            </div>
+            <div class="meta-info">
+                <b>จำนวนคน: </b>
+                <span id="prevMaxParti">
+                    @Model.MaxParticipants
+                    @if (Model.MaxWaiting > 0)
+                    {
+                        <text>(สำรอง @Model.MaxWaiting)</text>
+                    }
+                </span> คน
+            </div>
+            <div class="meta-info">
+                <b>ระยะเวลากิจกรรม: </b>
+                <span>
+                    @if (Model.DateTime.Date == Model.EndDateTime.Date)
+                    {
+                        <text>@Model.DateTime.ToString("d MMMM yyyy ( HH:mm") - @Model.EndDateTime.ToString("HH:mm )")</text>
+                    }
+                    else
+                    {
+                        <text>@Model.DateTime.ToString("d MMMM yyyy ( HH:mm )") - @Model.EndDateTime.ToString("d MMMM yyyy ( HH:mm )")</text>
+                    }
+                </span>
+            </div>
+            <div class="meta-info"><b>สถานที่: </b><span id="prevLocation">@Model.Location</span></div>
+
+        </div>
+    </div>
+    <div class="mngParti">
+        @{
+            var currentID = WebApplicationProject.Data.MockDB.CurrentLoggedInUserId;
+            var currentUser = WebApplicationProject.Data.MockDB.UsersList.FirstOrDefault(u => u.Id == currentID);
+
+            var userInEvent = ViewBag.ParticipantList as List<WebApplicationProject.Models.User> ?? new List<WebApplicationProject.Models.User>();
+
+            if (currentID != Model.UserHostId)
+            {
+                var hostUser = WebApplicationProject.Data.MockDB.UsersList.FirstOrDefault(u => u.Id == Model.UserHostId);
+                if (hostUser != null && !userInEvent.Any(u => u.Id == hostUser.Id))
+                {
+                    userInEvent.Add(hostUser);
+                }
+            }
+
+            userInEvent = userInEvent.Where(u => u.Id != currentID).ToList();
+
+            var reviewedUserIds = new List<int>();
+            if (currentUser != null && currentUser.Reviewslist != null)
+            {
+                reviewedUserIds = currentUser.Reviewslist
+                .Where(r => r.EventId == Model.Id)
+                .Select(r => r.UserId)
+                .ToList();
+            }
+        }
+
+        <div class="partiTable">
+            <div class="tableHeader">
+                <h4>รายชื่อคนในกิจกรรม</h4>
+                <div class="numOfParti"><span id="currentParti">@Model.CurrentParticipants</span> / @Model.MaxParticipants Member</div>
+            </div>
+            <hr />
+            <table>
+                <thead>
+                    <tr>
+                        <th>ลำดับ</th>
+                        <th>ชื่อ</th>
+                        <th>เวลาที่เข้าร่วม</th>
+                        <th>จัดการ</th>
+                    </tr>
+                </thead>
+                <tbody id="confirmedTable">
+                    @if (userInEvent != null)
+                    {
+                        int order = 1;
+                        @foreach (var ticket in Model.Participants.Where(p => p.Status == ParticipationStatus.Confirmed).OrderBy(p => p.JoinedAt))
+                        {
+                            var user = userInEvent.FirstOrDefault(u => u.Id == ticket.UserId);
+                            if (user != null)
+                            {
+                                bool isReviewed = reviewedUserIds.Contains(user.Id);
+
+                                <tr id="row_@user.Id">
+                                    <td class="seqNumber">@order</td>
+                                    <td><img src="@user.Image" style="width:30px; border-radius:50%;" /> @user.FName @user.SName</td>
+                                    <td>@ticket.JoinedAt.ToString("dd/MMM/yyyy HH:mm")</td>
+                                    <td>
+                                        @if (isReviewed)
+                                        {
+                                            <button type="button" class="btn-edit"
+                                                    onclick="openEditReviewModal(@user.Id, '@user.FName @user.SName', '@user.Image')">
+                                                แก้ไข
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button type="button" class="btn-review"
+                                                    onclick="openReviewModal(@user.Id, '@user.FName @user.SName', '@user.Image')">
+                                                รีวิว
+                                            </button>
+                                        }
+                                    </td>
+                                </tr>
+                                order += 1;
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div id="reviewModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <div class="profile-circle">
+            <img class="preview-img" id="reviewTargetImage" src="" alt="Circle Profile">
+        </div>
+        <h2>รีวิวผู้ใช้: <span id="reviewTargetName">ชื่อผู้ใช้</span></h2>
+
+        <form asp-action="SubmitReview" asp-controller="Event" method="post">
+            <input type="hidden" name="EventId" value="@Model.Id" />
+            <input type="hidden" name="UserId" value="@WebApplicationProject.Data.MockDB.CurrentLoggedInUserId"/>
+            <input type="hidden" name="TargetUserId" id="reviewTargetUserId" value="" />
+            <input type="hidden" name="stars" id="reviewStars" value="0" />
+
+            <div class="form-group">
+                <label>ให้คะแนน (ดาว)</label>
+                <div class="star-rating">
+                    <span class="star" onclick="setRating(1)">★</span>
+                    <span class="star" onclick="setRating(2)">★</span>
+                    <span class="star" onclick="setRating(3)">★</span>
+                    <span class="star" onclick="setRating(4)">★</span>
+                    <span class="star" onclick="setRating(5)">★</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>หัวข้อรีวิว</label>
+                <input type="text" name="reviewtitle" class="form-control" required />
+            </div>
+
+            <div class="form-group">
+                <label>รายละเอียด</label>
+                <textarea name="reviewbody" class="form-control" rows="4" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="lable_switch">Hide Name</label>
+                <label class="switch">
+                    <input type="checkbox" name="showname" value="true">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <button type="submit" class="btn-submit">ส่งรีวิว</button>
+        </form>
+    </div>
+</div>
+@section Scripts {
+    <script src="~/js/reviewuser.js"></script>
+};

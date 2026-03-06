@@ -223,5 +223,38 @@ namespace WebApplicationProject.Controllers
                 ev.CurrentWaiting = ev.Participants.Count(p => p.Status == ParticipationStatus.Waiting);
                 return RedirectToAction("Home", "Home"); 
             }
+
+        public IActionResult Review(int? id = null)
+        {
+            int targetId = id ?? 1;
+            var eventToReview = MockDB.EventList.FirstOrDefault(e => e.Id == targetId);
+            bool isParticipant = eventToReview.Participants.Any(p => p.UserId == MockDB.CurrentLoggedInUserId);
+            if (eventToReview == null) return NotFound("ไม่พบกิจกรรมนี้");
+            if (!IsHost(eventToReview) && !isParticipant)
+            {
+                TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่ผู้เกี่ยวข้องกับกิจกรรม";
+                return RedirectToAction("Myevent");
+            }
+            var participantIds = eventToReview.Participants.Select(p => p.UserId).ToList();
+            var participants = MockDB.UsersList.Where(u => participantIds.Contains(u.Id)).ToList();
+            ViewBag.ParticipantList = participants;
+            return View(eventToReview);
         }
+
+        [HttpPost]
+        public IActionResult SubmitReview(int EventId, int UserId, int stars, string reviewtitle, int TargetUserId, string reviewbody, bool showname)
+        {
+            var newreview = new Review
+            {
+                EventId = EventId,
+                UserId = UserId,
+                reviewtitle = reviewtitle,
+                reviewbody = reviewbody,
+                stars = stars,
+            };
+            var user = MockDB.UsersList.FirstOrDefault(u => u.Id == TargetUserId);
+            user.Reviewslist.Add(newreview);
+            return RedirectToAction("Review", new { id = EventId });
+        }
+     }
     }
