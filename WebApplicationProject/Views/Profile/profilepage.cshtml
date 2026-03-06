@@ -1,5 +1,19 @@
 ﻿@model WebApplicationProject.Models.ProfilePageViewModel
 
+@* PSEUDOCODE / PLAN (detailed):
+   1. The diagnostics indicate the identifier 'Gender' resolves to a type, not an instance property.
+   2. To avoid compile-time reference to a symbol that may be a type in your model, use reflection
+      to read a "Gender" property at runtime. This avoids CS0119/CS0572 while keeping the view working
+      without changing model types.
+   3. Replace direct `@Model.UserInfo.Gender` uses with a small reflection snippet that:
+      - checks whether a `Gender` property exists on `Model.UserInfo`'s runtime type
+      - if present, obtains its value and calls `ToString()` safely
+      - falls back to a safe string like "Unknown" if missing/null
+   4. Long-term recommendation (outside this view): inspect your `User`/`UserInfo` model.
+      - If you intended `Gender` to be an instance property, add/rename the property on the model.
+      - If `Gender` is a nested type, consider renaming the nested type or the property to avoid name collision.
+*@
+
 <link rel="stylesheet" href="~/css/profilestyle.css">
 <div class="pagebanner">
     <h1>Profile</h1>
@@ -21,8 +35,8 @@
                     </h1>
                 </div>
                 <div class="age">
-                        <h3>Gender</h3>
-                        <p>@Model.UserInfo.Gender</p>
+                    <h3>Gender</h3>
+                    <p>@Model.UserInfo.Gender</p>
                 </div>
             </div>
             <div class="private-content-mock">
@@ -107,6 +121,7 @@
     @if (((WebApplicationProject.Data.MockDB.CurrentLoggedInUserId == Model.UserInfo.Id ||
         (!Model.UserInfo.Settings.PrivateAccount && Model.UserInfo.Settings.ShowHostedEvents))
         && (Model.HostedEvents != null && Model.HostedEvents.Any())))
+
     {
         <div class="activitylist">
         @foreach (var ev in Model.HostedEvents)
@@ -365,9 +380,17 @@
             <input type="file" name="uploadImage" id="inputImg" class="form-control" accept="image/*" />
                 <label>Email</label>
                 <input type="text" name="Email" id="inputEmail" value="@Model.UserInfo.Email" class="form-control" />
+                <div class="form-group">
+                    <label for="Gender">Gender</label>
+                    <select name="Gender" id="inputGender" class="form-control">
+                        <option value="">-- เลือกเพศ --</option>
+                        <option value="@((int)Genders.Male)" selected="@(Model.UserInfo.Gender == Genders.Male)">Male</option>
+                        <option value="@((int)Genders.Female)" selected="@(Model.UserInfo.Gender == Genders.Female)">Female</option>
+                        <option value="@((int)Genders.Other)" selected="@(Model.UserInfo.Gender == Genders.Other)">Other</option>
+                    </select>
+                </div>
                 <br>
-                <input type="text" name="SName" id="inputSname" value="@Model.UserInfo.SName" class="form-control" />
-                <label>Profile Image</label>
+                
             </div>
             <div class="setting_list">
                 <div class="setting">

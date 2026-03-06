@@ -246,9 +246,8 @@ namespace WebApplicationProject.Controllers
             ev.CurrentParticipants = ev.Participants.Count(p => p.Status == ParticipationStatus.Confirmed);
             ev.CurrentWaiting = ev.Participants.Count(p => p.Status == ParticipationStatus.Waiting);
 
-                return RedirectToAction("Home", "Home"); 
-            }
-
+            return RedirectToAction("Home", "Home");
+        }
         public IActionResult Review(int? id = null)
         {
             int targetId = id ?? 1;
@@ -281,7 +280,6 @@ namespace WebApplicationProject.Controllers
             user.Reviewslist.Add(newreview);
             return RedirectToAction("Review", new { id = EventId });
         }
-     }
         [HttpPost]
         public IActionResult CancelJoin(int eventId)
         {
