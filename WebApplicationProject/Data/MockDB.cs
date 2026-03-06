@@ -4,7 +4,7 @@ namespace WebApplicationProject.Data
 {
     public class MockDB
     {
-        // จำลองว่า User ID 102 (ปั้นจั่น) เป็นคนล็อกอิน (เพื่อให้เป็น Host ของ Event 2)
+        // จำลองว่า User ID 102 (ปั้นจั่น) เป็นคนล็อกอิน (เพื่อให้เป็น Host ของ Event 2 และเป็นผู้เข้าร่วม Event ที่จบไปแล้ว)
         public static int CurrentLoggedInUserId = 102;
 
         // 1. จำลองข้อมูล Event (อัปเดตแก้บั๊ก และเติมตัวสำรองให้เต็ม Max)
@@ -48,11 +48,10 @@ namespace WebApplicationProject.Data
                 MaxParticipants = 10,
                 CurrentParticipants = 8,
                 MaxWaiting = 5,
-                CurrentWaiting = 5, // <-- เต็มโควต้าสำรอง!
+                CurrentWaiting = 5,
                 UserHostId = 102,
                 Participants = new List<EventParticipation>
                 {
-                    // --- ตัวจริง (8 คน) ---
                     new EventParticipation { Id = 4, EventId = 2, UserId = 103, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-10) },
                     new EventParticipation { Id = 5, EventId = 2, UserId = 107, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-9) },
                     new EventParticipation { Id = 6, EventId = 2, UserId = 108, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-8) },
@@ -61,8 +60,7 @@ namespace WebApplicationProject.Data
                     new EventParticipation { Id = 9, EventId = 2, UserId = 111, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-5) },
                     new EventParticipation { Id = 10, EventId = 2, UserId = 112, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-4) },
                     new EventParticipation { Id = 11, EventId = 2, UserId = 113, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-3) },
-                    
-                    // --- ตัวสำรอง (5 คน เต็มโควต้า) ---
+
                     new EventParticipation { Id = 12, EventId = 2, UserId = 104, Status = ParticipationStatus.Waiting, JoinedAt = DateTime.Now.AddDays(-2).AddHours(1) },
                     new EventParticipation { Id = 13, EventId = 2, UserId = 105, Status = ParticipationStatus.Waiting, JoinedAt = DateTime.Now.AddDays(-2).AddHours(2) },
                     new EventParticipation { Id = 14, EventId = 2, UserId = 106, Status = ParticipationStatus.Waiting, JoinedAt = DateTime.Now.AddDays(-2).AddHours(3) },
@@ -77,6 +75,15 @@ namespace WebApplicationProject.Data
                 Id = 5, Title = "Morning Run & Coffee", Description = "วิ่งเบา ๆ 5K แล้วไปกินกาแฟด้วยกัน", Image = "https://images.unsplash.com/photo-1520975661595-6453be3f7070", Location = "สวนเบญจกิติ", DateTime = DateTime.Now.AddDays(1).Date.AddHours(6), EndDateTime = DateTime.Now.AddDays(1).Date.AddHours(9), Tags = new List<string> { "กีฬา", "สุขภาพ", "coffee" }, MaxParticipants = 6, CurrentParticipants = 0, MaxWaiting = 3, CurrentWaiting = 0, UserHostId = 105, Participants = new List<EventParticipation>()
             },
 
+            // 📷 Event 6: Night Photography Walk (แก้ ID ซ้ำ)
+            new Event
+            {
+                Id = 6, Title = "Night Photography Walk", Description = "เดินถ่ายรูปกลางคืน", Image = "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee", Location = "Bangkok Old Town", DateTime = DateTime.Now.AddDays(7).Date.AddHours(20), EndDateTime = DateTime.Now.AddDays(7).Date.AddHours(23), Tags = new List<string> { "ถ่ายรูป", "กลางคืน" }, MaxParticipants = 5, CurrentParticipants = 1, MaxWaiting = 2, CurrentWaiting = 0, UserHostId = 105, Participants = new List<EventParticipation>
+                {
+                    new EventParticipation { Id = 20, EventId = 6, UserId = 103, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-1) }
+                }
+            },
+
             // 🎮 Event 3: Board Game Night 
             new Event
             {
@@ -88,72 +95,114 @@ namespace WebApplicationProject.Data
             {
                 Id = 4, Title = "Street Food Tour เยาวราช", Description = "พาเดินกินของอร่อยยามค่ำคืน", Image = "https://images.unsplash.com/photo-1550547660-d9450f859349", Location = "Yaowarat Road", DateTime = DateTime.Now.AddDays(7).Date.AddHours(18), EndDateTime = DateTime.Now.AddDays(7).Date.AddHours(22), Tags = new List<string> { "อาหาร", "เที่ยวกลางคืน", "streetfood" }, MaxParticipants = 3, CurrentParticipants = 0, MaxWaiting = 2, CurrentWaiting = 0, UserHostId = 104, Participants = new List<EventParticipation>()
             },
+            
+            // 🚶‍♂️ Event 9: Night Market Walk
             new Event
-{
-            Id = 5,
-            Title = "Night Photography Walk",
-            Description = "เดินถ่ายรูปกลางคืน",
-            Image = "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-            Location = "Bangkok Old Town",
-            DateTime = DateTime.Now.AddDays(7).Date.AddHours(20),
-            EndDateTime = DateTime.Now.AddDays(7).Date.AddHours(23),
-            Tags = new List<string> { "ถ่ายรูป", "กลางคืน" },
-
-            MaxParticipants = 5,
-            CurrentParticipants = 1,
-            MaxWaiting = 2,
-            CurrentWaiting = 0,
-
-            UserHostId = 105,
-
-            Participants = new List<EventParticipation>
             {
-                new EventParticipation
+                Id = 9, Title = "Night Market Walk", Description = "เดินเที่ยวตลาดกลางคืน", Image = "https://images.unsplash.com/photo-1504674900247-0877df9cc836", Location = "Train Night Market", DateTime = DateTime.Now.AddDays(7).Date.AddHours(20), EndDateTime = DateTime.Now.AddDays(7).Date.AddHours(23), Tags = new List<string> { "ตลาด", "อาหาร", "nightlife" }, MaxParticipants = 5, CurrentParticipants = 1, MaxWaiting = 2, CurrentWaiting = 0, UserHostId = 105, Participants = new List<EventParticipation>
                 {
-                    Id = 20,
-                    EventId = 5,
-                    UserId = 103,   // user ที่จะทดสอบ
-                    Status = ParticipationStatus.Confirmed,
-                    JoinedAt = DateTime.Now.AddDays(-1)
+                    new EventParticipation { Id = 30, EventId = 9, UserId = 103, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-1) }
+                }
+            },
+
+            // 🏁 🚨 Event 10: (เพิ่มใหม่) กิจกรรมที่จบไปแล้ว สำหรับทดสอบ Review 🚨
+            new Event
+            {
+                Id = 10,
+                Title = "Past Event: นิทรรศการศิลปะดิจิทัล",
+                Description = "เดินชมนิทรรศการศิลปะที่จบไปแล้ว (สำหรับทดสอบปุ่ม Review โดยเฉพาะ)",
+                Image = "https://images.unsplash.com/photo-1536924940846-227afb31e2a5",
+                Location = "BACC",
+                // เวลาจบกิจกรรมเป็นอดีต (ย้อนหลังไป 5 วัน)
+                DateTime = DateTime.Now.AddDays(-5).Date.AddHours(10),
+                EndDateTime = DateTime.Now.AddDays(-5).Date.AddHours(18),
+                Tags = new List<string> { "ศิลปะ", "นิทรรศการ", "จบแล้ว" },
+                MaxParticipants = 10,
+                CurrentParticipants = 2,
+                MaxWaiting = 2,
+                CurrentWaiting = 0,
+                UserHostId = 101, // Host เป็นใครก็ได้
+                Participants = new List<EventParticipation>
+                {
+                    new EventParticipation
+                    {
+                        Id = 40,
+                        EventId = 10,
+                        UserId = 102, // <-- สำคัญ: ให้ User 102 ที่กำลังล็อกอินเป็นคนเข้าร่วม
+                        Status = ParticipationStatus.Confirmed,
+                        JoinedAt = DateTime.Now.AddDays(-10)
+                    },
+                    new EventParticipation
+                    {
+                        Id = 41,
+                        EventId = 10,
+                        UserId = 103, // User คนอื่น
+                        Status = ParticipationStatus.Confirmed,
+                        JoinedAt = DateTime.Now.AddDays(-9)
+                    }
+                }
+            },
+            // 🔥 🚨 Event 11: (เพิ่มใหม่) กิจกรรมที่กำลังจัดอยู่ (Ongoing) สำหรับทดสอบป้ายสถานะ 🚨
+            new Event
+            {
+                Id = 11,
+                Title = "Ongoing Event: ล้อมวงเล่าเรื่องสยองขวัญ",
+                Description = "กิจกรรมกำลังดำเนินอยู่! เข้ามาร่วมฟังเรื่องหลอนๆ สดๆ ด้วยกัน (สำหรับทดสอบป้าย Ongoing โดยเฉพาะ)",
+                Image = "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c",
+                Location = "Discord Channel (Online)",
+                // เริ่มไปแล้ว 1 ชั่วโมง และจะจบในอีก 2 ชั่วโมงข้างหน้า (รับประกันว่าสถานะเป็น Ongoing แน่นอน)
+                DateTime = DateTime.Now.AddHours(-1),
+                EndDateTime = DateTime.Now.AddHours(2),
+                Tags = new List<string> { "ออนไลน์", "เล่าเรื่อง", "Ongoing" },
+                MaxParticipants = 20,
+                CurrentParticipants = 5,
+                MaxWaiting = 0,
+                CurrentWaiting = 0,
+                UserHostId = 104, // แนนซี่ เป็น Host
+                Participants = new List<EventParticipation>
+                {
+                    new EventParticipation
+                    {
+                        Id = 50,
+                        EventId = 11,
+                        UserId = 102, // <-- สำคัญ: ให้ User 102 ที่กำลังล็อกอินเป็นคนเข้าร่วม
+                        Status = ParticipationStatus.Confirmed,
+                        JoinedAt = DateTime.Now.AddDays(-3)
+                    },
+                    new EventParticipation
+                    {
+                        Id = 51,
+                        EventId = 11,
+                        UserId = 103, // User คนอื่น
+                        Status = ParticipationStatus.Confirmed,
+                        JoinedAt = DateTime.Now.AddDays(-2)
+                    }
+                }
+            },
+            new Event
+            {
+                Id = 12,
+                Title = "Host Event: งานสัมมนา AI ยุคใหม่",
+                Description = "งานสัมมนาที่คุณเป็นคนจัดและจบไปแล้ว (สำหรับทดสอบการจัดการหลังงานจบ)",
+                Image = "https://images.unsplash.com/photo-1485827404703-89b55fcc595e",
+                Location = "BITEC Bangna",
+                DateTime = DateTime.Now.AddDays(-10).Date.AddHours(9),
+                EndDateTime = DateTime.Now.AddDays(-10).Date.AddHours(16),
+                Tags = new List<string> { "สัมมนา", "AI", "Technology" },
+                MaxParticipants = 50,
+                CurrentParticipants = 30,
+                MaxWaiting = 0,
+                CurrentWaiting = 0,
+                UserHostId = 102, 
+                Participants = new List<EventParticipation>
+                {
+                    new EventParticipation { Id = 60, EventId = 12, UserId = 103, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-12) },
+                    new EventParticipation { Id = 61, EventId = 12, UserId = 105, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-11) }
                 }
             }
-        },
-            new Event
-{
-            Id = 9,
-            Title = "Night Market Walk",
-            Description = "เดินเที่ยวตลาดกลางคืน",
-            Image = "https://images.unsplash.com/photo-1504674900247-0877df9cc836",
-            Location = "Train Night Market",
-
-            DateTime = DateTime.Now.AddDays(7).Date.AddHours(20),
-            EndDateTime = DateTime.Now.AddDays(7).Date.AddHours(23),
-
-            Tags = new List<string> { "ตลาด", "อาหาร", "nightlife" },
-
-            MaxParticipants = 5,
-            CurrentParticipants = 1,
-            MaxWaiting = 2,
-            CurrentWaiting = 0,
-
-            UserHostId = 105,
-
-            Participants = new List<EventParticipation>
-            {
-                new EventParticipation
-                {
-                    Id = 30,
-                    EventId = 9,
-                    UserId = 103,
-                    Status = ParticipationStatus.Confirmed,
-                    JoinedAt = DateTime.Now.AddDays(-1)
-                }
-            }
-        },
-           
         };
 
-        // 2. จำลองข้อมูล User (เพิ่ม User 114, 115, 116 เพื่ออุดรอยรั่วและใช้เทสต์)
+        // 2. จำลองข้อมูล User 
         public static List<User> UsersList = new List<User>()
         {
             new User { Id = 101, Username = "music_host", Password = "123", FName = "ก้องเกียรติ", SName = "ใจดี", Email = "kong@test.com", Gender = Genders.Male, Birthday = new DateTime(1990, 5, 20), Image = "https://ui-avatars.com/api/?name=Kong+J&background=random" },

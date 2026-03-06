@@ -121,7 +121,7 @@
 
                 @foreach (var ev in Model)
                 {
-                    if (ev.EndDateTime < DateTime.Now)
+                    if (ev.DateTime < DateTime.Now)
                     {
                         continue;
                     }
