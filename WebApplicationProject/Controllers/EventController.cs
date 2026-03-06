@@ -63,6 +63,15 @@ namespace WebApplicationProject.Controllers
                     return RedirectToAction("Myevent");
                 }
                 if (editEvent.MaxParticipants < ogEvent.CurrentParticipants || editEvent.MaxParticipants < 1) return BadRequest("จำนวนผู้เข้าร่วมไม่ถูกต้อง");
+                int minRequiredPartiForWait = ogEvent.CurrentWaiting > 0 ? (ogEvent.CurrentWaiting * 2 - 1) : 1;
+                if (editEvent.MaxParticipants < minRequiredPartiForWait)
+                {
+                    return BadRequest($"ไม่สามารถลดจำนวนตัวจริงได้ ต้องตั้งไว้อย่างน้อย {minRequiredPartiForWait} คน เพื่อให้สอดคล้องกับตัวสำรองที่มีอยู่แล้ว ({ogEvent.CurrentWaiting} คน)");
+                }
+                if (editEvent.MaxWaiting < ogEvent.CurrentWaiting)
+                {
+                    return BadRequest("ไม่สามารถลดจำนวนรับสำรองให้น้อยกว่าคนที่อยู่ในคิวปัจจุบันได้");
+                }
                 int maxAllowedWait = (int)Math.Ceiling(editEvent.MaxParticipants / 2.0);
                 if (editEvent.MaxWaiting > maxAllowedWait || editEvent.MaxWaiting < 0)
                 {
