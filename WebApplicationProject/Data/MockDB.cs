@@ -87,7 +87,70 @@ namespace WebApplicationProject.Data
             new Event
             {
                 Id = 4, Title = "Street Food Tour เยาวราช", Description = "พาเดินกินของอร่อยยามค่ำคืน", Image = "https://images.unsplash.com/photo-1550547660-d9450f859349", Location = "Yaowarat Road", DateTime = DateTime.Now.AddDays(7).Date.AddHours(18), EndDateTime = DateTime.Now.AddDays(7).Date.AddHours(22), Tags = new List<string> { "อาหาร", "เที่ยวกลางคืน", "streetfood" }, MaxParticipants = 3, CurrentParticipants = 0, MaxWaiting = 2, CurrentWaiting = 0, UserHostId = 104, Participants = new List<EventParticipation>()
+            },
+            new Event
+{
+            Id = 5,
+            Title = "Night Photography Walk",
+            Description = "เดินถ่ายรูปกลางคืน",
+            Image = "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
+            Location = "Bangkok Old Town",
+            DateTime = DateTime.Now.AddDays(7).Date.AddHours(20),
+            EndDateTime = DateTime.Now.AddDays(7).Date.AddHours(23),
+            Tags = new List<string> { "ถ่ายรูป", "กลางคืน" },
+
+            MaxParticipants = 5,
+            CurrentParticipants = 1,
+            MaxWaiting = 2,
+            CurrentWaiting = 0,
+
+            UserHostId = 105,
+
+            Participants = new List<EventParticipation>
+            {
+                new EventParticipation
+                {
+                    Id = 20,
+                    EventId = 5,
+                    UserId = 103,   // user ที่จะทดสอบ
+                    Status = ParticipationStatus.Confirmed,
+                    JoinedAt = DateTime.Now.AddDays(-1)
+                }
             }
+        },
+            new Event
+{
+            Id = 9,
+            Title = "Night Market Walk",
+            Description = "เดินเที่ยวตลาดกลางคืน",
+            Image = "https://images.unsplash.com/photo-1504674900247-0877df9cc836",
+            Location = "Train Night Market",
+
+            DateTime = DateTime.Now.AddDays(7).Date.AddHours(20),
+            EndDateTime = DateTime.Now.AddDays(7).Date.AddHours(23),
+
+            Tags = new List<string> { "ตลาด", "อาหาร", "nightlife" },
+
+            MaxParticipants = 5,
+            CurrentParticipants = 1,
+            MaxWaiting = 2,
+            CurrentWaiting = 0,
+
+            UserHostId = 105,
+
+            Participants = new List<EventParticipation>
+            {
+                new EventParticipation
+                {
+                    Id = 30,
+                    EventId = 9,
+                    UserId = 103,
+                    Status = ParticipationStatus.Confirmed,
+                    JoinedAt = DateTime.Now.AddDays(-1)
+                }
+            }
+        },
+           
         };
 
         // 2. จำลองข้อมูล User (เพิ่ม User 114, 115, 116 เพื่ออุดรอยรั่วและใช้เทสต์)
