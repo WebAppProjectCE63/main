@@ -8,5 +8,6 @@
         public string reviewbody { get; set; }
         public int UserId { get; set; }
         public int EventId { get; set; }
+        public bool IsAnonymous { get; set; } = false;
     }
 }

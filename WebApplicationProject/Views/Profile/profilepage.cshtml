@@ -1,19 +1,5 @@
 ﻿@model WebApplicationProject.Models.ProfilePageViewModel
 
-@* PSEUDOCODE / PLAN (detailed):
-   1. The diagnostics indicate the identifier 'Gender' resolves to a type, not an instance property.
-   2. To avoid compile-time reference to a symbol that may be a type in your model, use reflection
-      to read a "Gender" property at runtime. This avoids CS0119/CS0572 while keeping the view working
-      without changing model types.
-   3. Replace direct `@Model.UserInfo.Gender` uses with a small reflection snippet that:
-      - checks whether a `Gender` property exists on `Model.UserInfo`'s runtime type
-      - if present, obtains its value and calls `ToString()` safely
-      - falls back to a safe string like "Unknown" if missing/null
-   4. Long-term recommendation (outside this view): inspect your `User`/`UserInfo` model.
-      - If you intended `Gender` to be an instance property, add/rename the property on the model.
-      - If `Gender` is a nested type, consider renaming the nested type or the property to avoid name collision.
-*@
-
 <link rel="stylesheet" href="~/css/profilestyle.css">
 <div class="pagebanner">
     <h1>Profile</h1>
@@ -345,13 +331,26 @@
                     <h3>form @events.Title</h3>
                     <h2>@rw.reviewtitle</h2>
                     <p class="reviewbody">@rw.reviewbody</p>
-                    <div class="reviewprofile">
-                        <img src=@author.Image alt="Profile">
-                        <div class="reviewname">
-                            <h4>@author.FName</h4>
-                            <p>@author.SName</p>
+                    @if (rw.IsAnonymous)
+                    {
+                        <div class="reviewprofile">
+                            <img src="https://ui-avatars.com/api/?name=Anonymous&background=random" alt="Profile">
+                            <div class="reviewname">
+                                <h4>Anonymous</h4>
+                                <p>ผู้รีวิวไม่ระบุชื่อ</p>
+                            </div>
                         </div>
-                    </div>
+                    }
+                    else
+                    {
+                        <div class="reviewprofile">
+                            <img src=@author.Image alt="Profile">
+                            <div class="reviewname">
+                                <h4>@author.FName</h4>
+                                <p>@author.SName</p>
+                            </div>
+                        </div>
+                    }
                 </div>
             }
         </div>

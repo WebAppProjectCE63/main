@@ -98,39 +98,41 @@
                     </tr>
                 </thead>
                 <tbody id="confirmedTable">
-                    @if (userInEvent != null)
-                    {
+                    @{
                         int order = 1;
-                        @foreach (var ticket in Model.Participants.Where(p => p.Status == ParticipationStatus.Confirmed).OrderBy(p => p.JoinedAt))
-                        {
-                            var user = userInEvent.FirstOrDefault(u => u.Id == ticket.UserId);
-                            if (user != null)
-                            {
-                                bool isReviewed = reviewedUserIds.Contains(user.Id);
+                        // กรองเฉพาะคนที่เป็น Confirmed และไม่ใช่ตัวเราเอง
+                        var confirmedTickets = Model.Participants
+                        .Where(p => p.Status == ParticipationStatus.Confirmed && p.UserId != currentID)
+                        .OrderBy(p => p.JoinedAt);
+                    }
 
-                                <tr id="row_@user.Id">
-                                    <td class="seqNumber">@order</td>
-                                    <td><img src="@user.Image" style="width:30px; border-radius:50%;" /> @user.FName @user.SName</td>
-                                    <td>@ticket.JoinedAt.ToString("dd/MMM/yyyy HH:mm")</td>
-                                    <td>
-                                        @if (isReviewed)
-                                        {
-                                            <button type="button" class="btn-edit"
-                                                    onclick="openEditReviewModal(@user.Id, '@user.FName @user.SName', '@user.Image')">
-                                                แก้ไข
-                                            </button>
-                                        }
-                                        else
-                                        {
-                                            <button type="button" class="btn-review"
-                                                    onclick="openReviewModal(@user.Id, '@user.FName @user.SName', '@user.Image')">
-                                                รีวิว
-                                            </button>
-                                        }
-                                    </td>
-                                </tr>
-                                order += 1;
-                            }
+                    @foreach (var ticket in confirmedTickets)
+                    {
+                        // ดึง user จาก MockDB โดยตรงถ้าใน userInEvent หาไม่เจอ เพื่อกันเหนียว
+                        var user = userInEvent.FirstOrDefault(u => u.Id == ticket.UserId)
+                        ?? WebApplicationProject.Data.MockDB.UsersList.FirstOrDefault(u => u.Id == ticket.UserId);
+
+                        if (user != null)
+                        {
+                            bool isReviewed = reviewedUserIds.Contains(user.Id);
+                            <tr id="row_@user.Id">
+                                <td class="seqNumber">@(order++)</td>
+                                <td>
+                                    <img src="@user.Image" style="width:30px; border-radius:50%;" />
+                                    @user.FName @user.SName
+                                </td>
+                                <td>@ticket.JoinedAt.ToString("dd/MMM/yyyy HH:mm")</td>
+                                <td>
+                                    @if (isReviewed)
+                                    {
+                                        <button type="button" class="btn-edit" onclick="openEditReviewModal(@user.Id, '@user.FName @user.SName', '@user.Image')">แก้ไข</button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn-review" onclick="openReviewModal(@user.Id, '@user.FName @user.SName', '@user.Image')">รีวิว</button>
+                                    }
+                                </td>
+                            </tr>
                         }
                     }
                 </tbody>
