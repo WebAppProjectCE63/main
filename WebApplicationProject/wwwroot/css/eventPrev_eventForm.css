@@ -68,3 +68,29 @@ h3 {
     border-radius: 8px;
     text-decoration: none;
 }
+
+.period{
+    display: flex;
+    gap: 15px
+}
+
+.period .start{
+    flex: 1;
+}
+
+.period .end{
+    flex: 1;
+}
+
+.parti{
+    display: flex;
+    gap: 15px
+}
+
+.parti .start{
+    flex: 1;
+}
+
+.parti .waiting{
+    flex: 1;
+}

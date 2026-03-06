@@ -4,6 +4,7 @@
 <html lang="en">
 @{
         var username = Context.Session.GetString("Username");
+        var userId = Context.Session.GetInt32("UserId"); //test id
 }
 
 <head>
@@ -37,12 +38,17 @@
                 </div>*@
                 @{
                     var username = Context.Session.GetString("Username");
+                    var userId = Context.Session.GetInt32("UserId"); //for testing reason
                 }
 
                 <div id="profilename">
                     @if (!string.IsNullOrEmpty(username))
                     {
                         <h4>@username</h4>
+                        @if (userId.HasValue) //for test
+                        {
+                            <p>ID: @userId.Value</p>
+                        }
                         @if (username != null)
                         {
                             <a asp-controller="Account" asp-action="Logout">Logout</a>
