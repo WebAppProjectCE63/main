@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using WebApplicationProject.Models;
+using WebApplicationProject.Data;
 
 namespace WebApplicationProject.Controllers
 {
@@ -18,17 +19,8 @@ namespace WebApplicationProject.Controllers
 
         public IActionResult Home()
         {
-            return View();
-        }
-
-        public IActionResult Login()
-        {
-            return View();
-        }
-
-        public IActionResult Signup()
-        {
-            return View();
+            var events = MockDB.EventList;
+            return View(events);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

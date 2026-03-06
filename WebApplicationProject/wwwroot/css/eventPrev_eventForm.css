@@ -61,10 +61,36 @@ h3 {
 
 .btnLink {
     display: inline-block;
-    padding: 5px;
+    padding: 3px 5px;
     margin-top: 10px;
     background-color: black;
     color: white;
     border-radius: 8px;
     text-decoration: none;
+}
+
+.period{
+    display: flex;
+    gap: 15px
+}
+
+.period .start{
+    flex: 1;
+}
+
+.period .end{
+    flex: 1;
+}
+
+.parti{
+    display: flex;
+    gap: 15px
+}
+
+.parti .start{
+    flex: 1;
+}
+
+.parti .waiting{
+    flex: 1;
 }

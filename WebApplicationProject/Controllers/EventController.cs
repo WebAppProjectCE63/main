@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.IO;
 using WebApplicationProject.Data;
 namespace WebApplicationProject.Controllers
+
 {
     public class EventController : Controller
     {
@@ -19,28 +20,34 @@ namespace WebApplicationProject.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Event newEvent, IFormFile uploadImage)
         {
+            if (newEvent.MaxParticipants < 1) return BadRequest("จำนวนผู้เข้าร่วมไม่ถูกต้อง");
+            int maxAllowedWait = (int)Math.Ceiling(newEvent.MaxParticipants / 2.0);
+            if (newEvent.MaxWaiting > maxAllowedWait || newEvent.MaxWaiting < 0)
+            {
+                return BadRequest("จำนวนตัวสำรองเกินขีดจำกัดที่กำหนดไว้");
+            }
             string ImageUrl = await UploadImageAsync(uploadImage);
             newEvent.Image = ImageUrl ?? "https://img2.pic.in.th/image-icon-symbol-design-illustration-vector.md.jpg";
             newEvent.Tags = ProcessTags(Request.Form["Tag"]);
             newEvent.UserHostId = MockDB.CurrentLoggedInUserId;
             newEvent.Id = MockDB.EventList.Count + 1;
             MockDB.EventList.Add(newEvent);
-            return RedirectToAction("Manage", new {id = newEvent.Id});
+            return RedirectToAction("Manage", new { id = newEvent.Id });
         }
 
         private bool IsHost(Event ev)
         {
             return ev != null && ev.UserHostId == MockDB.CurrentLoggedInUserId;
         }
+
         public IActionResult Edit(int id)
-        {   
+        {
             var eventToEdit = MockDB.EventList.FirstOrDefault(e => e.Id == id);
             if (eventToEdit == null) return NotFound("ไม่พบกิจกรรมนี้");
             if (!IsHost(eventToEdit))
             {
-                //TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
-                //return RedirectToAction("Myevent");
-                return Unauthorized("ไม่มีสิทธิ์เข้าถึง");
+                TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
+                return RedirectToAction("Myevent");
             }
             return View(eventToEdit);
         }
@@ -52,11 +59,15 @@ namespace WebApplicationProject.Controllers
             {
                 if (!IsHost(ogEvent))
                 {
-                    //TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
-                    //return RedirectToAction("Myevent");
-                    return Unauthorized("ไม่มีสิทธิ์เข้าถึง");
+                    TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
+                    return RedirectToAction("Myevent");
                 }
-
+                if (editEvent.MaxParticipants < ogEvent.CurrentParticipants || editEvent.MaxParticipants < 1) return BadRequest("จำนวนผู้เข้าร่วมไม่ถูกต้อง");
+                int maxAllowedWait = (int)Math.Ceiling(editEvent.MaxParticipants / 2.0);
+                if (editEvent.MaxWaiting > maxAllowedWait || editEvent.MaxWaiting < 0)
+                {
+                    return BadRequest("จำนวนตัวสำรองเกินขีดจำกัดที่กำหนดไว้");
+                }
                 string newImageUrl = await UploadImageAsync(uploadImage);
                 if (newImageUrl != null)
                 {
@@ -66,14 +77,16 @@ namespace WebApplicationProject.Controllers
                 ogEvent.Description = editEvent.Description;
                 ogEvent.Tags = ProcessTags(Request.Form["Tag"]);
                 ogEvent.MaxParticipants = editEvent.MaxParticipants;
+                ogEvent.MaxWaiting = editEvent.MaxWaiting;
                 ogEvent.DateTime = editEvent.DateTime;
+                ogEvent.EndDateTime = editEvent.EndDateTime;
                 ogEvent.Location = editEvent.Location;
             }
             else
             {
                 return NotFound("ไม่พบกิจกรรมนี้");
             }
-            return RedirectToAction("Edit", new {id = editEvent.Id});
+            return RedirectToAction("Edit", new { id = editEvent.Id });
 
         }
 
@@ -83,9 +96,8 @@ namespace WebApplicationProject.Controllers
             if (eventToManage == null) return NotFound("ไม่พบกิจกรรมนี้");
             if (!IsHost(eventToManage))
             {
-                //TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
-                //return RedirectToAction("Myevent");
-                return Unauthorized("ไม่มีสิทธิ์เข้าถึง");
+                TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
+                return RedirectToAction("Myevent");
             }
             var participantIds = eventToManage.Participants.Select(p => p.UserId).ToList();
             var participants = MockDB.UsersList.Where(u => participantIds.Contains(u.Id)).ToList();
@@ -100,9 +112,8 @@ namespace WebApplicationProject.Controllers
             if (eventToManage == null) return NotFound("ไม่มีกิจกรรมนี้");
             if (!IsHost(eventToManage))
             {
-                //TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
-                //return RedirectToAction("Myevent");
-                return Unauthorized("ไม่มีสิทธิ์เข้าถึง");
+                TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
+                return RedirectToAction("Myevent");
             }
             var ticket = eventToManage.Participants.FirstOrDefault(t => t.UserId == userId);
             if (ticket == null) return NotFound("ไม่มีผู้ใช้นี้ในกิจกรรม");
@@ -117,15 +128,15 @@ namespace WebApplicationProject.Controllers
             if (eventToManage == null) return NotFound("ไม่มีกิจกรรมนี้");
             if (!IsHost(eventToManage))
             {
-                //TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
-                //return RedirectToAction("Myevent");
-                return Unauthorized("ไม่มีสิทธิ์เข้าถึง");
+                TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
+                return RedirectToAction("Myevent");
             }
             if (eventToManage.CurrentParticipants >= eventToManage.MaxParticipants) return BadRequest("ผู้เข้าร่วมตัวจริงเต็มแล้ว ไม่สามารถเพิ่มได้");
             var ticket = eventToManage.Participants.FirstOrDefault(t => t.UserId == userId);
             if (ticket == null) return NotFound("ไม่มีผู้ใช้นี้ในกิจกรรม");
             ticket.Status = ParticipationStatus.Confirmed;
             eventToManage.CurrentParticipants = eventToManage.Participants.Count(p => p.Status == ParticipationStatus.Confirmed);
+            eventToManage.CurrentWaiting = eventToManage.Participants.Count(p => p.Status == ParticipationStatus.Waiting);
             return Ok();
         }
         private List<string> ProcessTags(string rawTags)
@@ -163,7 +174,87 @@ namespace WebApplicationProject.Controllers
                 return doc.RootElement.GetProperty("data").GetProperty("url").GetString();
             }
 
-            return null; // ถ้าอัปโหลดล้มเหลว
+            return null;
         }
+            [HttpPost]
+            public IActionResult Join(int eventId)
+            {
+                var ev = MockDB.EventList.FirstOrDefault(e => e.Id == eventId);
+                if (ev == null) return NotFound("ไม่พบกิจกรรมนี้");
+
+                int userId = MockDB.CurrentLoggedInUserId;
+
+                if (ev.UserHostId == userId)
+                    return BadRequest("Host ไม่ต้องกด Join");
+
+                var existing = ev.Participants.FirstOrDefault(p => p.UserId == userId && p.Status != ParticipationStatus.Remove);
+                if (existing != null)
+                    return BadRequest("คุณเข้าร่วมกิจกรรมนี้แล้ว");
+
+                ParticipationStatus status;
+                if (ev.CurrentParticipants < ev.MaxParticipants)
+                {
+                    status = ParticipationStatus.Confirmed;
+                    ev.CurrentParticipants++;
+                }
+                else if (ev.CurrentWaiting < ev.MaxWaiting)
+                {
+                    status = ParticipationStatus.Waiting;
+                    ev.CurrentWaiting++;
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "กิจกรรมนี้เต็มแล้วทั้งตัวจริงและตัวสำรอง";
+                    return RedirectToAction("Home", "Home");
+                }
+
+                int newId = (ev.Participants.Count == 0) ? 1 : ev.Participants.Max(p => p.Id) + 1;
+                    
+                ev.Participants.Add(new EventParticipation
+                {
+                    Id = newId,
+                    EventId = ev.Id,
+                    UserId = userId,
+                    Status = status,
+                    JoinedAt = DateTime.Now
+                });
+
+                ev.CurrentParticipants = ev.Participants.Count(p => p.Status == ParticipationStatus.Confirmed);
+                ev.CurrentWaiting = ev.Participants.Count(p => p.Status == ParticipationStatus.Waiting);
+                return RedirectToAction("Home", "Home"); 
+            }
+
+        public IActionResult Review(int? id = null)
+        {
+            int targetId = id ?? 1;
+            var eventToReview = MockDB.EventList.FirstOrDefault(e => e.Id == targetId);
+            bool isParticipant = eventToReview.Participants.Any(p => p.UserId == MockDB.CurrentLoggedInUserId);
+            if (eventToReview == null) return NotFound("ไม่พบกิจกรรมนี้");
+            if (!IsHost(eventToReview) && !isParticipant)
+            {
+                TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่ผู้เกี่ยวข้องกับกิจกรรม";
+                return RedirectToAction("Myevent");
+            }
+            var participantIds = eventToReview.Participants.Select(p => p.UserId).ToList();
+            var participants = MockDB.UsersList.Where(u => participantIds.Contains(u.Id)).ToList();
+            ViewBag.ParticipantList = participants;
+            return View(eventToReview);
+        }
+
+        [HttpPost]
+        public IActionResult SubmitReview(int EventId, int UserId, int stars, string reviewtitle, int TargetUserId, string reviewbody, bool showname)
+        {
+            var newreview = new Review
+            {
+                EventId = EventId,
+                UserId = UserId,
+                reviewtitle = reviewtitle,
+                reviewbody = reviewbody,
+                stars = stars,
+            };
+            var user = MockDB.UsersList.FirstOrDefault(u => u.Id == TargetUserId);
+            user.Reviewslist.Add(newreview);
+            return RedirectToAction("Review", new { id = EventId });
+        }
+     }
     }
-}

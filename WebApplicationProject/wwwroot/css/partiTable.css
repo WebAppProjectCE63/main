@@ -18,9 +18,15 @@
     padding: 10px;
 }
 
-.partiTable th:first-child, .partiTable td:first-child {
+.partiTable th:first-child, .partiTable td:first-child,
+.partiTable th:nth-child(3), .partiTable td:nth-child(3){
     text-align: center;
 }
+
+.partiTable th:nth-child(2), .partiTable td:nth-child(2){
+    text-align: left;
+}
+
 .partiTable th:last-child, .partiTable td:last-child {
     text-align: right;
 }
@@ -31,6 +37,7 @@
     height: 40px;
     width: 40px;
     margin-right: 10px;
+    vertical-align: middle;
 }
 
 .partiTable td button {
@@ -53,4 +60,8 @@
 
 table {
     width: 100%
+}
+
+.tableHeader h4{
+    margin: 0;
 }

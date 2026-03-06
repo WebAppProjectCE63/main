@@ -273,3 +273,9 @@
     padding-right: 10px;
     scrollbar-width: thin;
 }
+.Event-ex {
+    display: none;
+}
+.Event-ex.active {
+    display: block;
+}

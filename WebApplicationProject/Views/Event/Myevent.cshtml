@@ -4,16 +4,33 @@
 <head>
     <meta charset="UTF-8">
     <title>Event Page</title>
-
     <link rel="stylesheet" href="~/css/myevent.css">
 </head>
-@section Banner {
 <body>
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div id="errorAlert" style="background-color: #f8d7da; color: #842029; padding: 15px; border: 1px solid #f5c2c7; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+
+            <span>@TempData["ErrorMessage"]</span>
+
+            <button onclick="document.getElementById('errorAlert').style.display='none'" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #842029; font-weight: bold;">&times;</button>
+        </div>
+
+        <script>
+            setTimeout(function() {
+                var alertElement = document.getElementById('errorAlert');
+                if (alertElement) {
+                    alertElement.style.transition = "opacity 0.5s ease";
+                    alertElement.style.opacity = "0";
+                    setTimeout(function() { alertElement.style.display = 'none'; }, 500);
+                }
+            }, 5000);
+        </script>
+    }
     <div id="event-header">
         <h1>Event</h1>
         <p>Event</p>
     </div>
-
     <div class="content-container bg-gray">
         <div class="calendar-wrapper">
             <div class="calendar-card">
@@ -37,6 +54,7 @@
                         <select id="yearSelect">
                             <option value="2025">2025</option>
                             <option value="2026" selected>2026</option>
+                            <option value="2027">2027</option>
                         </select>
                     </div>
                     <button class="nav-btn" id="nextMonth"><i class="fa-solid fa-chevron-right"></i></button>
@@ -46,104 +64,116 @@
                     <div class="day-names">
                         <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
                     </div>
-                    <div class="days-grid" id="calendarGrid">
-                        <span class="text-muted"></span> <span>1</span> <span>2</span> <span>3</span> <span>4</span> <span>5</span> <span>6</span>
-                        <span>7</span> <span>8</span> <span>9</span> <span>10</span> <span>11</span> <span>12</span> <span>13</span>
-                        <span>14</span> <span>15</span> <span>16</span> <span>17</span> <span>18</span> <span>19</span> <span>20</span>
-                        <span>21</span> <span>22</span> <span>23</span> <span>24</span> <span>25</span> <span>26</span> <span>27</span>
-                        <span>28</span> <span>29</span> <span>30</span> <span class="text-muted">1</span> <span class="text-muted">2</span> <span class="text-muted">3</span> <span class="text-muted">4</span>
-                    </div>
+                    <div class="days-grid" id="calendarGrid"></div>
                 </div>
             </div>
 
             <div class="filter-bar">
                 <div class="search-input">
-                    <span class="placeholder">Value</span>
+                    <input type="text" id="searchInput" placeholder="ค้นหาชื่อกิจกรรม..." style="border:none; outline:none; width:100%; background:transparent; font-family:inherit;">
                 </div>
+
+                <div class="search-input">
+                    <input type="text" id="searchTagInput" placeholder="ค้นหาตาม Tag (เช่น music)..." style="border:none; outline:none; width:100%; background:transparent; font-family:inherit;">
+                    <button id="searchTagBtn" style="background:none; border:none; cursor:pointer; font-weight:bold; color:#333;">ค้นหา</button>
+                </div>
+
                 <div class="sort-filter">
                     <span>Sort By</span>
-                    <select class="pill-select"><option>Value</option></select>
-                    <button class="pill-btn">Filter <i class="fa-solid fa-filter"></i></button>
+                    <select id="sortSelect" class="pill-select">
+                        <option value="date-desc">เวลา (ใหม่ - เก่า)</option>
+                        <option value="date-asc">เวลา (เก่า - ใหม่)</option>
+                        <option value="members-desc">ผู้เข้าร่วม (มาก - น้อย)</option>
+                        <option value="members-asc">ผู้เข้าร่วม (น้อย - มาก)</option>
+                        <option value="name-asc">ชื่อ (A - Z)</option>
+                        <option value="name-desc">ชื่อ (Z - A)</option>
+                    </select>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="content-container">
-        <div class="recommend-section">
+        <div class="recommend-section" id="eventContainer">
             <div class="section-title">
-                <h2>Recommended Events</h2>
+                <h2 id="sectionHeader">Recommended Events</h2>
                 <p>Subheading</p>
             </div>
+
             @foreach (var ev in Model)
-                    {
-                        <div class="event-card">
-                            <div class="card-img placeholder-img"></div>
-                            <div class="card-content">
-                            <h3>@ev.Title</h3>
-                            <p class="desc">@ev.Description</p>
-                                <div class="tags">
+            {
+                <div class="Event" data-date="@ev.DateTime.ToString("yyyy-MM-dd")">
+                    <div class="event-card">
+                        <div class="event-image">
+                            @if (!string.IsNullOrEmpty(ev.Image))
+                            {
+                                <img src="@ev.Image" alt="event image" style="width:110px;height:110px;object-fit:cover;border-radius:8px;" />
+                            }
+                        </div>
+
+                        <div class="event-main">
+                            <h3 class="event-title">@ev.Title</h3>
+                            <p class="event-desc">@ev.Description</p>
+
+                            <div class="event-chips">
                                 @if (ev.Tags != null && ev.Tags.Any())
                                 {
-                                    @foreach (var tagName in ev.Tags)
+                                    foreach (var tag in ev.Tags)
                                     {
-                                        <span class="tag black">#@tagName</span>
+                                        <button type="button" class="chip">@tag</button>
                                     }
                                 }
-                                else
-                                {
-                                    <span class="tag dark">ไม่มีแท็ก</span>
-                                }
-                                </div>
-                                <div class="time-control">
-                                <select><option>@ev.DateTime.ToString("HH:mm")</option></select>
-                                <input type="text" placeholder="@ev.DateTime.ToString("dd")" class="date-box">
-                                <input type="text" placeholder="@ev.DateTime.ToString("MMM")" class="date-box">
-                                <input type="text" placeholder="@ev.DateTime.ToString("yyyy")" class="date-box">
-                                </div>
-                                <div class="card-footer">
-                                    <div class="actions">
-                                        <button class="btn-gray">View Info</button>
-                                        <div class="avatars">
-                                            <img src="https://ui-avatars.com/api/?name=A&background=orange" class="avatar-sm">
-                                            <img src="https://ui-avatars.com/api/?name=B&background=blue" class="avatar-sm">
-                                            <img src="https://ui-avatars.com/api/?name=C&background=green" class="avatar-sm">
-                                            <span class="avatar-sm more">+1</span>
-                                        </div>
-                                    </div>
-                                <div class="members">@ev.CurrentParticipants / @ev.MaxParticipants Members</div>
-                                </div>
+                            </div>
+
+                            <div class="event-row">
+                                <span>@ev.Location</span>
+                                <span>@ev.DateTime.ToString("dd/MM/yyyy")</span>
+                            </div>
+
+                            <div class="event-actions">
+                                <button type="button" class="view-btn view-info-btn">View Info</button>
                             </div>
                         </div>
-                    }
-                    <div class="event-card">
-                <div class="card-img placeholder-img"></div>
-                <div class="card-content">
-                    <h3>Event</h3>
-                    <p class="sub-desc">ชื่อเจ้าของกิจกรรม</p>
-                    <p class="desc">คำอธิบาย / ข้อจำกัดของกิจกรรม</p>
 
-                    <div class="tags" style="margin-top: 10px;">
-                        <span class="tag black">Label</span>
-                        <span class="tag dark">Tag</span>
-                    </div>
-                    <div class="time-control">
-                        <select><option>เวลา</option></select>
-                        <input type="text" placeholder="วัน" class="date-box">
-                        <input type="text" placeholder="เดือน" class="date-box">
-                        <input type="text" placeholder="ปี" class="date-box">
+                        <div class="members">@ev.CurrentParticipants/@ev.MaxParticipants Members</div>
                     </div>
 
-                    <div class="card-footer">
-                        <button class="btn-gray ">Join</button>
-                        <div class="members">30/60 Members</div>
+                    <div class="Event-ex">
+                        <div class="eventcard-ex">
+                            <div class="eventimage-ex">
+                                @if (!string.IsNullOrEmpty(ev.Image))
+                                {
+                                    <img src="@ev.Image" alt="event image" style="width:110px;height:110px;object-fit:cover;border-radius:8px;" />
+                                }
+                            </div>
+
+                            <div style="flex:1;">
+                                <h3>@ev.Title (Expanded)</h3>
+                                <p>@ev.Description</p>
+
+                                <p><strong>Location:</strong> @ev.Location</p>
+                                <p><strong>Date:</strong> @ev.DateTime.ToString("dd MMM yyyy HH:mm")</p>
+
+                                <div class="event-chips">
+                                    @if (ev.Tags != null && ev.Tags.Any())
+                                    {
+                                        foreach (var tag in ev.Tags)
+                                        {
+                                            <button type="button" class="chip">@tag</button>
+                                        }
+                                    }
+                                </div>
+
+                                <button type="button" class="join-btn close-info-btn">Join</button>
+                            </div>
+
+                            <div class="members-ex">@ev.CurrentParticipants/@ev.MaxParticipants Members</div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
         </div>
     </div>
-
     <script src="~/js/myevent.js"></script>
 </body>
-}
 </html>

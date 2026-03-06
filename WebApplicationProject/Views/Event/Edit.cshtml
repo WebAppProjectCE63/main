@@ -1,72 +1,110 @@
 ﻿@model WebApplicationProject.Models.Event
 <link rel="stylesheet" href="~/css/eventPrev_eventForm.css" asp-append-version="true" />
-@section Banner{
-    <div class="head">
-        <h1>Edit Event</h1>
-        <p>แก้ไขกิจกรรม</p>
-    </div>
-}
-<h3>กิจกรรมที่แก้ไข</h3>
-<div id="eventPrev" class="eventPrev">
-    <div class="eventImage">
-        <img id="prevImage" src=@Model.Image />
-    </div>
-    <div class="eventDetail">
-        <h4><b>ชื่อ: </b><span id="prevTitle">@Model.Title</span></h4>
-        <p><b>คำอธิบาย: </b><span id="prevDesc">@Model.Description</span></p>
-        <div>
-            <b>Tag(s): </b>
-            <span id="prevTags">
-                @if (Model.Tags != null)
-                {
-                    foreach (var tag in Model.Tags)
-                    {
-                        <span class="tag-badge">#@tag</span>
-                    }
-                }
-            </span>
-        </div>
-        <div class="meta-info"><b>จำนวนคน: </b><span id="prevMaxParti">@Model.MaxParticipants</span> คน</div>
-        <div class="meta-info"><b>วันที่ - เวลา: </b><span id="prevDate">@Model.DateTime.ToString("d MMMM yyyy - HH:mm น.", new System.Globalization.CultureInfo("th-TH"))</span></div>
-        <div class="meta-info"><b>สถานที่: </b><span id="prevLocation">@Model.Location</span></div>
-        <a href="@Url.Action("Manage", "Event", new { id = Model.Id })" class="btnLink">จัดการกิจกรรม</a>
-    </div>
+<div class="head">
+    <h1>Edit Event</h1>
+    <p>แก้ไขกิจกรรม</p>
 </div>
-<h3>ฟอร์มแก้ไขข้อมูล</h3>
-<form asp-action="Edit" method="post" class="eventForm" id="eventForm" enctype="multipart/form-data">
-    <input type="hidden" asp-for="Id" />
-    <input type="hidden" asp-for="Image" id="oldImageUrl" />
-    <div class="title">
-        <label>ชื่อ Event:</label>
-        <input asp-for="Title" id="inputTitle" />
+<div class="my-container">
+    <h3>กิจกรรมที่แก้ไข</h3>
+    <div id="eventPrev" class="eventPrev">
+        <div class="eventImage">
+            <img id="prevImage" src=@Model.Image />
+        </div>
+        <div class="eventDetail">
+            <h4><b>ชื่อ: </b><span id="prevTitle">@Model.Title</span></h4>
+            <p><b>คำอธิบาย: </b><span id="prevDesc">@Model.Description</span></p>
+            <div>
+                <b>Tag(s): </b>
+                <span id="prevTags">
+                    @if (Model.Tags != null)
+                    {
+                        foreach (var tag in Model.Tags)
+                        {
+                            <span class="tag-badge">@tag</span>
+                        }
+                    }
+                </span>
+            </div>
+            <div class="meta-info">
+                <b>จำนวนคน: </b><span id="prevMaxParti">
+                    @Model.MaxParticipants
+                    @if (Model.MaxWaiting > 0)
+                    {
+                        <text>(สำรอง @Model.MaxWaiting)</text>
+                    }
+                </span> คน
+            </div>
+            <div class="meta-info">
+                <b>ระยะเวลากิจกรรม: </b>
+                <span id="prevDate">
+                    @if (Model.DateTime.Date == Model.EndDateTime.Date)
+                    {
+                        <text>@Model.DateTime.ToString("d MMMM yyyy ( HH:mm") - @Model.EndDateTime.ToString("HH:mm )")</text>
+                    }
+                    else
+                    {
+                        <text>@Model.DateTime.ToString("d MMMM yyyy ( HH:mm )") - @Model.EndDateTime.ToString("d MMMM yyyy ( HH:mm )")</text>
+                    }
+                </span>
+            </div>
+            <div class="meta-info"><b>สถานที่: </b><span id="prevLocation">@Model.Location</span></div>
+            <a href="@Url.Action("Manage", "Event", new { id = Model.Id })" class="btnLink">จัดการกิจกรรม</a>
+        </div>
     </div>
-    <div class="description">
-        <label>คำอธิบาย</label>
-        <input asp-for="Description" id="inputDesc" />
-    </div>
-    <div class="imageUpload">
-        <label>อัพโหลดรูปภาพ</label>
-        <input type="file" name="uploadImage" id="inputImg" class="form-control" accept="image/*" />
-    </div>
-    <div class="tag">
-        <label>ใส่ Tag (คั่นด้วยลูกน้ำ)</label>
-        <input name="Tag" id="inputTag" value="@string.Join(",", Model.Tags)"/>
-    </div>
-    <div class="maxParti">
-        <label>จำนวนคน</label>
-        <input asp-for="MaxParticipants" id="inputMaxParti" />
-    </div>
-    <div class="time">
-        <label>วันที่ - เวลา</label>
-        <input asp-for="DateTime" id="inputDateTime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" type="datetime-local" value="@Model.DateTime.ToString("yyyy-MM-ddTHH:MM", System.Globalization.CultureInfo.InvariantCulture)" />
-    </div>
-    <div class="location">
-        <label>สถานที่</label>
-        <input asp-for="Location" id="inputLocation" />
-    </div>
-    <button type="submit">บันทึก</button>
-    <button id="btnRst" type="button">รีเซ็ท</button>
-</form>
+    <h3>ฟอร์มแก้ไขข้อมูล</h3>
+    <form asp-action="Edit" method="post" class="eventForm" id="eventForm" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="Image" id="oldImageUrl" />
+        <div class="title">
+            <label>ชื่อ Event:</label>
+            <input asp-for="Title" id="inputTitle" required />
+        </div>
+        <div class="description">
+            <label>คำอธิบาย</label>
+            <input asp-for="Description" id="inputDesc" required />
+        </div>
+        <div class="imageUpload">
+            <label>อัพโหลดรูปภาพ</label>
+            <input type="file" name="uploadImage" id="inputImg" class="form-control" accept="image/*" />
+        </div>
+        <div class="tag">
+            <label>ใส่ Tag (คั่นด้วยลูกน้ำ)</label>
+            <input name="Tag" id="inputTag" value="@(Model.Tags != null ? string.Join(", ", Model.Tags) : "")" />
+        </div>
+        <div class="maxParti">
+            <label>จำนวนคน</label>
+            <div class="parti">
+                <div class="start">
+                    <label>ตัวจริง</label>
+                    <input asp-for="MaxParticipants" id="inputMaxParti" placeholder="ใส่ตัวเลข(ไม่รวมตนเอง)" min="1" required />
+                </div>
+                <div class="waiting">
+                    <label>ตัวสำรอง</label>
+                    <input asp-for="MaxWaiting" id="inputMaxWait" placeholder="กรอกจำนวนตัวจริงก่อน" min="0" required />
+                </div>
+            </div>
+        </div>
+        <div class="time">
+            <label>ระยะเวลากิจกรรม</label>
+            <div class="period">
+                <div class="start">
+                    <label>เริ่มต้น</label>
+                    <input asp-for="DateTime" id="inputDateTime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" type="datetime-local" value="@Model.DateTime.ToString("yyyy-MM-ddTHH:mm")" required />
+                </div>
+                <div class="end">
+                    <label>สิ้นสุด</label>
+                    <input asp-for="EndDateTime" id="inputEndDateTime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" type="datetime-local" value="@Model.EndDateTime.ToString("yyyy-MM-ddTHH:mm")" required />
+                </div>
+            </div>
+        </div>
+        <div class="location">
+            <label>สถานที่</label>
+            <input asp-for="Location" id="inputLocation" required />
+        </div>
+        <button type="submit">บันทึก</button>
+        <button id="btnRst" type="button">รีเซ็ท</button>
+    </form>
+</div>
 @section Scripts {
     <script src="~/js/showPreview.js" asp-append-version="true"></script>
 }
