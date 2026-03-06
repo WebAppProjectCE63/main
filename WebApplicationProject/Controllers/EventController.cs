@@ -200,7 +200,7 @@ namespace WebApplicationProject.Controllers
 
                 ev.CurrentParticipants = ev.Participants.Count(p => p.Status == ParticipationStatus.Confirmed);
 
-                return RedirectToAction("Home", "Home"); 
-            }
+                return RedirectToAction("Myevent", "Event");
+        }
         }
     }
