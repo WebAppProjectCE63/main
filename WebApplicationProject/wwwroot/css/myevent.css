@@ -281,6 +281,7 @@ body {
 }
 
 .event-image {
+    position: relative;
     width: 110px;
     height: 110px;
     background: #e9e9e9;
@@ -384,6 +385,39 @@ body {
     margin-top: 15px;
 }
 
+.status-badge {
+    display: flex; /* 🚨 ใช้ Flexbox ช่วยจัดระเบียบ */
+    justify-content: center; /* 🚨 จัดตัวหนังสือให้อยู่กึ่งกลางแนวนอน */
+    align-items: center; /* 🚨 จัดตัวหนังสือให้อยู่กึ่งกลางแนวตั้ง */
+    width: 100%; /* ให้ป้ายกว้างเท่ากับรูปภาพด้านบน */
+    box-sizing: border-box;
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: bold;
+    color: white;
+    letter-spacing: 0.5px;
+}
+
+/* กำหนดสีให้แต่ละสถานะ */
+.status-upcoming {
+    background-color: #4caf50; /* สีเขียว */
+}
+
+.status-ongoing {
+    background-color: #ff9800; /* สีส้ม */
+}
+
+.status-ended {
+    background-color: #6c757d; /* สีเทา */
+}
+
+.view-btn {
+    background-color: #ffc107;
+    color: black;
+    border: none;
+    cursor: pointer;
+}
 /* Base button style - forces equal size and layout */
 .view-btn {
     border: 1px solid #aaa;
@@ -400,7 +434,7 @@ body {
     font-size: 14px;
     font-family: inherit;
     color: #333;
-    text-decoration: none; 
+    text-decoration: none;
 }
 
 /* Modifier for Manage button */

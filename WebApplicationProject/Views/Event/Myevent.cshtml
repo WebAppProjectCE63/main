@@ -115,11 +115,38 @@
 
                 <div class="Event" data-date="@ev.DateTime.ToString("yyyy-MM-dd")">
                     <div class="event-card">
-                        <div class="event-image">
-                            @if (!string.IsNullOrEmpty(ev.Image))
-                            {
-                                <img src="@ev.Image" alt="event image" class="event-img-fit" />
+                        <div class="image-column" style="display: flex; flex-direction: column; gap: 8px; align-items: center; flex-shrink: 0;">
+                            <div class="event-image">
+                                @if (!string.IsNullOrEmpty(ev.Image))
+                                {
+                                    <img src="@ev.Image" alt="event image" class="event-img-fit" />
+                                }
+                            </div>
+
+                            @{
+                                DateTime now = DateTime.Now;
+                                string timeStatusText = "";
+                                string statusClass = "";
+
+                                if (now > ev.EndDateTime)
+                                {
+                                    timeStatusText = "Ended";
+                                    statusClass = "status-ended";
+                                }
+                                else if (now >= ev.DateTime && now <= ev.EndDateTime)
+                                {
+                                    timeStatusText = "Ongoing";
+                                    statusClass = "status-ongoing";
+                                }
+                                else
+                                {
+                                    timeStatusText = "Upcoming";
+                                    statusClass = "status-upcoming";
+                                }
                             }
+
+                            <span class="status-badge @statusClass" style="width: 100%; box-sizing: border-box;">@timeStatusText</span>
+
                         </div>
 
                         <div class="event-main">
@@ -147,7 +174,6 @@
                                     }
                                 }
                             </div>
-
                             <div class="event-row">
                                 <span>@ev.Location</span>
                                 <span>@ev.DateTime.ToString("dd/MM/yyyy")</span>
@@ -157,8 +183,11 @@
                                 <button type="button" class="view-btn view-info-btn">View Info</button>
                                 @if (isHost)
                                 {
-                                    <a href="@Url.Action("Manage", "Event", new { id = ev.Id })" class="view-btn btn-dark-link">Manage</a>
-                                    <a href="@Url.Action("Edit", "Event", new { id = ev.Id })" class="view-btn btn-link">Edit</a>
+                                    @if (DateTime.Now <= ev.EndDateTime)
+                                    {
+                                        <a href="@Url.Action("Manage", "Event", new { id = ev.Id })" class="view-btn btn-dark-link">Manage</a>
+                                        <a href="@Url.Action("Edit", "Event", new { id = ev.Id })" class="view-btn btn-link">Edit</a>
+                                    }
                                 }
                             </div>
 
@@ -169,19 +198,39 @@
                                 <div class="extra-actions">
                                     @if (isHost)
                                     {
-                                        <a href="@Url.Action("Manage", "Event", new { id = ev.Id })" class="view-btn btn-dark-link">Manage Event</a>
-                                        <a href="@Url.Action("Edit", "Event", new { id = ev.Id })" class="view-btn btn-link">Edit</a>
+                                        @if (DateTime.Now <= ev.EndDateTime)
+                                        {
+                                            <a href="@Url.Action("Manage", "Event", new { id = ev.Id })" class="view-btn btn-dark-link">Manage Event</a>
+                                            <a href="@Url.Action("Edit", "Event", new { id = ev.Id })" class="view-btn btn-link">Edit</a>
+                                        }
+                                        @if (DateTime.Now >= ev.DateTime)
+                                        {
+                                            <button type="button" class="view-btn" onclick="window.location.href='@Url.Action("Review", "Event", new { id = ev.Id })'">
+                                                View Reviews
+                                            </button>
+                                        }
                                     }
                                     else
                                     {
-                                        <button type="button" class="view-btn btn-disabled" disabled>
-                                            @(participantInfo?.Status == ParticipationStatus.Confirmed ? "Joined" : "Waiting for Confirmation")
-                                        </button>
+                                        // สำหรับผู้เข้าร่วม (Participants)
+                                        @if (DateTime.Now >= ev.DateTime)
+                                        {
+                                            <button type="button" onclick="window.location.href='@Url.Action("Review", "Event", new { id = ev.Id })'">
+                                                Review Event
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button type="button" class="view-btn btn-disabled" disabled>
+                                                @(participantInfo?.Status == WebApplicationProject.Models.ParticipationStatus.Confirmed ? "Joined" : "Waiting for Confirmation")
+                                            </button>
 
-                                        <form action="@Url.Action("CancelJoin", "Event")" method="post" style="display:inline;" onsubmit="return confirm('คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการเข้าร่วมกิจกรรมนี้?');">
-                                            <input type="hidden" name="eventId" value="@ev.Id" />
-                                            <button type="submit" class="view-btn btn-danger-outline">Cancel Join</button>
-                                        </form>
+                                            <form action="@Url.Action("CancelJoin", "Event")" method="post" style="display:inline;"
+                                                  onsubmit="return confirm('คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการเข้าร่วมกิจกรรมนี้?');">
+                                                <input type="hidden" name="eventId" value="@ev.Id" />
+                                                <button type="submit" class="view-btn btn-danger-outline">Cancel Join</button>
+                                            </form>
+                                        }
                                     }
                                     <button type="button" class="view-btn btn-link close-info-btn">Close</button>
                                 </div>
