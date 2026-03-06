@@ -202,5 +202,24 @@ namespace WebApplicationProject.Controllers
 
                 return RedirectToAction("Home", "Home"); 
             }
+        [HttpPost]
+        public IActionResult CancelJoin(int eventId)
+        {
+            var ev = MockDB.EventList.FirstOrDefault(e => e.Id == eventId);
+            if (ev == null) return NotFound("ไม่พบกิจกรรมนี้");
+
+            int userId = MockDB.CurrentLoggedInUserId;
+            var ticket = ev.Participants.FirstOrDefault(p => p.UserId == userId && p.Status != ParticipationStatus.Remove);
+
+            if (ticket != null)
+            {
+                ticket.Status = ParticipationStatus.Remove;
+
+                ev.CurrentParticipants = ev.Participants.Count(p => p.Status == ParticipationStatus.Confirmed);
+            }
+
+            return RedirectToAction("Myevent");
         }
+
+    }
     }
