@@ -153,9 +153,16 @@
                                 <div class="event-actions">
                                     <button type="button" class="view-btn view-info-btn">View Info</button>
                                 </div>
-                            </div>
+                            </div>   
+                            <div class="member-container">
+                                <div class="members">
+                                    @ev.CurrentParticipants/@ev.MaxParticipants Members
+                                </div>
 
-                            <div class="members">@ev.CurrentParticipants/@ev.MaxParticipants Members</div>
+                                <div class="waiting">
+                                    @ev.CurrentWaiting/@ev.MaxWaiting Waiting
+                                </div>
+                            </div>
                         </div>
 
 
@@ -217,8 +224,15 @@
 
                                     </div>
                                 </div>
+                                <div class="member-container">
+                                    <div class="members-ex">
+                                        @ev.CurrentParticipants/@ev.MaxParticipants Members
+                                    </div>
 
-                                <div class="members-ex">@ev.CurrentParticipants/@ev.MaxParticipants Members</div>
+                                    <div class="waiting">
+                                        @ev.CurrentWaiting/@ev.MaxWaiting Waiting
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -340,7 +354,6 @@
                         }
                     }
 
-
                     if (searchInput) {
                         searchInput.addEventListener('input', () => {
                             activeSearch = "name";
@@ -354,14 +367,6 @@
                             applyFilters();
                         });
                     }
-
-                    if (searchTagBtn) {
-                        searchTagBtn.addEventListener('click', () => {
-                            activeSearch = "tag";
-                            applyFilters();
-                        });
-                    }
-
 
                     const sortSelect = document.getElementById('sortSelect');
                     const eventContainer = document.getElementById('eventContainer');
@@ -401,7 +406,6 @@
 
                         sortSelect.dispatchEvent(new Event('change'));
                     }
-
 
                     const today = new Date();
                     monthSelect.value = today.getMonth();
@@ -475,7 +479,6 @@
                             if(expandSection) expandSection.classList.remove('active');
                         }
                     });
-
 
                     applyFilters();
                 });
