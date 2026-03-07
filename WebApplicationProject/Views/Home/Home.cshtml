@@ -120,8 +120,12 @@
 
                 @foreach (var ev in Model)
                 {
+                    var isFull = ev.CurrentParticipants >= ev.MaxParticipants && ev.CurrentWaiting >= ev.MaxWaiting;
+
                     <div class="Event" data-date="@ev.DateTime.ToString("yyyy-MM-dd")">
-                        <div class="event-card">
+
+                       
+                        <div class="event-card normal-card">
                             <div class="event-image">
                                 @if (!string.IsNullOrEmpty(ev.Image))
                                 {
@@ -150,10 +154,18 @@
                                     <span>@ev.DateTime.ToString("dd/MM/yyyy")</span>
                                 </div>
 
+
+                                <div class="event-row">
+                                    <span>
+                                        @ev.DateTime.ToString("HH:mm") - @ev.EndDateTime.ToString("HH:mm")
+                                    </span>
+                                </div>
+
                                 <div class="event-actions">
                                     <button type="button" class="view-btn view-info-btn">View Info</button>
                                 </div>
-                            </div>   
+                            </div>
+
                             <div class="member-container">
                                 <div class="members">
                                     @ev.CurrentParticipants/@ev.MaxParticipants Members
@@ -165,9 +177,9 @@
                             </div>
                         </div>
 
-
+                  
                         <div class="Event-ex">
-                            <div class="eventcard-ex">
+                            <div class="eventcard-ex expanded-card">
                                 <div class="eventimage-ex">
                                     @if (!string.IsNullOrEmpty(ev.Image))
                                     {
@@ -178,11 +190,12 @@
                                 </div>
 
                                 <div style="flex:1;">
-                                    <h3>@ev.Title (Expanded)</h3>
+                                    <h3>@ev.Title</h3>
                                     <p>@ev.Description</p>
 
                                     <p><strong>Location:</strong> @ev.Location</p>
-                                    <p><strong>Date:</strong> @ev.DateTime.ToString("dd MMM yyyy HH:mm")</p>
+                                    <p><strong>Date:</strong> @ev.DateTime.ToString("dd MMM yyyy")</p>
+                                    <p><strong>Time:</strong> @ev.DateTime.ToString("HH:mm") - @ev.EndDateTime.ToString("HH:mm")</p>
 
                                     <div class="event-chips">
                                         @if (ev.Tags != null && ev.Tags.Any())
@@ -195,7 +208,6 @@
                                     </div>
 
                                     <div class="event-actions">
-   
                                         @if (ev.UserHostId == MockDB.CurrentLoggedInUserId)
                                         {
                                             <a class="join-btn"
@@ -212,6 +224,12 @@
                                                 Manage
                                             </a>
                                         }
+                                        else if (isFull)
+                                        {
+                                            <button type="button" class="join-btn" disabled>
+                                                Event is full
+                                            </button>
+                                        }
                                         else
                                         {
                                             <form asp-controller="Event" asp-action="Join" method="post">
@@ -221,9 +239,9 @@
                                         }
 
                                         <button type="button" class="join-btn close-info-btn">Hide</button>
-
                                     </div>
                                 </div>
+
                                 <div class="member-container">
                                     <div class="members-ex">
                                         @ev.CurrentParticipants/@ev.MaxParticipants Members
@@ -237,6 +255,7 @@
                         </div>
                     </div>
                 }
+                
             </div>
         </div>
 
@@ -463,21 +482,46 @@
 
                     document.addEventListener('click', function(e){
 
-                        if(e.target.classList.contains('view-info-btn')){
+                        const viewBtn = e.target.closest('.view-info-btn');
 
-                            const wrapper = e.target.closest('.Event');
-                            const expandSection = wrapper?.querySelector('.Event-ex');
+                        if(viewBtn){
 
-                            if(expandSection) expandSection.classList.toggle('active');
+                            const wrapper = viewBtn.closest('.Event');
+                            if(!wrapper) return;
+
+                            const normalCard = wrapper.querySelector('.normal-card');
+                            const expandSection = wrapper.querySelector('.Event-ex');
+
+                            if(normalCard){
+                                normalCard.style.display = "none";
+                            }
+
+                            if(expandSection){
+                                expandSection.classList.add("active");
+                            }
+
+                            return;
                         }
 
-                        if(e.target.classList.contains('close-info-btn')){
+                        const closeBtn = e.target.closest('.close-info-btn');
 
-                            const wrapper = e.target.closest('.Event');
-                            const expandSection = wrapper?.querySelector('.Event-ex');
+                        if(closeBtn){
 
-                            if(expandSection) expandSection.classList.remove('active');
+                            const wrapper = closeBtn.closest('.Event');
+                            if(!wrapper) return;
+
+                            const normalCard = wrapper.querySelector('.normal-card');
+                            const expandSection = wrapper.querySelector('.Event-ex');
+
+                            if(normalCard){
+                                normalCard.style.display = "flex";
+                            }
+
+                            if(expandSection){
+                                expandSection.classList.remove("active");
+                            }
                         }
+
                     });
 
                     applyFilters();

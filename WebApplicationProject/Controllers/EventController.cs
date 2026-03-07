@@ -184,12 +184,15 @@ namespace WebApplicationProject.Controllers
 
             int userId = MockDB.CurrentLoggedInUserId;
 
-            var existing = ev.Participants.FirstOrDefault(p =>
-                p.UserId == userId &&
-                p.Status != ParticipationStatus.Remove);
+            var existing = ev.Participants.FirstOrDefault(p => p.UserId == userId);
 
             if (existing != null)
+            {
+                if (existing.Status == ParticipationStatus.Remove)
+                    return BadRequest("คุณถูกนำออกจากกิจกรรมนี้และไม่สามารถเข้าร่วมซ้ำได้");
+
                 return BadRequest("คุณเข้าร่วมกิจกรรมนี้แล้ว");
+            }
 
             bool hasTimeConflict = MockDB.EventList.Any(otherEvent =>
                 otherEvent.Id != ev.Id &&
@@ -237,7 +240,11 @@ namespace WebApplicationProject.Controllers
             ev.CurrentParticipants = ev.Participants.Count(p => p.Status == ParticipationStatus.Confirmed);
             ev.CurrentWaiting = ev.Participants.Count(p => p.Status == ParticipationStatus.Waiting);
 
+
             return RedirectToAction("Myevent", "Event");
+
+        }
+
         }
     }
-}
+
