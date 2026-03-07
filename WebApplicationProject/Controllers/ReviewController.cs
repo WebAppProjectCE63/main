@@ -8,18 +8,26 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApplicationProject.Controllers
 {
     public class ReviewController : Controller
     {
+        private readonly ApplicationDbContext _context;
+
+        public ReviewController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+        private int CurrentUserId => HttpContext.Session.GetInt32("UserId") ?? 0;
         public IActionResult Review(int id)
         {
             // 1. ดึงข้อมูล Event
-            var ev = MockDB.EventList.FirstOrDefault(e => e.Id == id);
+            var ev = _context.Events.Include(e => e.Participants).FirstOrDefault(e => e.Id == id);
             if (ev == null) return NotFound();
 
-            int currentUserId = MockDB.CurrentLoggedInUserId;
+            int currentUserId = CurrentUserId;
 
             var viewModel = new ReviewEventViewModel
             {
@@ -34,9 +42,17 @@ namespace WebApplicationProject.Controllers
                 .OrderBy(p => p.JoinedAt)
                 .ToList();
 
+            var participantIds = participants.Select(p => p.UserId).ToList();
+            if (!participantIds.Contains(ev.UserHostId)) participantIds.Add(ev.UserHostId);
+
+            var relatedUsers = _context.Users
+                .Include(u => u.Reviewslist)
+                .Where(u => participantIds.Contains(u.Id))
+                .ToList();
+
             foreach (var p in participants)
             {
-                var user = MockDB.UsersList.FirstOrDefault(u => u.Id == p.UserId);
+                var user = relatedUsers.FirstOrDefault(u => u.Id == p.UserId);
                 if (user != null)
                 {
                     var existingReview = user.Reviewslist?.FirstOrDefault(r => r.EventId == ev.Id && r.UserId == currentUserId);
@@ -53,7 +69,7 @@ namespace WebApplicationProject.Controllers
             // 3. ดึงข้อมูล Host (ถ้า Host ไม่ใช่ตัวเอง และยังไม่อยู่ในลิสต์เข้าร่วมด้านบน)
             if (ev.UserHostId != currentUserId && !viewModel.TargetUsers.Any(t => t.UserInfo.Id == ev.UserHostId))
             {
-                var hostUser = MockDB.UsersList.FirstOrDefault(u => u.Id == ev.UserHostId);
+                var hostUser = relatedUsers.FirstOrDefault(u => u.Id == ev.UserHostId);
                 if (hostUser != null)
                 {
                     var existingReview = hostUser.Reviewslist?.FirstOrDefault(r => r.EventId == ev.Id && r.UserId == currentUserId);
@@ -73,7 +89,7 @@ namespace WebApplicationProject.Controllers
         [HttpPost]
         public IActionResult SubmitReview(int EventId, int UserId, int stars, string reviewtitle, int TargetUserId, string reviewbody, bool showname)
         {
-            var targetUser = MockDB.UsersList.FirstOrDefault(u => u.Id == TargetUserId);
+            var targetUser = _context.Users.Include(u => u.Reviewslist).FirstOrDefault(u => u.Id == TargetUserId);
             if (targetUser == null) return NotFound();
 
             var existing = targetUser.Reviewslist.FirstOrDefault(r => r.EventId == EventId && r.UserId == UserId);
@@ -86,10 +102,8 @@ namespace WebApplicationProject.Controllers
             }
             else
             {
-                var newId = (targetUser.Reviewslist.Count == 0) ? 1 : targetUser.Reviewslist.Max(r => r.Id) + 1;
                 var newReview = new Review
                 {
-                    Id = newId,
                     EventId = EventId,
                     UserId = UserId,
                     stars = stars,
@@ -99,6 +113,7 @@ namespace WebApplicationProject.Controllers
                 };
                 targetUser.Reviewslist.Add(newReview);
             }
+            _context.SaveChanges();
             return RedirectToAction("Review", new { id = EventId });
         }
     }
