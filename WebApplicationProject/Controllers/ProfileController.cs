@@ -4,43 +4,78 @@ using System.Net.Http;
 using System.Text.Json;
 using System.IO;
 using WebApplicationProject.Data;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System;
 namespace WebApplicationProject.Controllers
 {
     public class ProfileController : Controller
     {
         public IActionResult profilepage(int? id = null)
-        {
-            int targetId = id ?? MockDB.CurrentLoggedInUserId;
-
-            var joineventList = MockDB.EventList.Where(ev => ev.Participants.Any(p => p.UserId == targetId)).ToList();
-
-            var hosteventList = GetMyHostedEvents(MockDB.EventList, targetId);
-
-            var reviewList = MockDB.UsersList.FirstOrDefault(u => u.Id == targetId).Reviewslist;
-
-            User currentUser = MockDB.UsersList.FirstOrDefault(u => u.Id == targetId);
-
-            var viewModel = new ProfilePageViewModel
             {
-                UserInfo = currentUser,
-                HostedEvents = hosteventList,
-                JoinedEvents = joineventList,
-            };
+                int targetId = id ?? MockDB.CurrentLoggedInUserId;
+                User currentUser = MockDB.UsersList.FirstOrDefault(u => u.Id == targetId);
 
-            if (currentUser.Settings.PrivateAccount && currentUser.Id != MockDB.CurrentLoggedInUserId)
-            {
-                viewModel.HostedEvents = new List<Event>();
-                viewModel.JoinedEvents = new List<Event>();
+                if (currentUser == null) return NotFound();
+
+                var viewModel = new ProfilePageViewModel
+                {
+                    UserInfo = currentUser,
+                    CurrentLoggedInUserId = MockDB.CurrentLoggedInUserId
+                };
+
+                if (currentUser.Settings.PrivateAccount && currentUser.Id != MockDB.CurrentLoggedInUserId)
+                {
+                    return View(viewModel);
+                }
+
+                var rawHostedEvents = GetMyHostedEvents(MockDB.EventList, targetId);
+                viewModel.HostedEvents = rawHostedEvents.Select(ev => new EventDisplayModel
+                {
+                    EventData = ev,
+                    ParticipantAvatars = MockDB.UsersList.Where(u => ev.Participants
+                        .Where(p => p.Status == ParticipationStatus.Confirmed)
+                        .Select(p => p.UserId)
+                        .Contains(u.Id))
+                        .Take(3)
+                        .ToList()
+                }).ToList();
+
+                var rawJoinedEvents = MockDB.EventList
+                    .Where(ev => ev.Participants.Any(p => p.UserId == targetId && p.Status == ParticipationStatus.Confirmed))
+                    .ToList();
+
+                viewModel.JoinedEvents = rawJoinedEvents.Select(ev => new EventDisplayModel
+                {
+                    EventData = ev,
+                    ParticipantAvatars = MockDB.UsersList.Where(u => ev.Participants
+                        .Where(p => p.Status == ParticipationStatus.Confirmed)
+                        .Select(p => p.UserId)
+                        .Contains(u.Id))
+                        .Take(3)
+                        .ToList()
+                }).ToList();
+
+                // --- 3. จัดการ Reviews ---
+                if (currentUser.Reviewslist != null && currentUser.Reviewslist.Any())
+                {
+                    viewModel.Reviews = currentUser.Reviewslist.Select(r => new ReviewDisplayModel
+                    {
+                        ReviewData = r,
+                        Author = MockDB.UsersList.FirstOrDefault(u => u.Id == r.UserId),
+                        EventTitle = MockDB.EventList.FirstOrDefault(e => e.Id == r.EventId)?.Title ?? "Unknown Event"
+                    }).ToList();
+                }
+
+                return View(viewModel);
             }
-            return View(viewModel);
-        }
 
-        private List<Event> GetMyHostedEvents(List<Event> allEvents ,int UserID)
-        {
-            if (allEvents == null) return new List<Event>();
-
-            return allEvents.Where(ev => ev.UserHostId == UserID).ToList();
-        }
+        private List<Event> GetMyHostedEvents(List<Event> allEvents, int UserID)
+            {
+                if (allEvents == null) return new List<Event>();
+                return allEvents.Where(ev => ev.UserHostId == UserID).ToList();
+            }
 
         [HttpPost]
         public async Task<IActionResult> UpdateProfile(User editUser, bool IsPublic, bool ShowEmail, bool ShowJoinedEvents, bool ShowHostedEvents, IFormFile uploadImage)
@@ -61,13 +96,14 @@ namespace WebApplicationProject.Controllers
                 ogUser.FName = editUser.FName;
                 ogUser.SName = editUser.SName;
                 ogUser.Email = editUser.Email;
+                ogUser.Gender = editUser.Gender;
                 ogUser.Settings.PrivateAccount = IsPublic;
                 ogUser.Settings.ShowEmail = ShowEmail;
                 ogUser.Settings.ShowHostedEvents = ShowHostedEvents;
                 ogUser.Settings.ShowJoinedEvents = ShowJoinedEvents;
             }
 
-            return RedirectToAction("profilepage", new { id = ogUser.Id });
+            return RedirectToAction("profilepage");
         }
 
         private async Task<string> UploadImageAsync(IFormFile uploadImage)

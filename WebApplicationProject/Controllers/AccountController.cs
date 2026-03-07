@@ -25,7 +25,7 @@ namespace WebApplicationProject.Controllers
 
         public IActionResult Logout()
         {
-            // ✅ Clear the logged-in user
+            //Clear the logged-in user
             MockDB.CurrentLoggedInUserId = 0; // or default value
             
             HttpContext.Session.Clear();
@@ -33,18 +33,81 @@ namespace WebApplicationProject.Controllers
         }
 
         [HttpPost]
-        public IActionResult Signup(User user)
+        public IActionResult Signup(SignupViewModel model)
         {
-            user.Id = MockDB.UsersList.Max(u => u.Id) + 1;
-            //สร้าง user
-            MockDB.UsersList.Add(user);
+            if (string.IsNullOrEmpty(model.FName))
+            {
+                ViewBag.Error = "Firstname required";
+                return View(model);
+            }
 
-            // ✅ Set the newly created user as the current logged-in user
-            MockDB.CurrentLoggedInUserId = user.Id;
-            
-            // ✅ Store user ID in session for persistence
-            HttpContext.Session.SetInt32("UserId", user.Id);
-            HttpContext.Session.SetString("Username", user.Username);
+            if (string.IsNullOrEmpty(model.SName))
+            {
+                ViewBag.Error = "Surname required";
+                return View(model);
+            }
+
+            if (model.Birthday == default)
+            {
+                ViewBag.Error = "Birthday required";
+                return View(model);
+            }
+
+            if (model.Birthday > DateTime.Now)
+            {
+                ViewBag.Error = "Birthday cannot be in the future";
+                return View(model);
+            }
+
+            if (string.IsNullOrEmpty(model.Username))
+            {
+                ViewBag.Error = "Username required";
+                return View(model);
+            }
+
+            if (MockDB.UsersList.Any(u => u.Username == model.Username))
+            {
+                ViewBag.Error = "Username already exists";
+                return View(model);
+            }
+
+            if (string.IsNullOrEmpty(model.Email))
+            {
+                ViewBag.Error = "Email required";
+                return View(model);
+            }
+
+            if (MockDB.UsersList.Any(u => u.Email == model.Email))
+            {
+                ViewBag.Error = "Email already exists";
+                return View(model);
+            }
+
+            if (string.IsNullOrEmpty(model.Password))
+            {
+                ViewBag.Error = "Password required";
+                return View(model);
+            }
+
+            if (model.Password != model.RepeatPassword)
+            {
+                ViewBag.Error = "Passwords do not match";
+                return View(model);
+            }
+
+            var user = new User
+            {
+                Id = MockDB.UsersList.Max(u => u.Id) + 1,
+                FName = model.FName,
+                SName = model.SName,
+                Birthday = model.Birthday,
+                Username = model.Username,
+                Email = model.Email,
+                Password = model.Password,
+                Image = "https://ui-avatars.com/api/?name=" + model.FName[0] + model.SName[0] + "&background=random"
+            };
+
+            MockDB.UsersList.Add(user);
 
             return RedirectToAction("Login", new { success = true });
         }
@@ -89,5 +152,13 @@ namespace WebApplicationProject.Controllers
 
             return Json(new { success = true });
         }
+        [HttpPost]
+        public JsonResult CheckEmail(string email)
+        {
+            bool exists = MockDB.UsersList.Any(u => u.Email == email);
+
+            return Json(new { exists = exists });
+        }
+
     }
 }

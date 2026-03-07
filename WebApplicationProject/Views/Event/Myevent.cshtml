@@ -1,18 +1,18 @@
-﻿@model IEnumerable<WebApplicationProject.Models.Event>
+﻿@using WebApplicationProject.Data
+@using WebApplicationProject.Models
+@model IEnumerable<WebApplicationProject.Models.Event>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Event Page</title>
+    <title>My Events</title>
     <link rel="stylesheet" href="~/css/myevent.css">
 </head>
 <body>
     @if (TempData["ErrorMessage"] != null)
     {
         <div id="errorAlert" style="background-color: #f8d7da; color: #842029; padding: 15px; border: 1px solid #f5c2c7; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-
             <span>@TempData["ErrorMessage"]</span>
-
             <button onclick="document.getElementById('errorAlert').style.display='none'" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #842029; font-weight: bold;">&times;</button>
         </div>
 
@@ -28,8 +28,8 @@
         </script>
     }
     <div id="event-header">
-        <h1>Event</h1>
-        <p>Event</p>
+        <h1>My Events</h1>
+        <p>กิจกรรมของฉัน</p>
     </div>
     <div class="content-container bg-gray">
         <div class="calendar-wrapper">
@@ -96,23 +96,73 @@
     <div class="content-container">
         <div class="recommend-section" id="eventContainer">
             <div class="section-title">
-                <h2 id="sectionHeader">Recommended Events</h2>
-                <p>Subheading</p>
+                <h2 id="sectionHeader">My Events</h2>
+                <p>กิจกรรมที่คุณเป็นโฮสต์และเข้าร่วม</p>
             </div>
 
             @foreach (var ev in Model)
             {
+                var isHost = ev.UserHostId == MockDB.CurrentLoggedInUserId;
+                var participantInfo = ev.Participants.FirstOrDefault(p => p.UserId == MockDB.CurrentLoggedInUserId && p.Status != ParticipationStatus.Remove);
+
+                if (!isHost && participantInfo == null)
+                {
+                    continue;
+                }
+
+                var maxWaiting = (int)Math.Ceiling(ev.MaxParticipants * 0.5);
+                var currentWaiting = ev.Participants.Count(p => p.Status == ParticipationStatus.Waiting);
+
                 <div class="Event" data-date="@ev.DateTime.ToString("yyyy-MM-dd")">
                     <div class="event-card">
-                        <div class="event-image">
-                            @if (!string.IsNullOrEmpty(ev.Image))
-                            {
-                                <img src="@ev.Image" alt="event image" style="width:110px;height:110px;object-fit:cover;border-radius:8px;" />
+                        <div class="image-column" style="display: flex; flex-direction: column; gap: 8px; align-items: center; flex-shrink: 0;">
+                            <div class="event-image">
+                                @if (!string.IsNullOrEmpty(ev.Image))
+                                {
+                                    <img src="@ev.Image" alt="event image" class="event-img-fit" />
+                                }
+                            </div>
+
+                            @{
+                                DateTime now = DateTime.Now;
+                                string timeStatusText = "";
+                                string statusClass = "";
+
+                                if (now > ev.EndDateTime)
+                                {
+                                    timeStatusText = "Ended";
+                                    statusClass = "status-ended";
+                                }
+                                else if (now >= ev.DateTime && now <= ev.EndDateTime)
+                                {
+                                    timeStatusText = "Ongoing";
+                                    statusClass = "status-ongoing";
+                                }
+                                else
+                                {
+                                    timeStatusText = "Upcoming";
+                                    statusClass = "status-upcoming";
+                                }
                             }
+
+                            <span class="status-badge @statusClass" style="width: 100%; box-sizing: border-box;">@timeStatusText</span>
+
                         </div>
 
                         <div class="event-main">
-                            <h3 class="event-title">@ev.Title</h3>
+                            <h3 class="event-title title-flex">
+                                @ev.Title
+                                @if (isHost)
+                                {
+                                    <span class="badge badge-host">Host</span>
+                                }
+                                else if (participantInfo != null)
+                                {
+                                    var statusText = participantInfo.Status == ParticipationStatus.Confirmed ? "Joined" : "Waiting";
+                                    var badgeClass = participantInfo.Status == ParticipationStatus.Confirmed ? "badge-joined" : "badge-waiting";
+                                    <span class="badge @badgeClass">@statusText</span>
+                                }
+                            </h3>
                             <p class="event-desc">@ev.Description</p>
 
                             <div class="event-chips">
@@ -124,50 +174,72 @@
                                     }
                                 }
                             </div>
-
                             <div class="event-row">
                                 <span>@ev.Location</span>
                                 <span>@ev.DateTime.ToString("dd/MM/yyyy")</span>
                             </div>
 
-                            <div class="event-actions">
+                            <div class="event-actions normal-actions">
                                 <button type="button" class="view-btn view-info-btn">View Info</button>
-                            </div>
-                        </div>
-
-                        <div class="members">@ev.CurrentParticipants/@ev.MaxParticipants Members</div>
-                    </div>
-
-                    <div class="Event-ex">
-                        <div class="eventcard-ex">
-                            <div class="eventimage-ex">
-                                @if (!string.IsNullOrEmpty(ev.Image))
+                                @if (isHost)
                                 {
-                                    <img src="@ev.Image" alt="event image" style="width:110px;height:110px;object-fit:cover;border-radius:8px;" />
+                                    @if (DateTime.Now <= ev.EndDateTime)
+                                    {
+                                        <a href="@Url.Action("Manage", "Event", new { id = ev.Id })" class="view-btn btn-dark-link">Manage</a>
+                                        <a href="@Url.Action("Edit", "Event", new { id = ev.Id })" class="view-btn btn-link">Edit</a>
+                                    }
                                 }
                             </div>
 
-                            <div style="flex:1;">
-                                <h3>@ev.Title (Expanded)</h3>
-                                <p>@ev.Description</p>
+                            <div class="extra-info">
+                                <p class="info-row"><strong>Location:</strong> @ev.Location</p>
+                                <p class="info-row"><strong>Date:</strong> @ev.DateTime.ToString("dd MMM yyyy HH:mm") - @ev.EndDateTime.ToString("dd MMM yyyy HH:mm")</p>
 
-                                <p><strong>Location:</strong> @ev.Location</p>
-                                <p><strong>Date:</strong> @ev.DateTime.ToString("dd MMM yyyy HH:mm")</p>
-
-                                <div class="event-chips">
-                                    @if (ev.Tags != null && ev.Tags.Any())
+                                <div class="extra-actions">
+                                    @if (isHost)
                                     {
-                                        foreach (var tag in ev.Tags)
+                                        @if (DateTime.Now <= ev.EndDateTime)
                                         {
-                                            <button type="button" class="chip">@tag</button>
+                                            <a href="@Url.Action("Manage", "Event", new { id = ev.Id })" class="view-btn btn-dark-link">Manage Event</a>
+                                            <a href="@Url.Action("Edit", "Event", new { id = ev.Id })" class="view-btn btn-link">Edit</a>
+                                        }
+                                        @if (DateTime.Now >= ev.DateTime)
+                                        {
+                                            <button type="button" class="view-btn" onclick="window.location.href='@Url.Action("Review", "Event", new { id = ev.Id })'">
+                                                View Reviews
+                                            </button>
                                         }
                                     }
+                                    else
+                                    {
+                                        // สำหรับผู้เข้าร่วม (Participants)
+                                        @if (DateTime.Now >= ev.DateTime)
+                                        {
+                                            <button type="button" class="view-btn" onclick="window.location.href='@Url.Action("Review", "Event", new { id = ev.Id })'">
+                                                Review Event
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button type="button" class="view-btn btn-disabled" disabled>
+                                                @(participantInfo?.Status == WebApplicationProject.Models.ParticipationStatus.Confirmed ? "Joined" : "Waiting for Confirmation")
+                                            </button>
+
+                                            <form action="@Url.Action("CancelJoin", "Event")" method="post" style="display:inline;"
+                                                  onsubmit="return confirm('คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการเข้าร่วมกิจกรรมนี้?');">
+                                                <input type="hidden" name="eventId" value="@ev.Id" />
+                                                <button type="submit" class="view-btn btn-danger-outline">Cancel Join</button>
+                                            </form>
+                                        }
+                                    }
+                                    <button type="button" class="view-btn btn-link close-info-btn">Close</button>
                                 </div>
-
-                                <button type="button" class="join-btn close-info-btn">Join</button>
                             </div>
+                        </div>
 
-                            <div class="members-ex">@ev.CurrentParticipants/@ev.MaxParticipants Members</div>
+                        <div class="event-stats">
+                            <div class="members">@ev.CurrentParticipants/@ev.MaxParticipants Members</div>
+                            <div class="members waiting-box">@currentWaiting/@maxWaiting สำรอง</div>
                         </div>
                     </div>
                 </div>

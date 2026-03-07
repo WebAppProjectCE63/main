@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WebApplicationProject.Models.Event>
+﻿@model WebApplicationProject.Models.SignupViewModel
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,8 +12,24 @@
     <main>
         <div class="wrapper">
             <h1>Signup</h1>
-            <p id="error-message"></p>
-            <form id="form" form method="post" asp-controller="Account" asp-action="Signup">
+            <p id="error-message">@ViewBag.Error</p>
+            
+            <form id="form" method="post" asp-controller="Account" asp-action="Signup">
+                <div>
+                    <label for="fname-input">
+                    </label>
+                    <input type="text" name="fname" id="fname-input" placeholder="First Name">
+                </div>
+                <div>
+                    <label for="sname-input">
+                    </label>
+                    <input type="text" name="sname" id="sname-input" placeholder="Surname">
+                </div>
+                <div>
+                    <label for="birthday-input">
+                    </label>
+                    <input type="date" name="birthday" id="birthday-input" placeholder="Birthday" max="">
+                </div>
                 <div>
                     <label for="username-input">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
@@ -45,7 +61,7 @@
                             <path fill-rule="evenodd" d="M8 0a4 4 0 0 1 4 4v2.05a2.5 2.5 0 0 1 2 2.45v5a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 2 13.5v-5a2.5 2.5 0 0 1 2-2.45V4a4 4 0 0 1 4-4m0 1a3 3 0 0 0-3 3v2h6V4a3 3 0 0 0-3-3" />
                         </svg>
                     </label>
-                    <input type="password" name="repeat-password" id="repeat-password-input" placeholder="Repeat Password">
+                    <input type="password" name="repeatpassword" id="repeat-password-input" placeholder="Repeat Password">
                 </div>
                 <button type="submit">Signup</button>
             </form>

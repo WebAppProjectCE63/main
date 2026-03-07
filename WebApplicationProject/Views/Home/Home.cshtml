@@ -15,6 +15,7 @@
     <body>
         @if (TempData["ErrorMessage"] != null)
         {
+
             <div id="errorAlert" style="background-color: #f8d7da; color: #842029; padding: 15px; border: 1px solid #f5c2c7; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
 
                 <span>@TempData["ErrorMessage"]</span>
@@ -120,8 +121,10 @@
 
                 @foreach (var ev in Model)
                 {
-                    var isFull = ev.CurrentParticipants >= ev.MaxParticipants && ev.CurrentWaiting >= ev.MaxWaiting;
-
+                    if (ev.DateTime < DateTime.Now)
+                    {
+                        continue;
+                    }
                     <div class="Event" data-date="@ev.DateTime.ToString("yyyy-MM-dd")">
 
                        
