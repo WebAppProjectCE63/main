@@ -71,15 +71,6 @@
             }
 
             userInEvent = userInEvent.Where(u => u.Id != currentID).ToList();
-
-            var reviewedUserIds = new List<int>();
-            if (currentUser != null && currentUser.Reviewslist != null)
-            {
-                reviewedUserIds = currentUser.Reviewslist
-                .Where(r => r.EventId == Model.Id)
-                .Select(r => r.UserId)
-                .ToList();
-            }
         }
 
         <div class="partiTable">
@@ -93,6 +84,7 @@
                     <tr>
                         <th>ลำดับ</th>
                         <th>ชื่อ</th>
+                        <th>สถานะ</th>
                         <th>เวลาที่เข้าร่วม</th>
                         <th>จัดการ</th>
                     </tr>
@@ -100,36 +92,86 @@
                 <tbody id="confirmedTable">
                     @{
                         int order = 1;
-                        // กรองเฉพาะคนที่เป็น Confirmed และไม่ใช่ตัวเราเอง
-                        var confirmedTickets = Model.Participants
+                        // เฉพาะที่ Confirmed เท่านั้น และตัดตัวเองออก
+                        var tickets = Model.Participants
                         .Where(p => p.Status == ParticipationStatus.Confirmed && p.UserId != currentID)
-                        .OrderBy(p => p.JoinedAt);
+                        .OrderBy(p => p.JoinedAt)
+                        .ToList();
+                        var ticketUserIds = tickets.Select(t => t.UserId).ToList();
                     }
 
-                    @foreach (var ticket in confirmedTickets)
+                    @foreach (var ticket in tickets)
                     {
-                        // ดึง user จาก MockDB โดยตรงถ้าใน userInEvent หาไม่เจอ เพื่อกันเหนียว
+                        // ดึง user จาก userInEvent ถ้าไม่เจอดึงจาก MockDB 
                         var user = userInEvent.FirstOrDefault(u => u.Id == ticket.UserId)
                         ?? WebApplicationProject.Data.MockDB.UsersList.FirstOrDefault(u => u.Id == ticket.UserId);
 
                         if (user != null)
                         {
-                            bool isReviewed = reviewedUserIds.Contains(user.Id);
+                            var myReviewToThisUser = user.Reviewslist?
+                            .FirstOrDefault(r => r.EventId == Model.Id && r.UserId == currentID);
+
+                            bool isReviewed = myReviewToThisUser != null;
                             <tr id="row_@user.Id">
                                 <td class="seqNumber">@(order++)</td>
                                 <td>
-                                    <img src="@user.Image" style="width:30px; border-radius:50%;" />
-                                    @user.FName @user.SName
+                                    <a href="@Url.Action("profilepage", "Profile", new { id = user.Id })" class="profile-link">
+                                        <img src="@user.Image" />@user.FName @user.SName
+                                    </a>
+                                </td>
+                                <td>
+                                    <span class="status-badge">เข้าร่วม</span>
                                 </td>
                                 <td>@ticket.JoinedAt.ToString("dd/MMM/yyyy HH:mm")</td>
                                 <td>
                                     @if (isReviewed)
                                     {
-                                        <button type="button" class="btn-edit" onclick="openEditReviewModal(@user.Id, '@user.FName @user.SName', '@user.Image')">แก้ไข</button>
+                                        <button type="button" class="btn-edit"
+                                                onclick="openEditReviewModal(@user.Id, '@user.FName @user.SName', '@user.Image', @myReviewToThisUser.Id, @myReviewToThisUser.stars, '@myReviewToThisUser.reviewtitle', '@myReviewToThisUser.reviewbody', @(myReviewToThisUser.IsAnonymous ? "true" : "false"))">
+                                            แก้ไข
+                                        </button>
                                     }
                                     else
                                     {
                                         <button type="button" class="btn-review" onclick="openReviewModal(@user.Id, '@user.FName @user.SName', '@user.Image')">รีวิว</button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+
+                    @* เจ้าของกิจกรรมเป็นคนละคนกับผู้ใช้ปัจจุบัน ให้แสดงเจ้าของกิจกรรม *@
+                    @if (Model.UserHostId != currentID && (ticketUserIds == null || !ticketUserIds.Contains(Model.UserHostId)))
+                    {
+                        var hostUser = WebApplicationProject.Data.MockDB.UsersList.FirstOrDefault(u => u.Id == Model.UserHostId);
+                        if (hostUser != null)
+                        {
+                            var myReviewToThisUser = hostUser.Reviewslist?
+                            .FirstOrDefault(r => r.EventId == Model.Id && r.UserId == currentID);
+
+                            bool isReviewed = myReviewToThisUser != null;
+                            <tr id="row_@hostUser.Id">
+                                <td class="seqNumber">@(order++)</td>
+                                <td>
+                                    <a href="@Url.Action("profilepage", "Profile", new { id = hostUser.Id })" class="profile-link">
+                                        <img src="@hostUser.Image" />@hostUser.FName @hostUser.SName
+                                    </a>
+                                </td>
+                                <td>
+                                    <span class="status-badge">เจ้าของกิจกรรม</span>
+                                </td>
+                                <td>-</td>
+                                <td>
+                                    @if (isReviewed)
+                                    {
+                                        <button type="button" class="btn-edit"
+                                                onclick="openEditReviewModal(@hostUser.Id, '@hostUser.FName @hostUser.SName', '@hostUser.Image', @myReviewToThisUser.Id, @myReviewToThisUser.stars, '@myReviewToThisUser.reviewtitle', '@myReviewToThisUser.reviewbody', @(myReviewToThisUser.IsAnonymous ? "true" : "false"))">
+                                            แก้ไข
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn-review" onclick="openReviewModal(@hostUser.Id, '@hostUser.FName @hostUser.SName', '@hostUser.Image')">รีวิว</button>
                                     }
                                 </td>
                             </tr>
@@ -147,12 +189,12 @@
             <img class="preview-img" id="reviewTargetImage" src="" alt="Circle Profile">
         </div>
         <h2>รีวิวผู้ใช้: <span id="reviewTargetName">ชื่อผู้ใช้</span></h2>
-
         <form asp-action="SubmitReview" asp-controller="Event" method="post">
             <input type="hidden" name="EventId" value="@Model.Id" />
             <input type="hidden" name="UserId" value="@WebApplicationProject.Data.MockDB.CurrentLoggedInUserId"/>
             <input type="hidden" name="TargetUserId" id="reviewTargetUserId" value="" />
             <input type="hidden" name="stars" id="reviewStars" value="0" />
+            <input type="hidden" name="ReviewId" id="reviewId" value="" />
 
             <div class="form-group">
                 <label>ให้คะแนน (ดาว)</label>
@@ -167,18 +209,18 @@
 
             <div class="form-group">
                 <label>หัวข้อรีวิว</label>
-                <input type="text" name="reviewtitle" class="form-control" required />
+                <input type="text" name="reviewtitle" id="inputReviewTitle" class="form-control" value="" required />
             </div>
 
             <div class="form-group">
                 <label>รายละเอียด</label>
-                <textarea name="reviewbody" class="form-control" rows="4" required></textarea>
+                <textarea name="reviewbody" id="inputReviewBody" class="form-control" rows="4" value="" required></textarea>
             </div>
 
             <div class="form-group">
                 <label class="lable_switch">Hide Name</label>
                 <label class="switch">
-                    <input type="checkbox" name="showname" value="true">
+                    <input type="checkbox" name="showname" id="inputShowName" value="true">
                     <span class="slider"></span>
                 </label>
             </div>

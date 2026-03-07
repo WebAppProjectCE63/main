@@ -268,17 +268,32 @@ namespace WebApplicationProject.Controllers
         [HttpPost]
         public IActionResult SubmitReview(int EventId, int UserId, int stars, string reviewtitle, int TargetUserId, string reviewbody, bool showname)
         {
-            var newreview = new Review
+            var targetUser = MockDB.UsersList.FirstOrDefault(u => u.Id == TargetUserId);
+            if (targetUser == null) return NotFound();
+
+            var existing = targetUser.Reviewslist.FirstOrDefault(r => r.EventId == EventId && r.UserId == UserId);
+            if (existing != null)
             {
-                EventId = EventId,
-                UserId = UserId,
-                reviewtitle = reviewtitle,
-                reviewbody = reviewbody,
-                stars = stars,
-                IsAnonymous = showname,
-            };
-            var user = MockDB.UsersList.FirstOrDefault(u => u.Id == TargetUserId);
-            user.Reviewslist.Add(newreview);
+                existing.stars = stars;
+                existing.reviewtitle = reviewtitle;
+                existing.reviewbody = reviewbody;
+                existing.IsAnonymous = showname;
+            }
+            else
+            {
+                var newId = (targetUser.Reviewslist.Count == 0) ? 1 : targetUser.Reviewslist.Max(r => r.Id) + 1;
+                var newReview = new Review
+                {
+                    Id = newId,
+                    EventId = EventId,
+                    UserId = UserId,
+                    stars = stars,
+                    reviewtitle = reviewtitle,
+                    reviewbody = reviewbody,
+                    IsAnonymous = showname
+                };
+                targetUser.Reviewslist.Add(newReview);
+            }
             return RedirectToAction("Review", new { id = EventId });
         }
         [HttpPost]
