@@ -8,14 +8,21 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System;
+using Microsoft.EntityFrameworkCore;
 namespace WebApplicationProject.Controllers
 {
     public class ProfileController : Controller
     {
+        private readonly ApplicationDbContext _context;
+
+        public ProfileController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+        private int CurrentUserId => HttpContext.Session.GetInt32("UserId") ?? 0;
         public IActionResult profilepage(int? id = null)
-            {
-                int targetId = id ?? MockDB.CurrentLoggedInUserId;
-                User currentUser = MockDB.UsersList.FirstOrDefault(u => u.Id == targetId);
+        {
+            int targetId = id ?? CurrentUserId;
 
                 if (currentUser == null) return NotFound();
 
@@ -80,7 +87,7 @@ namespace WebApplicationProject.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateProfile(User editUser, bool IsPublic, bool ShowEmail, bool ShowJoinedEvents, bool ShowHostedEvents, IFormFile uploadImage)
         {
-            var ogUser = MockDB.UsersList.FirstOrDefault(u => u.Id == editUser.Id);
+            var ogUser = _context.Users.FirstOrDefault(u => u.Id == editUser.Id);
             if (ogUser == null)
             {
                 return NotFound();
@@ -97,12 +104,17 @@ namespace WebApplicationProject.Controllers
                 ogUser.SName = editUser.SName;
                 ogUser.Email = editUser.Email;
                 ogUser.Gender = editUser.Gender;
+
+                if (ogUser.Settings == null)
+                {
+                    ogUser.Settings = new UserSettings();
+                }
                 ogUser.Settings.PrivateAccount = IsPublic;
                 ogUser.Settings.ShowEmail = ShowEmail;
                 ogUser.Settings.ShowHostedEvents = ShowHostedEvents;
                 ogUser.Settings.ShowJoinedEvents = ShowJoinedEvents;
             }
-
+            _context.SaveChanges();
             return RedirectToAction("profilepage");
         }
 
