@@ -10,6 +10,12 @@ namespace WebApplicationProject.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly ApplicationDbContext _context;
+
+        public AccountController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
         public IActionResult Login(bool success = false)
         {
             if (success)
@@ -24,10 +30,7 @@ namespace WebApplicationProject.Controllers
         }
 
         public IActionResult Logout()
-        {
-            //Clear the logged-in user
-            MockDB.CurrentLoggedInUserId = 0; // or default value
-            
+        {   
             HttpContext.Session.Clear();
             return RedirectToAction("Login");
         }
@@ -77,13 +80,12 @@ namespace WebApplicationProject.Controllers
                 return View(model);
             }
 
-            if (MockDB.UsersList.Any(u => u.Email == model.Email))
+            if (_context.Users.Any(u => u.Email == user.Email))
             {
                 ViewBag.Error = "Email already exists";
                 return View(model);
             }
-
-            if (string.IsNullOrEmpty(model.Password))
+            if (_context.Users.Any(u => u.Username == user.Username))
             {
                 ViewBag.Error = "Password required";
                 return View(model);
@@ -114,17 +116,11 @@ namespace WebApplicationProject.Controllers
         [HttpPost]
         public IActionResult Login(string email, string password)
         {
-            var user = MockDB.UsersList
-                .FirstOrDefault(u =>
-                    u.Email == email &&
-                    u.Password == password);
+            var user = _context.Users
+                .FirstOrDefault(u => u.Email == email && u.Password == password);
 
             if (user != null)
             {
-                // ✅ Set the logged-in user as current
-                MockDB.CurrentLoggedInUserId = user.Id;
-                
-                // ✅ Store both username and user ID in session
                 HttpContext.Session.SetInt32("UserId", user.Id);
                 HttpContext.Session.SetString("Username", user.Username);
 
@@ -139,11 +135,8 @@ namespace WebApplicationProject.Controllers
         {
             //var hash = HashPassword(password);
 
-            var user = MockDB.UsersList
-                .FirstOrDefault(u =>
-                    u.Username == username &&
-                    //u.Password == hash);
-                    u.Password == password);
+            var user = _context.Users
+                .FirstOrDefault(u => u.Username == username && u.Password == password);
 
             if (user == null)
                 return Json(new { success = false });
