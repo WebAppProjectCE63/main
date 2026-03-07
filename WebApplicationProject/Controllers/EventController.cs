@@ -35,6 +35,8 @@ namespace WebApplicationProject.Controllers
             {
                 return BadRequest("จำนวนตัวสำรองเกินขีดจำกัดที่กำหนดไว้");
             }
+            if (newEvent.DateTime < DateTime.Now) return BadRequest("วันที่ไม่ถูกต้อง");
+            if (newEvent.DateTime > newEvent.EndDateTime) return BadRequest("วันที่ไม่ถูกต้อง");
             string ImageUrl = await UploadImageAsync(uploadImage);
             newEvent.Image = ImageUrl ?? "https://img2.pic.in.th/image-icon-symbol-design-illustration-vector.md.jpg";
             newEvent.Tags = ProcessTags(Request.Form["Tag"]);
@@ -206,12 +208,15 @@ namespace WebApplicationProject.Controllers
 
             int userId = CurrentUserId;
 
-            var existing = ev.Participants.FirstOrDefault(p =>
-                p.UserId == userId &&
-                p.Status != ParticipationStatus.Remove);
+            var existing = ev.Participants.FirstOrDefault(p => p.UserId == userId);
 
             if (existing != null)
+            {
+                if (existing.Status == ParticipationStatus.Remove)
+                    return BadRequest("คุณถูกนำออกจากกิจกรรมนี้และไม่สามารถเข้าร่วมซ้ำได้");
+
                 return BadRequest("คุณเข้าร่วมกิจกรรมนี้แล้ว");
+            }
 
             bool hasTimeConflict = _context.Events
                 .Include(e => e.Participants)
@@ -271,7 +276,7 @@ namespace WebApplicationProject.Controllers
 
             if (ticket != null)
             {
-                ticket.Status = ParticipationStatus.Remove;
+                ticket.Status = ParticipationStatus.Cancelled;
 
                 ev.CurrentParticipants = ev.Participants.Count(p => p.Status == ParticipationStatus.Confirmed);
                 _context.SaveChanges();
