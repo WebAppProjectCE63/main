@@ -19,7 +19,8 @@
 }
 
 .partiTable th:first-child, .partiTable td:first-child,
-.partiTable th:nth-child(3), .partiTable td:nth-child(3){
+.partiTable th:nth-child(3), .partiTable td:nth-child(3),
+.partiTable th:nth-child(4), .partiTable td:nth-child(4) {
     text-align: center;
 }
 
@@ -64,4 +65,17 @@ table {
 
 .tableHeader h4{
     margin: 0;
+}
+
+.profile-link {
+    text-decoration: none; /* เอาเส้นใต้ออก */
+    color: inherit; /* ให้สีตัวอักษรเหมือนข้อความปกติ */
+    display: inline-flex;
+    align-items: center;
+    transition: color 0.2s;
+}
+
+.profile-link:hover {
+    color: #0056b3; /* เปลี่ยนสีนิดหน่อยตอนเอาเมาส์ชี้ เพื่อให้รู้ว่ากดได้ */
+    text-decoration: underline;
 }
