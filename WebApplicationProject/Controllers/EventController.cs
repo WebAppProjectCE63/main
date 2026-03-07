@@ -269,6 +269,7 @@ namespace WebApplicationProject.Controllers
 
             return RedirectToAction("Myevent");
         }
-         
+
     }
     }
+//forcommit delete this after
