@@ -69,6 +69,7 @@
                     <tr>
                         <th>ลำดับ</th>
                         <th>ชื่อ</th>
+                        <th>คะแนน</th>
                         <th>เวลาที่เข้าร่วม</th>
                         <th>จัดการ</th>
                     </tr>
@@ -79,9 +80,28 @@
                         @foreach (var ticket in Model.Participants.Where(p => p.Status == ParticipationStatus.Confirmed).OrderBy(p => p.JoinedAt)){
                             var user = userInEvent.FirstOrDefault(u => u.Id == ticket.UserId);
                             if (user != null){
+
+                                    double avgRating = (user.Reviewslist != null && user.Reviewslist.Any())
+                                    ? user.Reviewslist.Average(r => r.stars)
+                                    : 0.0;
+
                                 <tr id="row_@user.Id">
                                     <td class="seqNumber">@order</td>
-                                    <td><img src="@user.Image" />@user.FName @user.SName</td>
+                                    <td>
+                                        <a href="@Url.Action("profilepage", "Profile", new { id = user.Id })" class="profile-link">
+                                            <img src="@user.Image" />@user.FName @user.SName
+                                        </a>
+                                    </td>
+                                    <td class="reviewSC">
+                                        @if (avgRating > 0)
+                                        {
+                                            <span>@avgRating.ToString("0.0")★</span>
+                                        }
+                                        else
+                                        {
+                                            <span>ยังไม่มีรีวิว</span>
+                                        }
+                                    </td>
                                     <td>@ticket.JoinedAt.ToString("dd/MMM/yyyy HH:mm")</td>
                                     <td><button onclick="removeUser(@Model.Id, @user.Id)">ลบ</button></td>
                                 </tr>
@@ -105,6 +125,7 @@
                         <tr>
                             <th>ลำดับ</th>
                             <th>ชื่อ</th>
+                            <th>คะแนน</th>
                             <th>เวลาที่เข้าร่วม</th>
                             <th>จัดการ</th>
                         </tr>
@@ -117,10 +138,29 @@
                             {
                                 var user = userInEvent.FirstOrDefault(u => u.Id == ticket.UserId);
                                 if (user != null){
+
+                                    double avgRating = (user.Reviewslist != null && user.Reviewslist.Any())
+                                    ? user.Reviewslist.Average(r => r.stars)
+                                    : 0.0;
+
                                     <tr id="row_@user.Id">
                                         <td class="seqNumber">@order</td>
-                                        <td><img src="@user.Image"/>@user.FName @user.SName</td>
-                                        <td>@ticket.JoinedAt.ToString("dd/MMM/yyyy HH:mm")</td>
+                                        <td>
+                                            <a href="@Url.Action("profilepage", "Profile", new { id = user.Id })" class="profile-link">
+                                                <img src="@user.Image" />@user.FName @user.SName
+                                            </a>
+                                        </td>
+                                        <td class="reviewSC">
+                                            @if (avgRating > 0)
+                                            {
+                                                <span>@avgRating.ToString("0.0")★</span>
+                                            }
+                                            else
+                                            {
+                                                <span>ยังไม่มีรีวิว</span>
+                                            }
+                                        </td>
+                                        <td>@ticket.JoinedAt.ToString("dd/MM/yy HH:mm")</td>
                                         <td><button onclick="promoteUser(@Model.Id, @user.Id)">เพิ่ม</button></td>
                                     </tr>
                                     order += 1;
