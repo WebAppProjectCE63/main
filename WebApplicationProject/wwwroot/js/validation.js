@@ -7,24 +7,88 @@ const email_input = document.getElementById("email-input");
 const password_input = document.getElementById("password-input");
 const repeat_password_input = document.getElementById("repeat-password-input");
 const error_message = document.getElementById("error-message");
+if (birthday_input) {
+    birthday_input.max = new Date().toISOString().split("T")[0];
+}
+let emailExists = false
 
-form.addEventListener("submit", (e) => {
-    console.log("test")
-    let errors = []
-    
-    if(username_input){
-        errors = getSignupFormErrors(username_input.value, email_input.value, password_input.value, repeat_password_input.value)
-    }
-    else{
-        errors = getLoginFormErrors(email_input.value, password_input.value)
-    }
-    if(errors.length > 0){
-        e.preventDefault()
-        error_message.innerText = errors.join(". ")
-    }
+email_input.addEventListener("blur", () => {
+
+    fetch("/Account/CheckEmail", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "email=" + encodeURIComponent(email_input.value)
+    })
+        .then(res => res.json())
+        .then(data => {
+
+            if (data.exists) {
+
+                emailExists = true
+
+            }
+            else {
+
+                emailExists = false
+
+            }
+
+        })
+
 })
-function getSignupFormErrors(username, email, password, repeat_password){
+async function checkEmail(email) {
+
+    const res = await fetch("/Account/CheckEmail", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "email=" + encodeURIComponent(email)
+    })
+
+    const data = await res.json()
+
+    return data.exists
+}
+
+form.addEventListener("submit", async (e) => {
+
+    e.preventDefault()   // ⭐ หยุด submit ก่อนเสมอ
+
+    let errors = getSignupFormErrors(
+        fname_input.value,
+        sname_input.value,
+        username_input.value,
+        email_input.value,
+        password_input.value,
+        repeat_password_input.value,
+        birthday_input.value
+    )
+
+    const exists = await checkEmail(email_input.value)
+
+    if (exists) {
+        errors.push("Email already exists")
+    }
+
+    if (errors.length > 0) {
+
+        error_message.innerText = errors.join(". ")
+
+    } else {
+
+        form.submit()   // ⭐ ค่อย submit ถ้าไม่มี error
+
+    }
+
+})
+function getSignupFormErrors(fname, sname, username, email, password, repeat_password, birthday){
     let errors = []
+    const today = new Date()
+    const birthDate = new Date(birthday)
+
     if (fname === "") {
         errors.push("First name required")
     }
@@ -35,6 +99,10 @@ function getSignupFormErrors(username, email, password, repeat_password){
 
     if (birthday === "") {
         errors.push("Birthday required")
+    }
+    else if (birthDate > today) {
+        errors.push("Birthday cannot be in the future")
+        birthday_input.parentElement.classList.add("incorrect")
     }
 
     if(username === "" || username === null){
@@ -94,4 +162,22 @@ function login() {
                 window.location = "/Home";
         }
     });
+}
+
+if (email_input) {
+    email_input.addEventListener("blur", () => {
+
+        fetch("/Account/CheckEmail", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: "email=" + encodeURIComponent(email_input.value)
+        })
+            .then(res => res.json())
+            .then(data => {
+                emailExists = data.exists
+            })
+
+    })
 }
