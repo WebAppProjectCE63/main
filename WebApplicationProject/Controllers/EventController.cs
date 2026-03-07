@@ -248,54 +248,6 @@ namespace WebApplicationProject.Controllers
 
             return RedirectToAction("Home", "Home");
         }
-        public IActionResult Review(int? id = null)
-        {
-            int targetId = id ?? 1;
-            var eventToReview = MockDB.EventList.FirstOrDefault(e => e.Id == targetId);
-            bool isParticipant = eventToReview.Participants.Any(p => p.UserId == MockDB.CurrentLoggedInUserId);
-            if (eventToReview == null) return NotFound("ไม่พบกิจกรรมนี้");
-            if (!IsHost(eventToReview) && !isParticipant)
-            {
-                TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่ผู้เกี่ยวข้องกับกิจกรรม";
-                return RedirectToAction("Myevent");
-            }
-            var participantIds = eventToReview.Participants.Select(p => p.UserId).ToList();
-            var participants = MockDB.UsersList.Where(u => participantIds.Contains(u.Id)).ToList();
-            ViewBag.ParticipantList = participants;
-            return View(eventToReview);
-        }
-
-        [HttpPost]
-        public IActionResult SubmitReview(int EventId, int UserId, int stars, string reviewtitle, int TargetUserId, string reviewbody, bool showname)
-        {
-            var targetUser = MockDB.UsersList.FirstOrDefault(u => u.Id == TargetUserId);
-            if (targetUser == null) return NotFound();
-
-            var existing = targetUser.Reviewslist.FirstOrDefault(r => r.EventId == EventId && r.UserId == UserId);
-            if (existing != null)
-            {
-                existing.stars = stars;
-                existing.reviewtitle = reviewtitle;
-                existing.reviewbody = reviewbody;
-                existing.IsAnonymous = showname;
-            }
-            else
-            {
-                var newId = (targetUser.Reviewslist.Count == 0) ? 1 : targetUser.Reviewslist.Max(r => r.Id) + 1;
-                var newReview = new Review
-                {
-                    Id = newId,
-                    EventId = EventId,
-                    UserId = UserId,
-                    stars = stars,
-                    reviewtitle = reviewtitle,
-                    reviewbody = reviewbody,
-                    IsAnonymous = showname
-                };
-                targetUser.Reviewslist.Add(newReview);
-            }
-            return RedirectToAction("Review", new { id = EventId });
-        }
         [HttpPost]
         public IActionResult CancelJoin(int eventId)
         {
