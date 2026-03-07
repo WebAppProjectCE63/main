@@ -4,14 +4,23 @@ using System.Net.Http;
 using System.Text.Json;
 using System.IO;
 using WebApplicationProject.Data;
-namespace WebApplicationProject.Controllers
+using Microsoft.EntityFrameworkCore;
 
+namespace WebApplicationProject.Controllers
 {
     public class EventController : Controller
     {
+        private readonly ApplicationDbContext _context;
+
+        public EventController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+        private int CurrentUserId => HttpContext.Session.GetInt32("UserId") ?? 0;
         public IActionResult Myevent()
         {
-            return View(MockDB.EventList);
+            var events = _context.Events.Include(e => e.Participants).ToList();
+            return View(events);
         }
         public IActionResult Create()
         {
@@ -26,23 +35,25 @@ namespace WebApplicationProject.Controllers
             {
                 return BadRequest("จำนวนตัวสำรองเกินขีดจำกัดที่กำหนดไว้");
             }
+            if (newEvent.DateTime < DateTime.Now) return BadRequest("วันที่ไม่ถูกต้อง");
+            if (newEvent.DateTime > newEvent.EndDateTime) return BadRequest("วันที่ไม่ถูกต้อง");
             string ImageUrl = await UploadImageAsync(uploadImage);
             newEvent.Image = ImageUrl ?? "https://img2.pic.in.th/image-icon-symbol-design-illustration-vector.md.jpg";
             newEvent.Tags = ProcessTags(Request.Form["Tag"]);
-            newEvent.UserHostId = MockDB.CurrentLoggedInUserId;
-            newEvent.Id = MockDB.EventList.Count + 1;
-            MockDB.EventList.Add(newEvent);
+            newEvent.UserHostId = CurrentUserId;
+            _context.Events.Add(newEvent);
+            _context.SaveChanges();
             return RedirectToAction("Manage", new { id = newEvent.Id });
         }
 
         private bool IsHost(Event ev)
         {
-            return ev != null && ev.UserHostId == MockDB.CurrentLoggedInUserId;
+            return ev != null && ev.UserHostId == CurrentUserId;
         }
 
         public IActionResult Edit(int id)
         {
-            var eventToEdit = MockDB.EventList.FirstOrDefault(e => e.Id == id);
+            var eventToEdit = _context.Events.FirstOrDefault(e => e.Id == id);
             if (eventToEdit == null) return NotFound("ไม่พบกิจกรรมนี้");
             if (!IsHost(eventToEdit))
             {
@@ -54,7 +65,7 @@ namespace WebApplicationProject.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(Event editEvent, IFormFile uploadImage)
         {
-            var ogEvent = MockDB.EventList.FirstOrDefault(e => e.Id == editEvent.Id);
+            var ogEvent = _context.Events.FirstOrDefault(e => e.Id == editEvent.Id);
             if (ogEvent != null)
             {
                 if (!IsHost(ogEvent))
@@ -90,6 +101,8 @@ namespace WebApplicationProject.Controllers
                 ogEvent.DateTime = editEvent.DateTime;
                 ogEvent.EndDateTime = editEvent.EndDateTime;
                 ogEvent.Location = editEvent.Location;
+
+                _context.SaveChanges();
             }
             else
             {
@@ -101,7 +114,7 @@ namespace WebApplicationProject.Controllers
 
         public IActionResult Manage(int id)
         {
-            var eventToManage = MockDB.EventList.FirstOrDefault(e => e.Id == id);
+            var eventToManage = _context.Events.Include(e => e.Participants).FirstOrDefault(e => e.Id == id);
             if (eventToManage == null) return NotFound("ไม่พบกิจกรรมนี้");
             if (!IsHost(eventToManage))
             {
@@ -109,7 +122,7 @@ namespace WebApplicationProject.Controllers
                 return RedirectToAction("Myevent");
             }
             var participantIds = eventToManage.Participants.Select(p => p.UserId).ToList();
-            var participants = MockDB.UsersList.Where(u => participantIds.Contains(u.Id)).ToList();
+            var participants = _context.Users.Where(u => participantIds.Contains(u.Id)).ToList();
             ViewBag.ParticipantList = participants;
             return View(eventToManage);
         }
@@ -117,7 +130,7 @@ namespace WebApplicationProject.Controllers
         [HttpPost]
         public IActionResult RemoveParti(int eventId, int userId)
         {
-            var eventToManage = MockDB.EventList.FirstOrDefault(e => e.Id == eventId);
+            var eventToManage = _context.Events.Include(e => e.Participants).FirstOrDefault(e => e.Id == eventId);
             if (eventToManage == null) return NotFound("ไม่มีกิจกรรมนี้");
             if (!IsHost(eventToManage))
             {
@@ -128,12 +141,13 @@ namespace WebApplicationProject.Controllers
             if (ticket == null) return NotFound("ไม่มีผู้ใช้นี้ในกิจกรรม");
             ticket.Status = ParticipationStatus.Remove;
             eventToManage.CurrentParticipants = eventToManage.Participants.Count(p => p.Status == ParticipationStatus.Confirmed);
+            _context.SaveChanges();
             return Ok();
         }
         [HttpPost]
         public IActionResult PromoteParti(int eventId, int userId)
         {
-            var eventToManage = MockDB.EventList.FirstOrDefault(e => e.Id == eventId);
+            var eventToManage = _context.Events.Include(e => e.Participants).FirstOrDefault(e => e.Id == eventId);
             if (eventToManage == null) return NotFound("ไม่มีกิจกรรมนี้");
             if (!IsHost(eventToManage))
             {
@@ -146,6 +160,7 @@ namespace WebApplicationProject.Controllers
             ticket.Status = ParticipationStatus.Confirmed;
             eventToManage.CurrentParticipants = eventToManage.Participants.Count(p => p.Status == ParticipationStatus.Confirmed);
             eventToManage.CurrentWaiting = eventToManage.Participants.Count(p => p.Status == ParticipationStatus.Waiting);
+            _context.SaveChanges();
             return Ok();
         }
         private List<string> ProcessTags(string rawTags)
@@ -188,19 +203,24 @@ namespace WebApplicationProject.Controllers
         [HttpPost]
         public IActionResult Join(int eventId)
         {
-            var ev = MockDB.EventList.FirstOrDefault(e => e.Id == eventId);
+            var ev = _context.Events.Include(e => e.Participants).FirstOrDefault(e => e.Id == eventId);
             if (ev == null) return NotFound("ไม่พบกิจกรรมนี้");
 
-            int userId = MockDB.CurrentLoggedInUserId;
+            int userId = CurrentUserId;
 
-            var existing = ev.Participants.FirstOrDefault(p =>
-                p.UserId == userId &&
-                p.Status != ParticipationStatus.Remove);
+            var existing = ev.Participants.FirstOrDefault(p => p.UserId == userId);
 
             if (existing != null)
-                return BadRequest("คุณเข้าร่วมกิจกรรมนี้แล้ว");
+            {
+                if (existing.Status == ParticipationStatus.Remove)
+                    return BadRequest("คุณถูกนำออกจากกิจกรรมนี้และไม่สามารถเข้าร่วมซ้ำได้");
 
-            bool hasTimeConflict = MockDB.EventList.Any(otherEvent =>
+                return BadRequest("คุณเข้าร่วมกิจกรรมนี้แล้ว");
+            }
+
+            bool hasTimeConflict = _context.Events
+                .Include(e => e.Participants)
+                .Any(otherEvent =>
                 otherEvent.Id != ev.Id &&
                 otherEvent.DateTime < ev.EndDateTime &&
                 otherEvent.EndDateTime > ev.DateTime &&
@@ -232,11 +252,8 @@ namespace WebApplicationProject.Controllers
                 return RedirectToAction("Home", "Home");
             }
 
-            int newId = (ev.Participants.Count == 0) ? 1 : ev.Participants.Max(p => p.Id) + 1;
-
             ev.Participants.Add(new EventParticipation
             {
-                Id = newId,
                 EventId = ev.Id,
                 UserId = userId,
                 Status = status,
@@ -245,27 +262,28 @@ namespace WebApplicationProject.Controllers
 
             ev.CurrentParticipants = ev.Participants.Count(p => p.Status == ParticipationStatus.Confirmed);
             ev.CurrentWaiting = ev.Participants.Count(p => p.Status == ParticipationStatus.Waiting);
-
+            _context.SaveChanges();
             return RedirectToAction("Home", "Home");
         }
         [HttpPost]
         public IActionResult CancelJoin(int eventId)
         {
-            var ev = MockDB.EventList.FirstOrDefault(e => e.Id == eventId);
+            var ev = _context.Events.Include(e => e.Participants).FirstOrDefault(e => e.Id == eventId);
             if (ev == null) return NotFound("ไม่พบกิจกรรมนี้");
 
-            int userId = MockDB.CurrentLoggedInUserId;
+            int userId = CurrentUserId;
             var ticket = ev.Participants.FirstOrDefault(p => p.UserId == userId && p.Status != ParticipationStatus.Remove);
 
             if (ticket != null)
             {
-                ticket.Status = ParticipationStatus.Remove;
+                ticket.Status = ParticipationStatus.Cancelled;
 
                 ev.CurrentParticipants = ev.Participants.Count(p => p.Status == ParticipationStatus.Confirmed);
+                _context.SaveChanges();
             }
 
             return RedirectToAction("Myevent");
         }
          
     }
-    }
+}
