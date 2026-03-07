@@ -53,38 +53,40 @@ async function checkEmail(email) {
     return data.exists
 }
 
-form.addEventListener("submit", async (e) => {
+if (form) {
+    form.addEventListener("submit", async (e) => {
 
-    e.preventDefault()   // ⭐ หยุด submit ก่อนเสมอ
+        // ถ้าเป็นหน้า login (ไม่มี fname_input) ให้ submit ปกติ
+        if (!fname_input) {
+            return
+        }
 
-    let errors = getSignupFormErrors(
-        fname_input.value,
-        sname_input.value,
-        username_input.value,
-        email_input.value,
-        password_input.value,
-        repeat_password_input.value,
-        birthday_input.value
-    )
+        e.preventDefault()
 
-    const exists = await checkEmail(email_input.value)
+        let errors = getSignupFormErrors(
+            fname_input.value,
+            sname_input.value,
+            username_input.value,
+            email_input.value,
+            password_input.value,
+            repeat_password_input.value,
+            birthday_input.value
+        )
 
-    if (exists) {
-        errors.push("Email already exists")
-    }
+        const exists = await checkEmail(email_input.value)
 
-    if (errors.length > 0) {
+        if (exists) {
+            errors.push("Email already exists")
+        }
 
-        error_message.innerText = errors.join(". ")
+        if (errors.length > 0) {
+            error_message.innerText = errors.join(". ")
+        } else {
+            form.submit()
+        }
 
-    } else {
-
-        form.submit()   // ⭐ ค่อย submit ถ้าไม่มี error
-
-    }
-
-})
-function getSignupFormErrors(fname, sname, username, email, password, repeat_password, birthday){
+    })
+} function getSignupFormErrors(fname, sname, username, email, password, repeat_password, birthday){
     let errors = []
     const today = new Date()
     const birthDate = new Date(birthday)
