@@ -5,7 +5,6 @@
         public int Id { get; set; }
         public string FName { get; set; }
         public string SName { get; set; }
-
         public Genders Gender { get; set; }
         public DateTime Birthday { get; set; }
         public string Email { get; set; }
