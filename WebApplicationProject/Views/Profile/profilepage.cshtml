@@ -11,7 +11,7 @@
         <img src=@Model.UserInfo.Image alt="Profile" id="prevImg">
     </div>
     <div class="profileinfo">
-        @if (Model.UserInfo.Settings.PrivateAccount && WebApplicationProject.Data.MockDB.CurrentLoggedInUserId != Model.UserInfo.Id)
+        @if (Model.UserInfo.Settings.PrivateAccount && Model.CurrentLoggedInUserId != Model.UserInfo.Id)
         {
             <div class="moreinfo">
                 <div class="gender">
@@ -92,7 +92,7 @@
                     <p>@age</p>
                 </div>
             </div>
-            @if (WebApplicationProject.Data.MockDB.CurrentLoggedInUserId == Model.UserInfo.Id)
+            @if (Model.CurrentLoggedInUserId == Model.UserInfo.Id)
 
             {
                 <button class="edit-btn" onclick="openEditModal()">Edit Profile</button>
@@ -104,14 +104,15 @@
 <div class="activitycolumn">
     <h2>Recent Host Activity</h2>
     <p>กิจกรรมที่เคยสร้าง</p>
-    @if (((WebApplicationProject.Data.MockDB.CurrentLoggedInUserId == Model.UserInfo.Id ||
+    @if (((Model.CurrentLoggedInUserId == Model.UserInfo.Id ||
         (!Model.UserInfo.Settings.PrivateAccount && Model.UserInfo.Settings.ShowHostedEvents))
         && (Model.HostedEvents != null && Model.HostedEvents.Any())))
 
     {
         <div class="activitylist">
-        @foreach (var ev in Model.HostedEvents)
+        @foreach ( var evModel in Model.HostedEvents)
         {
+            var ev = evModel.EventData;
             <div class="activity">
                 <div class="activityimg">
                     <img src=@ev.Image alt="Event">
@@ -157,14 +158,9 @@
                     </div>
                     <div class="member-row">
                         <div class="avatars">
-                        @foreach (var ticket in ev.Participants.Where(p => p.Status == ParticipationStatus.Confirmed).Take(3))
+                        @foreach (var user in evModel.ParticipantAvatars)
                         {
-                            var userID = ticket.UserId;
-                            var user = WebApplicationProject.Data.MockDB.UsersList.FirstOrDefault(u => u.Id == userID);
-                            if (user != null)
-                            {
-                                <img src="@(user.Image)" alt="@user.FName" title="@user.FName @user.SName">
-                            }
+                            <img src="@user.Image" alt="@user.FName" title="@user.FName @user.SName">
                         }
                         @if (ev.CurrentParticipants > 3)
                         {
@@ -180,7 +176,7 @@
     }
     else if (Model.UserInfo.Settings.ShowHostedEvents && (Model.HostedEvents == null || 
     !Model.HostedEvents.Any()) && (!Model.UserInfo.Settings.PrivateAccount ||
-    WebApplicationProject.Data.MockDB.CurrentLoggedInUserId == Model.UserInfo.Id))
+    Model.CurrentLoggedInUserId == Model.UserInfo.Id))
     {
         <div class="private-content-mock">
             <div>📭</div>
@@ -201,14 +197,15 @@
 <div class="activitycolumn">
     <h2>Recent Join Activity</h2>
     <p>กิจกรรมที่เคยเข้าร่วม</p>
-    @if ((WebApplicationProject.Data.MockDB.CurrentLoggedInUserId == Model.UserInfo.Id ||
+    @if ((Model.CurrentLoggedInUserId == Model.UserInfo.Id ||
             (!Model.UserInfo.Settings.PrivateAccount && Model.UserInfo.Settings.ShowJoinedEvents))
             && (Model.JoinedEvents != null && Model.JoinedEvents.Any()))
         {
             <div class="activitylist">
-                @foreach (var ev in Model.JoinedEvents)
+            @foreach (var evModel in Model.JoinedEvents)
                 {
-                    <div class="activity">
+                var ev = evModel.EventData;
+                <div class="activity">
                         <div class="activityimg">
                             <img src=@ev.Image alt="Event">
                         </div>
@@ -253,14 +250,9 @@
                             </div>
                             <div class="member-row">
                                 <div class="avatars">
-                                @foreach (var ticket in ev.Participants.Where(p => p.Status == ParticipationStatus.Confirmed).Take(3))
+                                @foreach (var user in evModel.ParticipantAvatars)
                                 {
-                                    var userID = ticket.UserId;
-                                    var user = WebApplicationProject.Data.MockDB.UsersList.FirstOrDefault(u => u.Id == userID);
-                                    if (user != null)
-                                    {
-                                        <img src="@(user.Image)" alt="@user.FName" title="@user.FName @user.SName">
-                                    }
+                                    <img src="@user.Image" alt="@user.FName" title="@user.FName @user.SName">
                                 }
                                 @if (ev.CurrentParticipants > 3)
                                 {
@@ -276,7 +268,7 @@
         }
         else if (Model.UserInfo.Settings.ShowJoinedEvents && (Model.JoinedEvents == null || 
         !Model.JoinedEvents.Any()) && (!Model.UserInfo.Settings.PrivateAccount || 
-        WebApplicationProject.Data.MockDB.CurrentLoggedInUserId == Model.UserInfo.Id))
+        Model.CurrentLoggedInUserId == Model.UserInfo.Id))
         {
             <div class="private-content-mock">
                 <div>📭</div>
@@ -295,7 +287,7 @@
 </div>
 <div class="rating" id="review-section">
     <h1>Rating</h1>
-    @if (Model.UserInfo.Settings.PrivateAccount && WebApplicationProject.Data.MockDB.CurrentLoggedInUserId != Model.UserInfo.Id)
+    @if (Model.UserInfo.Settings.PrivateAccount && Model.CurrentLoggedInUserId != Model.UserInfo.Id)
     {
         <div class="private-content-mock content-mock">
             <div>🔒</div>
@@ -313,10 +305,11 @@
     else
     {
         <div class="ratinglist">
-            @foreach (var rw in Model.UserInfo.Reviewslist)
+            @foreach (var rwModel in Model.Reviews)
             {
-                var author = WebApplicationProject.Data.MockDB.UsersList.FirstOrDefault(u => u.Id == rw.UserId);
-                var events = WebApplicationProject.Data.MockDB.EventList.FirstOrDefault(e => e.Id == rw.EventId);
+                var rw = rwModel.ReviewData;
+                var author = rwModel.Author;
+                var eventTitle = rwModel.EventTitle;
                 <div class="reviewblock">
                     <div class="stars">
                         @for (int i = 0; i < rw.stars; i++)
@@ -328,7 +321,7 @@
                             <span>☆</span>
                         }
                     </div>
-                    <h3>form @events.Title</h3>
+                    <h3>form @eventTitle</h3>
                     <h2>@rw.reviewtitle</h2>
                     <p class="reviewbody">@rw.reviewbody</p>
                     @if (rw.IsAnonymous)
