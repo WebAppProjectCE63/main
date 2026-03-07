@@ -3,7 +3,7 @@
     flex-direction: column;
     justify-items: center;
     align-items: center;
-    background-color: #f4f4f4;
+    background: linear-gradient(180deg, #FFE7B3, #FFD08A);
     height: 200px;
     padding: 20px;
 }
@@ -16,12 +16,12 @@
 
     .pagebanner h1 {
         font-size: 64px;
-        color: #333;
+        color: #6B3E00;
     }
 
     .pagebanner p {
         font-size: 24px;
-        color: #888;
+        color: #8A5A20;
     }
 
 .profilebanner {
@@ -55,6 +55,7 @@
     height: auto;
     display: grid;
     text-align: left;
+    color: #5C3B12;
 }
 
 .review-info {
@@ -74,15 +75,18 @@
     width: auto;
     height: 70%;
     margin-top: 30px;
-    background-color: #333;
-    border-radius: 8px;
-    color: #ffffff;
+    background: linear-gradient(90deg, #FFD166, #FF9F1C);
+    border: none;
+    border-radius: 10px;
+    color: #5A3200;
     font-size: large;
+    font-weight: 700;
+    padding: 10px 18px;
 }
 
-        .profileinfo button:hover {
-            background-color: #888;
-        }
+.profileinfo button:hover {
+    background: linear-gradient(90deg, #FFC44D, #FF8C1A);
+}
 
 .moreinfo {
     display: grid;
@@ -107,10 +111,13 @@
 .moreinfo p {
     width: 90%;
     margin: 10px;
-    outline: 1px solid #888;
+    outline: 1px solid #F4C56A;
     outline-offset: 10px;
-    border-radius: 2px;
+    border-radius: 6px;
     text-align: center;
+    background: #FFF8ED;
+    color: #6B3E00;
+    padding: 6px 0;
 }
 
 .activitycolumn {
@@ -138,8 +145,10 @@
     padding: 20px;
     grid-template-columns: repeat(12, 1fr);
     grid-column-gap: 20px;
-    border: 1px solid #333;
-    border-radius: 10px;
+    border: 1px solid #FFD89A;
+    border-radius: 14px;
+    background: #FFFDF8;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
 .activityimg {
@@ -152,6 +161,7 @@
         height: 160px;
         object-fit: cover;
         margin: 10px;
+        border-radius: 10px;
     }
 
 .eventinfo {
@@ -168,6 +178,7 @@
     flex-direction: column;
     justify-content: space-between;
     flex-wrap: wrap;
+    color: #5C3B12;
 }
 
 .taglist {
@@ -177,11 +188,12 @@
 }
 
 .tag {
-    background-color: #333;
+    background: #FF9F1C;
     color: white;
     padding: 6px 12px;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 13px;
+    font-weight: 600;
 }
 
 .datetime {
@@ -195,10 +207,10 @@
 .time,
 .date {
     padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
+    border: 1px solid #FFD89A;
+    border-radius: 8px;
     font-size: 14px;
-    background-color: white;
+    background-color: #FFF8ED;
     outline: none;
     text-align: center;
 }
@@ -216,7 +228,6 @@
     display: flex;
     width: 100%;
     justify-content: space-between;
-    /* ดันรูปคนไปซ้าย ดันปุ่มไปขวา */
     align-items: center;
 }
 
@@ -225,7 +236,6 @@
     align-items: center;
 }
 
-    /* ทริคทำรูปโปรไฟล์ซ้อนกัน */
     .avatars img {
         width: 35px;
         height: 35px;
@@ -243,7 +253,7 @@
     width: 35px;
     height: 35px;
     border-radius: 50%;
-    background-color: #eee;
+    background-color: #FFE2A8;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -251,15 +261,17 @@
     border: 2px solid white;
     margin-left: -10px;
     z-index: 1;
+    color: #6B3E00;
+    font-weight: 700;
 }
 
 .member-count {
     padding: 10px 20px;
-    background-color: #f5f5f5;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    color: #333;
-    font-weight: 500;
+    background-color: #FFF3D6;
+    border: 1px solid #F4C56A;
+    border-radius: 8px;
+    color: #6B3E00;
+    font-weight: 600;
     cursor: pointer;
 }
 
@@ -267,12 +279,12 @@
     display: flex;
     height: 400px;
     flex-direction: column;
-    background-color: #f4f4f4;
+    background: linear-gradient(180deg, #FFF3D6, #FFE7B3);
     padding: 20px;
     margin: auto;
     text-align: left;
+    border-radius: 16px;
 }
-
 
 .ratinglist {
     display: flex;
@@ -284,12 +296,13 @@
     font-size: 30px;
     letter-spacing: 2px;
     margin-bottom: 15px;
+    color: #FF9F1C;
 }
 
 .reviewblock h3 {
     margin: 0 0 10px 0;
     font-size: 18px;
-    color: #222;
+    color: #6B3E00;
 }
 
 .reviewbody {
@@ -299,16 +312,16 @@
     flex-grow: 1;
 }
 
-
 .reviewblock {
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    background-color: #fff;
+    border: 1px solid #FFD89A;
+    border-radius: 12px;
+    background-color: #FFFDF8;
     width: 30%;
     min-width: 250px;
     padding: 20px;
     display: flex;
     flex-direction: column;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
 }
 
 .reviewprofile {
@@ -322,6 +335,7 @@
         width: 40px;
         height: 40px;
         object-fit: cover;
+        border: 2px solid #FFD166;
     }
 
 .reviewname h4,
@@ -332,17 +346,16 @@
 
 .reviewname h4 {
     font-size: 14px;
-    color: #444;
+    color: #5C3B12;
 }
 
 .reviewname p {
     font-size: 13px;
-    color: #999;
+    color: #A07A45;
 }
 
 #editProfileModal {
     display: none;
-
 }
 
 .modal-overlay {
@@ -353,12 +366,12 @@
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(90, 50, 0, 0.35);
     backdrop-filter: blur(4px);
 }
 
 .modal-content {
-    background-color: #fff;
+    background-color: #FFFDF8;
     margin: 2% auto;
     padding: 30px;
     border-radius: 16px;
@@ -368,18 +381,21 @@
     overflow-y: auto;
     padding-right: 10px;
     scrollbar-width: thin;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
     position: relative;
     animation: slideDown 0.3s ease-out;
+    border: 1px solid #FFD89A;
 }
+
     .modal-content h1 {
         margin-top: 0.5%;
+        color: #6B3E00;
     }
 
-    .bigavatars {
-        display: flex;
-        align-items: center;
-    }
+.bigavatars {
+    display: flex;
+    align-items: center;
+}
 
     .bigavatars img {
         width: 80px;
@@ -412,7 +428,7 @@
     height: 270px;
     overflow: hidden;
     border-radius: 8px;
-    border: 1px solid #ddd;
+    border: 1px solid #FFD89A;
 }
 
 .profile-circle {
@@ -443,7 +459,8 @@
 }
 
 .lable_switch {
-    width: 60%
+    width: 60%;
+    color: #5C3B12;
 }
 
 .switch {
@@ -461,7 +478,7 @@
     position: absolute;
     cursor: pointer;
     inset: 0;
-    background: #ccc;
+    background: #E0C79D;
     transition: .4s;
     border-radius: 34px;
 }
@@ -479,7 +496,7 @@
     }
 
 input:checked + .slider {
-    background: #2196F3;
+    background: #FF9F1C;
 }
 
     input:checked + .slider:before {
@@ -487,13 +504,13 @@ input:checked + .slider {
     }
 
 input:focus + .slider {
-    box-shadow: 0 0 1px #2196F3;
+    box-shadow: 0 0 1px #FF9F1C;
 }
 
 .private-content-mock {
     text-align: center;
     padding: 50px 20px;
-    background-color: #f5f6f8;
+    background-color: #FFF3D6;
     border-radius: 15px;
     margin-top: 20px;
 }
@@ -501,24 +518,25 @@ input:focus + .slider {
     .private-content-mock div {
         font-size: 50px;
         margin-bottom: 10px;
-        color: #b0b5c1;
+        color: #D8A85A;
     }
 
     .private-content-mock h3 {
-        color: #6c757d;
+        color: #8A5A20;
         margin-bottom: 5px;
     }
 
     .private-content-mock p {
-        color: #adb5bd;
+        color: #B98A4D;
         font-size: 14px;
     }
+
 .content-mock {
     background-color: white;
 }
 
 .modal-body {
-    color: #212529;
+    color: #5C3B12;
 }
 
     .modal-body label {
@@ -539,19 +557,20 @@ input:focus + .slider {
     padding: 8px 10px;
     font-size: 1rem;
     font-weight: 400;
-    color: #495057;
-    background-color: #fff;
-    border: 1px solid #ced4da;
+    color: #5C3B12;
+    background-color: #FFF8ED;
+    border: 1px solid #FFD89A;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     box-sizing: border-box;
+    border-radius: 8px;
 }
 
     .form-control:focus {
-        color: #495057;
+        color: #5C3B12;
         background-color: #fff;
-        border-color: #80bdff;
+        border-color: #FFB347;
         outline: 0;
-        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        box-shadow: 0 0 0 0.2rem rgba(255, 159, 28, 0.18);
     }
 
 input[type="file"].form-control {
