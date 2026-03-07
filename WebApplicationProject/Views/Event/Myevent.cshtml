@@ -193,7 +193,7 @@
 
                             <div class="extra-info">
                                 <p class="info-row"><strong>Location:</strong> @ev.Location</p>
-                                <p class="info-row"><strong>Date:</strong> @ev.DateTime.ToString("dd MMM yyyy HH:mm")</p>
+                                <p class="info-row"><strong>Date:</strong> @ev.DateTime.ToString("dd MMM yyyy HH:mm") - @ev.EndDateTime.ToString("dd MMM yyyy HH:mm")</p>
 
                                 <div class="extra-actions">
                                     @if (isHost)
@@ -215,7 +215,7 @@
                                         // สำหรับผู้เข้าร่วม (Participants)
                                         @if (DateTime.Now >= ev.DateTime)
                                         {
-                                            <button type="button" onclick="window.location.href='@Url.Action("Review", "Event", new { id = ev.Id })'">
+                                            <button type="button" class="view-btn" onclick="window.location.href='@Url.Action("Review", "Event", new { id = ev.Id })'">
                                                 Review Event
                                             </button>
                                         }
