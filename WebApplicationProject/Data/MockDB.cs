@@ -123,8 +123,8 @@ namespace WebApplicationProject.Data
                 Reviewslist = new List<Review>
                 {
                     // 🚨 ได้รับรีวิวจาก Event 10 และ 12
-                    new Review { Id = 10, stars = 5, reviewtitle = "นิสัยดีมาก", reviewbody = "เป็นผู้เข้าร่วมที่ตรงต่อเวลา คุยสนุกครับ", UserId = 101, EventId = 10 },
-                    new Review { Id = 11, stars = 4, reviewtitle = "โอเคเลย", reviewbody = "เป็นกันเองดีครับ", UserId = 102, EventId = 12 }
+                    new Review { Id = 1, stars = 5, reviewtitle = "นิสัยดีมาก", reviewbody = "เป็นผู้เข้าร่วมที่ตรงต่อเวลา คุยสนุกครับ", UserId = 101, EventId = 10 },
+                    new Review { Id = 2, stars = 4, reviewtitle = "โอเคเลย", reviewbody = "เป็นกันเองดีครับ", UserId = 102, EventId = 12 }
                 }
             },
 
@@ -135,7 +135,7 @@ namespace WebApplicationProject.Data
                 Reviewslist = new List<Review>
                 {
                     // 🚨 ได้รับรีวิวจาก Event 10
-                    new Review { Id = 12, stars = 5, reviewtitle = "เยี่ยมมาก", reviewbody = "น่ารัก ช่วยเหลืองานดีมาก", UserId = 101, EventId = 10 }
+                    new Review { Id = 1, stars = 5, reviewtitle = "เยี่ยมมาก", reviewbody = "น่ารัก ช่วยเหลืองานดีมาก", UserId = 101, EventId = 10 }
                 }
             },
 
@@ -148,7 +148,7 @@ namespace WebApplicationProject.Data
                 Reviewslist = new List<Review>
                 {
                     // 🚨 ได้รับรีวิวจาก Event 12
-                    new Review { Id = 13, stars = 3, reviewtitle = "กลางๆ", reviewbody = "มาสายไปนิดนึงครับ", UserId = 102, EventId = 12 }
+                    new Review { Id = 1, stars = 3, reviewtitle = "กลางๆ", reviewbody = "มาสายไปนิดนึงครับ", UserId = 102, EventId = 12 }
                 }
             },
 
