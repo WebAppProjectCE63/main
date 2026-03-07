@@ -1,6 +1,9 @@
 ﻿@using WebApplicationProject.Data
 @using WebApplicationProject.Models
 @model IEnumerable<WebApplicationProject.Models.Event>
+@{
+    int currentUserId = Context.Session.GetInt32("UserId") ?? 0;
+}
 <!DOCTYPE html>
 <html>
 <head>
@@ -102,8 +105,8 @@
 
             @foreach (var ev in Model)
             {
-                var isHost = ev.UserHostId == MockDB.CurrentLoggedInUserId;
-                var participantInfo = ev.Participants.FirstOrDefault(p => p.UserId == MockDB.CurrentLoggedInUserId && p.Status != ParticipationStatus.Remove);
+                var isHost = ev.UserHostId == currentUserId;
+                var participantInfo = ev.Participants.FirstOrDefault(p => p.UserId == currentUserId && p.Status != ParticipationStatus.Remove);
 
                 if (!isHost && participantInfo == null)
                 {

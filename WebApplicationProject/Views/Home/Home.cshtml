@@ -1,6 +1,8 @@
 @model IEnumerable<WebApplicationProject.Models.Event>
 @using WebApplicationProject.Data
-
+@{
+    int currentUserId = Context.Session.GetInt32("UserId") ?? 0;
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -211,7 +213,8 @@
                                     </div>
 
                                     <div class="event-actions">
-                                        @if (ev.UserHostId == MockDB.CurrentLoggedInUserId)
+   
+                                    @if (ev.UserHostId == currentUserId)
                                         {
                                             <a class="join-btn"
                                                    asp-controller="Event"
