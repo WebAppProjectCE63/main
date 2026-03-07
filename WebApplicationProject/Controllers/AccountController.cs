@@ -68,26 +68,15 @@ namespace WebApplicationProject.Controllers
                 return View(model);
             }
 
-            if (MockDB.UsersList.Any(u => u.Username == model.Username))
+            if (_context.Users.Any(u => u.Username == model.Username))
             {
                 ViewBag.Error = "Username already exists";
                 return View(model);
             }
 
-            if (string.IsNullOrEmpty(model.Email))
-            {
-                ViewBag.Error = "Email required";
-                return View(model);
-            }
-
-            if (_context.Users.Any(u => u.Email == user.Email))
+            if (_context.Users.Any(u => u.Email == model.Email))
             {
                 ViewBag.Error = "Email already exists";
-                return View(model);
-            }
-            if (_context.Users.Any(u => u.Username == user.Username))
-            {
-                ViewBag.Error = "Password required";
                 return View(model);
             }
 
@@ -99,17 +88,18 @@ namespace WebApplicationProject.Controllers
 
             var user = new User
             {
-                Id = MockDB.UsersList.Max(u => u.Id) + 1,
                 FName = model.FName,
                 SName = model.SName,
                 Birthday = model.Birthday,
                 Username = model.Username,
                 Email = model.Email,
                 Password = model.Password,
-                Image = "https://ui-avatars.com/api/?name=" + model.FName[0] + model.SName[0] + "&background=random"
+                Image = "https://ui-avatars.com/api/?name=" + model.FName[0] + model.SName[0] + "&background=random",
+                Settings = new UserSettings()
             };
 
-            MockDB.UsersList.Add(user);
+            _context.Users.Add(user);
+            _context.SaveChanges();
 
             return RedirectToAction("Login", new { success = true });
         }
@@ -133,22 +123,18 @@ namespace WebApplicationProject.Controllers
         [HttpPost]
         public JsonResult LoginAjax(string username, string password)
         {
-            //var hash = HashPassword(password);
-
             var user = _context.Users
                 .FirstOrDefault(u => u.Username == username && u.Password == password);
 
             if (user == null)
                 return Json(new { success = false });
 
-            //HttpContext.Session.SetString("Role", user.Role);
-
             return Json(new { success = true });
         }
         [HttpPost]
         public JsonResult CheckEmail(string email)
         {
-            bool exists = MockDB.UsersList.Any(u => u.Email == email);
+            bool exists = _context.Users.Any(u => u.Email == email);
 
             return Json(new { exists = exists });
         }

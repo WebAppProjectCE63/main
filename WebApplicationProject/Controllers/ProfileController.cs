@@ -23,60 +23,65 @@ namespace WebApplicationProject.Controllers
         public IActionResult profilepage(int? id = null)
         {
             int targetId = id ?? CurrentUserId;
+            User ? currentUser = _context.Users
+                .Include(u => u.Reviewslist)
+                .FirstOrDefault(u => u.Id == targetId);
 
-                if (currentUser == null) return NotFound();
+            if (currentUser == null) return NotFound();
 
-                var viewModel = new ProfilePageViewModel
-                {
-                    UserInfo = currentUser,
-                    CurrentLoggedInUserId = MockDB.CurrentLoggedInUserId
-                };
+            var viewModel = new ProfilePageViewModel
+            {
+                UserInfo = currentUser,
+                CurrentLoggedInUserId = CurrentUserId
+            };
 
-                if (currentUser.Settings.PrivateAccount && currentUser.Id != MockDB.CurrentLoggedInUserId)
-                {
-                    return View(viewModel);
-                }
-
-                var rawHostedEvents = GetMyHostedEvents(MockDB.EventList, targetId);
-                viewModel.HostedEvents = rawHostedEvents.Select(ev => new EventDisplayModel
-                {
-                    EventData = ev,
-                    ParticipantAvatars = MockDB.UsersList.Where(u => ev.Participants
-                        .Where(p => p.Status == ParticipationStatus.Confirmed)
-                        .Select(p => p.UserId)
-                        .Contains(u.Id))
-                        .Take(3)
-                        .ToList()
-                }).ToList();
-
-                var rawJoinedEvents = MockDB.EventList
-                    .Where(ev => ev.Participants.Any(p => p.UserId == targetId && p.Status == ParticipationStatus.Confirmed))
-                    .ToList();
-
-                viewModel.JoinedEvents = rawJoinedEvents.Select(ev => new EventDisplayModel
-                {
-                    EventData = ev,
-                    ParticipantAvatars = MockDB.UsersList.Where(u => ev.Participants
-                        .Where(p => p.Status == ParticipationStatus.Confirmed)
-                        .Select(p => p.UserId)
-                        .Contains(u.Id))
-                        .Take(3)
-                        .ToList()
-                }).ToList();
-
-                // --- 3. จัดการ Reviews ---
-                if (currentUser.Reviewslist != null && currentUser.Reviewslist.Any())
-                {
-                    viewModel.Reviews = currentUser.Reviewslist.Select(r => new ReviewDisplayModel
-                    {
-                        ReviewData = r,
-                        Author = MockDB.UsersList.FirstOrDefault(u => u.Id == r.UserId),
-                        EventTitle = MockDB.EventList.FirstOrDefault(e => e.Id == r.EventId)?.Title ?? "Unknown Event"
-                    }).ToList();
-                }
-
+            if (currentUser.Settings != null && currentUser.Settings.PrivateAccount && currentUser.Id != CurrentUserId)
+            {
                 return View(viewModel);
             }
+            var allEvents = _context.Events.Include(e => e.Participants).ToList();
+            var allUsers = _context.Users.ToList();
+
+            var rawHostedEvents = GetMyHostedEvents(allEvents, targetId);
+            viewModel.HostedEvents = rawHostedEvents.Select(ev => new EventDisplayModel
+            {
+                EventData = ev,
+                ParticipantAvatars = allUsers.Where(u => ev.Participants
+                    .Where(p => p.Status == ParticipationStatus.Confirmed)
+                    .Select(p => p.UserId)
+                    .Contains(u.Id))
+                    .Take(3)
+                    .ToList()
+            }).ToList();
+
+            var rawJoinedEvents = allEvents
+                .Where(ev => ev.Participants.Any(p => p.UserId == targetId && p.Status == ParticipationStatus.Confirmed))
+                .ToList();
+
+            viewModel.JoinedEvents = rawJoinedEvents.Select(ev => new EventDisplayModel
+            {
+                EventData = ev,
+                ParticipantAvatars = allUsers.Where(u => ev.Participants
+                    .Where(p => p.Status == ParticipationStatus.Confirmed)
+                    .Select(p => p.UserId)
+                    .Contains(u.Id))
+                    .Take(3)
+                    .ToList()
+            }).ToList();
+
+            // --- 3. จัดการ Reviews ---
+            if (currentUser.Reviewslist != null && currentUser.Reviewslist.Any())
+            {
+                viewModel.Reviews = currentUser.Reviewslist.Select(r => new ReviewDisplayModel
+                {
+                    ReviewData = r,
+                    Author = allUsers.FirstOrDefault(u => u.Id == r.UserId),
+                    EventTitle = allEvents.FirstOrDefault(e => e.Id == r.EventId)?.Title ?? "Unknown Event"
+                }).ToList();
+            }
+
+            return View(viewModel);
+        }
 
         private List<Event> GetMyHostedEvents(List<Event> allEvents, int UserID)
             {
