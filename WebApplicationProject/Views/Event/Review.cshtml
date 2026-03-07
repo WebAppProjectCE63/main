@@ -85,6 +85,7 @@
                         <th>ลำดับ</th>
                         <th>ชื่อ</th>
                         <th>สถานะ</th>
+                        <th>คะแนน</th>
                         <th>เวลาที่เข้าร่วม</th>
                         <th>จัดการ</th>
                     </tr>
@@ -121,6 +122,16 @@
                                 </td>
                                 <td>
                                     <span class="status-badge">เข้าร่วม</span>
+                                </td>
+                                <td>
+                                    @if (isReviewed)
+                                    {
+                                        <span>@myReviewToThisUser.stars ★</span>
+                                    }
+                                    else
+                                    {
+                                        <span>ยังไม่ได้รีวิว</span>
+                                    }
                                 </td>
                                 <td>@ticket.JoinedAt.ToString("dd/MMM/yyyy HH:mm")</td>
                                 <td>
@@ -159,6 +170,16 @@
                                 </td>
                                 <td>
                                     <span class="status-badge">เจ้าของกิจกรรม</span>
+                                </td>
+                                <td>
+                                    @if (isReviewed)
+                                    {
+                                        <span>@myReviewToThisUser.stars ★</span>
+                                    }
+                                    else
+                                    {
+                                        <span>ยังไม่ได้รีวิว</span>
+                                    }
                                 </td>
                                 <td>-</td>
                                 <td>
