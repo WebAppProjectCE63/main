@@ -393,6 +393,7 @@ namespace WebApplicationProject.Controllers
 
             return RedirectToAction("Myevent");
         }
+
         [HttpPost]
         public IActionResult ToggleRegistration(int id)
         {
@@ -405,6 +406,17 @@ namespace WebApplicationProject.Controllers
             _context.SaveChanges();
 
             return Json(new { success = true, isClosed = ev.IsRegistrationClosed });
+        }
+        [HttpGet]
+        public IActionResult CheckStatus(int id)
+        {
+            var ev = _context.Events.FirstOrDefault(e => e.Id == id);
+            if (ev == null) return NotFound();
+            return Json(new
+            {
+                isRegistrationClosed = ev.IsRegistrationClosed,
+                dateTime = ev.DateTime 
+            });
         }
 
     }

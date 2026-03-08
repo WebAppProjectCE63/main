@@ -1,6 +1,6 @@
 ﻿@model WebApplicationProject.Models.ReviewEventViewModel
 <link rel="stylesheet" href="~/css/eventPrev_eventForm.css" asp-append-version="true" />
-<link rel="stylesheet" href="~/css/partiTable.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css//reviewTable.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/reviewstyle.css" asp-append-version="true" />
 <div class="head">
     <h1>Review Event</h1>
@@ -110,7 +110,7 @@
                                     <span>ยังไม่ได้รีวิว</span>
                                 }
                             </td>
-                            <td>@(target.IsHost ? "-" : target.JoinedAt.ToString("dd/MMM/yyyy HH:mm"))</td>
+                            <td>@(target.IsHost ? "-" : target.JoinedAt.ToString("dd MMM yyyy HH:mm"))</td>
                             <td>
                                 @if (isReviewed)
                                 {

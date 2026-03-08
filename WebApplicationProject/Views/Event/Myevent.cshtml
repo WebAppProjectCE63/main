@@ -96,8 +96,8 @@
                 }
                 var maxWaiting = (int)Math.Ceiling(ev.MaxParticipants * 0.5);
                 var currentWaiting = ev.Participants.Count(p => p.Status == ParticipationStatus.Waiting);
-
-                <div class="Event" data-date="@ev.DateTime.ToString("yyyy-MM-dd")">
+                <div class="Event" data-date="@ev.DateTime.ToString("yyyy-MM-dd")" data-event-date="@ev.DateTime.ToString("yyyy-MM-ddTHH:mm:ss")">
+                    <input type="hidden" name="eventId" value="@ev.Id" />
                     <div class="event-card">
                         <div class="image-column" style="display: flex; flex-direction: column; gap: 8px; align-items: center; flex-shrink: 0;">
                             <div class="event-image">
@@ -133,7 +133,7 @@
                             @if (ev.IsRegistrationClosed)
                             {
                                 <span class="status-badge statis-close" style="width: 100%; box-sizing: border-box; background-color: #dc3545; color: white; margin-top: -4px; font-size: 0.85em; padding: 2px;">
-                                    🔒 Closed
+                                    🔒 Locked
                                 </span>
                             }
 
@@ -148,7 +148,8 @@
                                 }
                                 else if (participantInfo != null)
                                 {
-                                    bool isClosedWaitlist = (ev.IsRegistrationClosed || DateTime.Now >= ev.DateTime) && participantInfo.Status == ParticipationStatus.Waiting;
+                                    bool isWithinOneHour = DateTime.Now >= ev.DateTime.AddMinutes(-1);
+                                    bool isClosedWaitlist = (ev.IsRegistrationClosed || isWithinOneHour) && participantInfo.Status == ParticipationStatus.Waiting;
                                     var statusText = participantInfo.Status == ParticipationStatus.Confirmed ? "Joined" :
                                     (isClosedWaitlist ? "Not Selected" : "Waiting");
 
@@ -170,7 +171,7 @@
                             </div>
                             <div class="event-row">
                                 <span>@ev.Location</span>
-                                <span>@ev.DateTime.ToString("dd/MM/yyyy")</span>
+                                <span>@ev.DateTime.ToString("dd MMM yyyy")</span>
                             </div>
 
                             <div class="event-actions normal-actions">
@@ -255,7 +256,7 @@
 
                         <div class="event-stats">
                             <div class="members">@ev.CurrentParticipants/@ev.MaxParticipants Members</div>
-                            <div class="members waiting-box">@currentWaiting/@maxWaiting สำรอง</div>
+                            <div class="members waiting-box">@currentWaiting/@maxWaiting Reserve</div>
                         </div>
                     </div>
                 </div>
