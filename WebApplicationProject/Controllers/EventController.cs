@@ -19,16 +19,31 @@ namespace WebApplicationProject.Controllers
         private int CurrentUserId => HttpContext.Session.GetInt32("UserId") ?? 0;
         public IActionResult Myevent()
         {
+            if (CurrentUserId == 0)
+            {
+                TempData["ErrorMessage"] = "คุณยังไม่ได้ login เข้าสู่ระบบ";
+                return RedirectToAction("Login", "Account");
+            }
             var events = _context.Events.Include(e => e.Participants).ToList();
             return View(events);
         }
         public IActionResult Create()
         {
+            if (CurrentUserId == 0)
+            {
+                TempData["ErrorMessage"] = "คุณยังไม่ได้ login เข้าสู่ระบบ";
+                return RedirectToAction("Login", "Account");
+            }
             return View();
         }
         [HttpPost]
         public async Task<IActionResult> Create(Event newEvent, IFormFile uploadImage)
         {
+            if (CurrentUserId == 0)
+            {
+                TempData["ErrorMessage"] = "คุณยังไม่ได้ login เข้าสู่ระบบ";
+                return RedirectToAction("Login", "Account");
+            }
             if (newEvent.MaxParticipants < 1) return BadRequest("จำนวนผู้เข้าร่วมไม่ถูกต้อง");
             int maxAllowedWait = (int)Math.Ceiling(newEvent.MaxParticipants / 2.0);
             if (newEvent.MaxWaiting > maxAllowedWait || newEvent.MaxWaiting < 0)
@@ -53,6 +68,11 @@ namespace WebApplicationProject.Controllers
 
         public IActionResult Edit(int id)
         {
+            if (CurrentUserId == 0)
+            {
+                TempData["ErrorMessage"] = "คุณยังไม่ได้ login เข้าสู่ระบบ";
+                return RedirectToAction("Login", "Account");
+            }
             var eventToEdit = _context.Events.FirstOrDefault(e => e.Id == id);
             if (eventToEdit == null) return NotFound("ไม่พบกิจกรรมนี้");
             if (!IsHost(eventToEdit))
@@ -65,6 +85,11 @@ namespace WebApplicationProject.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(Event editEvent, IFormFile uploadImage)
         {
+            if (CurrentUserId == 0)
+            {
+                TempData["ErrorMessage"] = "คุณยังไม่ได้ login เข้าสู่ระบบ";
+                return RedirectToAction("Login", "Account");
+            }
             var ogEvent = _context.Events.FirstOrDefault(e => e.Id == editEvent.Id);
             if (ogEvent != null)
             {
@@ -114,6 +139,11 @@ namespace WebApplicationProject.Controllers
 
         public IActionResult Manage(int id)
         {
+            if (CurrentUserId == 0)
+            {
+                TempData["ErrorMessage"] = "คุณยังไม่ได้ login เข้าสู่ระบบ";
+                return RedirectToAction("Login", "Account");
+            }
             var eventToManage = _context.Events.Include(e => e.Participants).FirstOrDefault(e => e.Id == id);
             if (eventToManage == null) return NotFound("ไม่พบกิจกรรมนี้");
             if (!IsHost(eventToManage))
@@ -130,6 +160,11 @@ namespace WebApplicationProject.Controllers
         [HttpPost]
         public IActionResult RemoveParti(int eventId, int userId)
         {
+            if (CurrentUserId == 0)
+            {
+                TempData["ErrorMessage"] = "คุณยังไม่ได้ login เข้าสู่ระบบ";
+                return RedirectToAction("Login", "Account");
+            }
             var eventToManage = _context.Events.Include(e => e.Participants).FirstOrDefault(e => e.Id == eventId);
             if (eventToManage == null) return NotFound("ไม่มีกิจกรรมนี้");
             if (!IsHost(eventToManage))
@@ -147,6 +182,11 @@ namespace WebApplicationProject.Controllers
         [HttpPost]
         public IActionResult PromoteParti(int eventId, int userId)
         {
+            if (CurrentUserId == 0)
+            {
+                TempData["ErrorMessage"] = "คุณยังไม่ได้ login เข้าสู่ระบบ";
+                return RedirectToAction("Login", "Account");
+            }
             var eventToManage = _context.Events.Include(e => e.Participants).FirstOrDefault(e => e.Id == eventId);
             if (eventToManage == null) return NotFound("ไม่มีกิจกรรมนี้");
             if (!IsHost(eventToManage))
@@ -204,6 +244,10 @@ namespace WebApplicationProject.Controllers
         [HttpPost]
         public IActionResult RemoveWaiting(int eventId, int userId)
         {
+            if (CurrentUserId == 0) {
+                TempData["ErrorMessage"] = "คุณยังไม่ได้ login เข้าสู่ระบบ";
+                return RedirectToAction("Login","Account");
+            }
             var eventToManage = _context.Events.Include(e => e.Participants).FirstOrDefault(e => e.Id == eventId);
             if (eventToManage == null) return NotFound("ไม่มีกิจกรรมนี้");
                 
@@ -219,6 +263,11 @@ namespace WebApplicationProject.Controllers
         [HttpPost]
         public IActionResult Join(int eventId)
         {
+            if (CurrentUserId == 0)
+            {
+                TempData["ErrorMessage"] = "คุณยังไม่ได้ login เข้าสู่ระบบ";
+                return RedirectToAction("Login", "Account");
+            }
             var ev = _context.Events.Include(e => e.Participants).FirstOrDefault(e => e.Id == eventId);
             if (ev == null) return NotFound("ไม่พบกิจกรรมนี้");
 
@@ -319,6 +368,11 @@ namespace WebApplicationProject.Controllers
         [HttpPost]
         public IActionResult CancelJoin(int eventId)
         {
+            if (CurrentUserId == 0)
+            {
+                TempData["ErrorMessage"] = "คุณยังไม่ได้ login เข้าสู่ระบบ";
+                return RedirectToAction("Login", "Account");
+            }
             var ev = _context.Events.Include(e => e.Participants).FirstOrDefault(e => e.Id == eventId);
             if (ev == null) return NotFound("ไม่พบกิจกรรมนี้");
             if (ev.IsRegistrationClosed)
