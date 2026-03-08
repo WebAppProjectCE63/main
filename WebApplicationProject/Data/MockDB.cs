@@ -109,9 +109,9 @@ namespace WebApplicationProject.Data
                 Reviewslist = new List<Review>
                 {
                     // 🚨 แก้ไขให้เป็นรีวิวที่ได้จาก Event 12 (งานที่ปั้นจั่นจัดและจบไปแล้ว)
-                    new Review { Id = 1, stars = 4, reviewtitle = "โฮสต์ดูแลดีมาก", reviewbody = "กิจกรรมสนุกมากครับ", UserId = 108, EventId = 12 },
-                    new Review { Id = 2, stars = 4, reviewtitle = "แนะนำเลย", reviewbody = "เนื้อหาแน่นปึ๊ก", UserId = 106, EventId = 12 },
-                    new Review { Id = 3, stars = 3, reviewtitle = "พอใช้ได้", reviewbody = "กิจกรรมน่าสนใจครับ", UserId = 103, EventId = 12 }
+                    new Review { Id = 1, stars = 4, reviewtitle = "โฮสต์ดูแลดีมาก", reviewbody = "กิจกรรมสนุกมากครับ", UserId = 108, EventId = 12 ,TargetUserId = 102},
+                    new Review { Id = 2, stars = 4, reviewtitle = "แนะนำเลย", reviewbody = "เนื้อหาแน่นปึ๊ก", UserId = 106, EventId = 12,TargetUserId = 102 },
+                    new Review { Id = 3, stars = 3, reviewtitle = "พอใช้ได้", reviewbody = "กิจกรรมน่าสนใจครับ", UserId = 103, EventId = 12,TargetUserId = 102 }
                 }
             },
             
@@ -123,8 +123,8 @@ namespace WebApplicationProject.Data
                 Reviewslist = new List<Review>
                 {
                     // 🚨 ได้รับรีวิวจาก Event 10 และ 12
-                    new Review { Id = 1, stars = 5, reviewtitle = "นิสัยดีมาก", reviewbody = "เป็นผู้เข้าร่วมที่ตรงต่อเวลา คุยสนุกครับ", UserId = 101, EventId = 10 },
-                    new Review { Id = 2, stars = 4, reviewtitle = "โอเคเลย", reviewbody = "เป็นกันเองดีครับ", UserId = 102, EventId = 12 }
+                    new Review { Id = 1, stars = 5, reviewtitle = "นิสัยดีมาก", reviewbody = "เป็นผู้เข้าร่วมที่ตรงต่อเวลา คุยสนุกครับ", UserId = 101, EventId = 10,TargetUserId = 103 },
+                    new Review { Id = 2, stars = 4, reviewtitle = "โอเคเลย", reviewbody = "เป็นกันเองดีครับ", UserId = 102, EventId = 12,TargetUserId = 103 }
                 }
             },
 
@@ -135,7 +135,7 @@ namespace WebApplicationProject.Data
                 Reviewslist = new List<Review>
                 {
                     // 🚨 ได้รับรีวิวจาก Event 10
-                    new Review { Id = 1, stars = 5, reviewtitle = "เยี่ยมมาก", reviewbody = "น่ารัก ช่วยเหลืองานดีมาก", UserId = 101, EventId = 10 }
+                    new Review { Id = 1, stars = 5, reviewtitle = "เยี่ยมมาก", reviewbody = "น่ารัก ช่วยเหลืองานดีมาก", UserId = 101, EventId = 10,TargetUserId = 104 }
                 }
             },
 
@@ -148,7 +148,7 @@ namespace WebApplicationProject.Data
                 Reviewslist = new List<Review>
                 {
                     // 🚨 ได้รับรีวิวจาก Event 12
-                    new Review { Id = 1, stars = 3, reviewtitle = "กลางๆ", reviewbody = "มาสายไปนิดนึงครับ", UserId = 102, EventId = 12 }
+                    new Review { Id = 1, stars = 3, reviewtitle = "กลางๆ", reviewbody = "มาสายไปนิดนึงครับ", UserId = 102, EventId = 12,TargetUserId = 107 }
                 }
             },
 
