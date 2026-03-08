@@ -25,9 +25,27 @@ namespace WebApplicationProject.Controllers
         {
             // 1. ดึงข้อมูล Event
             var ev = _context.Events.Include(e => e.Participants).FirstOrDefault(e => e.Id == id);
-            if (ev == null) return NotFound();
+            if (ev == null) 
+            {
+                TempData["ErrorMessage"] = "ไม่พบกิจกรรมดังกล่าว";
+                return RedirectToAction("Myevent", "Event");
+            }
 
             int currentUserId = CurrentUserId;
+            if (CurrentUserId == 0)
+            {
+                TempData["ErrorMessage"] = "คุณยังไม่ได้เข้าสู่ระบบ";
+                return RedirectToAction("Login", "Account");
+            }
+
+            bool isHost = ev.UserHostId == currentUserId;
+            bool isConfirmedParticipant = ev.Participants.Any(p => p.UserId == currentUserId && p.Status == ParticipationStatus.Confirmed);
+
+            if (!isHost && !isConfirmedParticipant)
+            {
+                TempData["ErrorMessage"] = "คุณไม่เกี่ยวข้องกับกิจกรรมดังกล่าว";
+                return RedirectToAction("Myevent", "Event");
+            }
 
             var viewModel = new ReviewEventViewModel
             {
