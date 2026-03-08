@@ -16,27 +16,6 @@
     </head>
 
     <body>
-        @if (TempData["ErrorMessage"] != null)
-        {
-
-            <div id="errorAlert" style="background-color: #f8d7da; color: #842029; padding: 15px; border: 1px solid #f5c2c7; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-
-                <span>@TempData["ErrorMessage"]</span>
-
-                <button onclick="document.getElementById('errorAlert').style.display='none'" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #842029; font-weight: bold;">&times;</button>
-            </div>
-
-            <script>
-                    setTimeout(function() {
-                        var alertElement = document.getElementById('errorAlert');
-                        if (alertElement) {
-                            alertElement.style.transition = "opacity 0.5s ease";
-                            alertElement.style.opacity = "0";
-                            setTimeout(function() { alertElement.style.display = 'none'; }, 500);
-                        }
-                    }, 5000);
-            </script>
-        }
         <div class="homepage-box">
             <h2>Homepage</h2>
             <p>Subtitle</p>
@@ -124,7 +103,9 @@
 
                 @foreach (var ev in Model)
                 {
-                    if (ev.DateTime < DateTime.Now || ev.IsRegistrationClosed)
+                    bool isTooClose = DateTime.Now >= ev.DateTime.AddMinutes(-1);
+
+                    if (ev.DateTime < DateTime.Now || ev.IsRegistrationClosed || isTooClose)
                     {
                         continue;
                     }
@@ -155,7 +136,7 @@
 
                                 <div class="event-row">
                                     <span>@ev.Location</span>
-                                    <span>@ev.DateTime.ToString("dd/MM/yyyy")</span>
+                                    <span>@ev.DateTime.ToString("dd MMM yyyy")</span>
                                 </div>
 
                                 <div class="event-row">

@@ -1,0 +1,243 @@
+﻿body {
+    background-color: #FFF0D9;
+}
+
+.head {
+    text-align: center;
+    padding: 60px 20px;
+    background: linear-gradient(180deg, #FFE7B3, #FFD08A);
+    border-bottom: 3px solid #FF9F1C;
+    margin-top: -20px;
+}
+
+    .head h1 {
+        font-size: 48px;
+        margin: 0;
+        font-weight: bold;
+        color: #6B3E00;
+    }
+
+    .head p {
+        font-size: 24px;
+        color: #8A6A45;
+        margin: 10px 0 0 0;
+    }
+
+.my-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+    .my-container h3 {
+        color: #7A4300;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+.eventPrev {
+    display: flex;
+    gap: 20px;
+    background: #FFFDF8;
+    border: 2px solid #FFD89A;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 40px;
+}
+
+.eventImage img {
+    width: 250px;
+    height: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    background: #FFE7C2;
+}
+
+.eventDetail {
+    flex: 1;
+    color: #6B5A45;
+    line-height: 1.6;
+}
+
+    .eventDetail h4 {
+        margin: 0 0 10px 0;
+        font-size: 20px;
+        color: #6B3E00;
+    }
+
+    .eventDetail p {
+        margin: 0 0 10px 0;
+        color: #7c7b7b;
+    }
+
+.tag-badge {
+    background: #FF9F1C;
+    color: #fff;
+    border: none;
+    border-radius: 18px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: bold;
+    display: inline-block;
+    margin-right: 5px;
+    margin-bottom: 10px;
+}
+
+.meta-info {
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.btnLink,
+.btn-toggle {
+    display: inline-block;
+    border: 1px solid #F4B860;
+    background: #FFF3D6;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    color: #6B3E00;
+    text-decoration: none;
+    transition: all 0.2s;
+    margin-top: 15px;
+    margin-right: 10px;
+}
+
+    .btnLink:hover,
+    .btn-toggle:hover {
+        background: #FFE2A8;
+        color: #6B3E00;
+    }
+
+.btn-toggle-close {
+    color: #dc3545;
+    border-color: #dc3545;
+    background: transparent;
+}
+
+    .btn-toggle-close:hover {
+        background: #dc3545;
+        color: white;
+    }
+
+.mngParti {
+    display: flex;
+    gap: 20px;
+    background-color: transparent;
+    padding: 0;
+    box-shadow: none;
+}
+
+.partiTable {
+    border: 2px solid #FFD89A;
+    background-color: #FFFDF8;
+    flex: 1;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+    .partiTable th {
+        color: #7A4300;
+        padding: 12px 10px;
+        border-bottom: 2px solid #FFE0A8;
+    }
+
+    .partiTable td {
+        padding: 12px 10px;
+        color: #6B5A45;
+        border-bottom: 1px solid #FFF0D9;
+    }
+
+        .partiTable th:first-child,
+        .partiTable td:first-child,
+        .partiTable th:nth-child(3),
+        .partiTable td:nth-child(3),
+        .partiTable th:nth-child(4),
+        .partiTable td:nth-child(4),
+        .partiTable th:nth-child(5),
+        .partiTable td:nth-child(5) {
+            text-align: center;
+        }
+
+        .partiTable th:nth-child(2),
+        .partiTable td:nth-child(2) {
+            text-align: left;
+        }
+
+        .partiTable th:last-child,
+        .partiTable td:last-child {
+            text-align: right;
+        }
+
+        .partiTable td img {
+            border-radius: 50%;
+            object-fit: cover;
+            height: 40px;
+            width: 40px;
+            margin-right: 10px;
+            vertical-align: middle;
+            border: 2px solid #FFD89A;
+        }
+
+        .partiTable td button {
+            border-radius: 8px;
+            border: 1px solid #F4B860;
+            background: #FFF3D6;
+            color: #6B3E00;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+            margin-left: 5px;
+        }
+
+            .partiTable td button:hover {
+                background: #FFE2A8;
+            }
+
+.tableHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+    .tableHeader h4 {
+        margin: 0;
+        color: #6B3E00;
+        font-size: 20px;
+    }
+
+.numOfParti {
+    border: 1px solid #F4C56A;
+    border-radius: 10px;
+    background-color: #FFF3D6;
+    padding: 6px 12px;
+    color: #6B3E00;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.profile-link {
+    text-decoration: none;
+    color: #6B3E00;
+    display: inline-flex;
+    align-items: center;
+    transition: color 0.2s;
+    font-weight: bold;
+}
+
+    .profile-link:hover {
+        color: #FF9F1C;
+        text-decoration: underline;
+    }

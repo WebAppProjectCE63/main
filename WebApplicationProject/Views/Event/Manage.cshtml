@@ -106,7 +106,7 @@
                                             <span>ยังไม่มีรีวิว</span>
                                         }
                                     </td>
-                                    <td>@ticket.JoinedAt.ToString("dd/MMM/yyyy HH:mm")</td>
+                                    <td>@ticket.JoinedAt.ToString("dd MMM yyyy HH:mm")</td>
                                     <td><button onclick="removeUser(@Model.Id, @user.Id)">ลบ</button></td>
                                 </tr>
                                 order += 1;
