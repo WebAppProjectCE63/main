@@ -21,6 +21,20 @@ namespace WebApplicationProject.Data
 
             // บอกให้ Database รู้ว่า UserSettings ไม่ใช่ตารางใหม่ แต่เป็นคอลัมน์ย่อยของตาราง Users
             modelBuilder.Entity<User>().OwnsOne(u => u.Settings);
+
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.TargetUser)
+                .WithMany(u => u.Reviewslist) // สมมติว่าใน User.cs มี public List<Review> Reviewslist { get; set; }
+                .HasForeignKey(r => r.TargetUserId)
+                .OnDelete(DeleteBehavior.Restrict); // ป้องกัน Error เวลาลบ User แล้วรีวิวค้าง
+
+            // ระบุว่า UserId คือคนเขียน
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.Writer)
+                .WithMany()
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
+
     }
 }

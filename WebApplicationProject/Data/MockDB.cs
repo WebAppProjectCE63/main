@@ -138,9 +138,10 @@ namespace WebApplicationProject.Data
                 Id = 102, Username = "art_host", Password = "123", FName = "ปั้นจั่น", SName = "งานละเอียด", Email = "pun@test.com", Gender = Genders.Female, Birthday = new DateTime(1995, 8, 15), Image = "https://ui-avatars.com/api/?name=Pun+N&background=random",
                 Reviewslist = new List<Review>
                 {
-                    new Review { Id = 1, stars = 4, reviewtitle = "โฮสต์ดูแลดีมาก", reviewbody = "กิจกรรมสนุกมากครับ", UserId = 108, EventId = 12 },
-                    new Review { Id = 2, stars = 4, reviewtitle = "แนะนำเลย", reviewbody = "เนื้อหาแน่นปึ๊ก", UserId = 106, EventId = 12 },
-                    new Review { Id = 3, stars = 3, reviewtitle = "พอใช้ได้", reviewbody = "กิจกรรมน่าสนใจครับ", UserId = 103, EventId = 12 }
+                    // 🚨 แก้ไขให้เป็นรีวิวที่ได้จาก Event 12 (งานที่ปั้นจั่นจัดและจบไปแล้ว)
+                    new Review { Id = 1, stars = 4, reviewtitle = "โฮสต์ดูแลดีมาก", reviewbody = "กิจกรรมสนุกมากครับ", UserId = 108, EventId = 12 ,TargetUserId = 102},
+                    new Review { Id = 2, stars = 4, reviewtitle = "แนะนำเลย", reviewbody = "เนื้อหาแน่นปึ๊ก", UserId = 106, EventId = 12,TargetUserId = 102 },
+                    new Review { Id = 3, stars = 3, reviewtitle = "พอใช้ได้", reviewbody = "กิจกรรมน่าสนใจครับ", UserId = 103, EventId = 12,TargetUserId = 102 }
                 }
             },
             
@@ -151,8 +152,9 @@ namespace WebApplicationProject.Data
                 MyEvents = new List<EventParticipation> { new EventParticipation { Id = 1, EventId = 1, UserId = 103, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-2) }, new EventParticipation { Id = 4, EventId = 2, UserId = 103, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-10) } },
                 Reviewslist = new List<Review>
                 {
-                    new Review { Id = 1, stars = 5, reviewtitle = "นิสัยดีมาก", reviewbody = "เป็นผู้เข้าร่วมที่ตรงต่อเวลา คุยสนุกครับ", UserId = 101, EventId = 10 },
-                    new Review { Id = 2, stars = 4, reviewtitle = "โอเคเลย", reviewbody = "เป็นกันเองดีครับ", UserId = 102, EventId = 12 }
+                    // 🚨 ได้รับรีวิวจาก Event 10 และ 12
+                    new Review { Id = 1, stars = 5, reviewtitle = "นิสัยดีมาก", reviewbody = "เป็นผู้เข้าร่วมที่ตรงต่อเวลา คุยสนุกครับ", UserId = 101, EventId = 10,TargetUserId = 103 },
+                    new Review { Id = 2, stars = 4, reviewtitle = "โอเคเลย", reviewbody = "เป็นกันเองดีครับ", UserId = 102, EventId = 12,TargetUserId = 103 }
                 }
             },
 
@@ -162,7 +164,8 @@ namespace WebApplicationProject.Data
                 Settings = new UserSettings { PrivateAccount = true, ShowEmail = false, ShowHostedEvents = true, ShowJoinedEvents = true },
                 Reviewslist = new List<Review>
                 {
-                    new Review { Id = 1, stars = 5, reviewtitle = "เยี่ยมมาก", reviewbody = "น่ารัก ช่วยเหลืองานดีมาก", UserId = 101, EventId = 10 }
+                    // 🚨 ได้รับรีวิวจาก Event 10
+                    new Review { Id = 1, stars = 5, reviewtitle = "เยี่ยมมาก", reviewbody = "น่ารัก ช่วยเหลืองานดีมาก", UserId = 101, EventId = 10,TargetUserId = 104 }
                 }
             },
 
@@ -170,6 +173,16 @@ namespace WebApplicationProject.Data
             new User { Id = 105, Username = "piti", Password = "123", FName = "ปิติ", SName = "พอใจ", Email = "piti@test.com", Gender = Genders.Male, Birthday = new DateTime(1998, 3, 10), Image = "https://ui-avatars.com/api/?name=Piti+P&background=8E44AD&color=fff", Settings = new UserSettings { PrivateAccount = false, ShowEmail = true, ShowHostedEvents = true, ShowJoinedEvents = false } },
             new User { Id = 106, Username = "chujai", Password = "123", FName = "ชูใจ", SName = "เลิศล้ำ", Email = "chujai@test.com", Gender = Genders.Other, Birthday = new DateTime(1992, 11, 5), Image = "https://ui-avatars.com/api/?name=Chujai+L&background=E74C3C&color=fff" },
             new User { Id = 107, Username = "manee", Password = "123", FName = "มานี", SName = "รักดี", Email = "manee@test.com", Gender = Genders.Female, Birthday = new DateTime(1996, 2, 14), Image = "https://ui-avatars.com/api/?name=Manee+R&background=random", Reviewslist = new List<Review> { new Review { Id = 1, stars = 3, reviewtitle = "กลางๆ", reviewbody = "มาสายไปนิดนึงครับ", UserId = 102, EventId = 12 } } },
+            
+            // 👤 User 107 มานี:
+            new User { Id = 107, Username = "manee", Password = "123", FName = "มานี", SName = "รักดี", Email = "manee@test.com", Gender = Genders.Female, Birthday = new DateTime(1996, 2, 14), Image = "https://ui-avatars.com/api/?name=Manee+R&background=random",
+                Reviewslist = new List<Review>
+                {
+                    // 🚨 ได้รับรีวิวจาก Event 12
+                    new Review { Id = 1, stars = 3, reviewtitle = "กลางๆ", reviewbody = "มาสายไปนิดนึงครับ", UserId = 102, EventId = 12,TargetUserId = 107 }
+                }
+            },
+
             new User { Id = 108, Username = "veera", Password = "123", FName = "วีระ", SName = "กล้าหาญ", Email = "veera@test.com", Gender = Genders.Male, Birthday = new DateTime(1991, 7, 20), Image = "https://ui-avatars.com/api/?name=Veera+K&background=random" },
             new User { Id = 109, Username = "arthit", Password = "123", FName = "อาทิตย์", SName = "สว่าง", Email = "arthit@test.com", Gender = Genders.Male, Birthday = new DateTime(1994, 9, 9), Image = "https://ui-avatars.com/api/?name=Arthit+S&background=random" },
             new User { Id = 110, Username = "junpen", Password = "123", FName = "จันทร์เพ็ญ", SName = "งามตา", Email = "junpen@test.com", Gender = Genders.Female, Birthday = new DateTime(1997, 10, 31), Image = "https://ui-avatars.com/api/?name=Junpen+N&background=random" },

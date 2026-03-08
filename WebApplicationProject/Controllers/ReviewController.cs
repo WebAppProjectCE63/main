@@ -89,10 +89,10 @@ namespace WebApplicationProject.Controllers
         [HttpPost]
         public IActionResult SubmitReview(int EventId, int UserId, int stars, string reviewtitle, int TargetUserId, string reviewbody, bool showname)
         {
-            var targetUser = _context.Users.Include(u => u.Reviewslist).FirstOrDefault(u => u.Id == TargetUserId);
-            if (targetUser == null) return NotFound();
-
-            var existing = targetUser.Reviewslist.FirstOrDefault(r => r.EventId == EventId && r.UserId == UserId);
+            var existing = _context.Reviews.FirstOrDefault(r =>
+                                r.EventId == EventId &&
+                                r.UserId == UserId &&
+                                r.TargetUserId == TargetUserId);
             if (existing != null)
             {
                 existing.stars = stars;
@@ -106,12 +106,13 @@ namespace WebApplicationProject.Controllers
                 {
                     EventId = EventId,
                     UserId = UserId,
+                    TargetUserId = TargetUserId,
                     stars = stars,
                     reviewtitle = reviewtitle,
                     reviewbody = reviewbody,
                     IsAnonymous = showname
                 };
-                targetUser.Reviewslist.Add(newReview);
+                _context.Reviews.Add(newReview);
             }
             _context.SaveChanges();
             return RedirectToAction("Review", new { id = EventId });
