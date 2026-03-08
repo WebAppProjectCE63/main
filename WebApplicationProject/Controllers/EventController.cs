@@ -232,16 +232,23 @@ namespace WebApplicationProject.Controllers
                 TempData["ErrorMessage"] = "กิจกรรมนี้เริ่มไปแล้ว ไม่สามารถเข้าร่วมได้ครับ";
                 return RedirectToAction("Home", "Home");
             }
-            int userId = CurrentUserId;
 
+            int userId = CurrentUserId;
             var existing = ev.Participants.FirstOrDefault(p => p.UserId == userId);
 
             if (existing != null)
             {
                 if (existing.Status == ParticipationStatus.Remove)
-                    return BadRequest("คุณถูกนำออกจากกิจกรรมนี้และไม่สามารถเข้าร่วมซ้ำได้");
+                {
+                    TempData["ErrorMessage"] = "คุณถูกนำออกจากกิจกรรมนี้และไม่สามารถเข้าร่วมซ้ำได้ครับ";
+                    return RedirectToAction("Home", "Home");
+                }
 
-                return BadRequest("คุณเข้าร่วมกิจกรรมนี้แล้ว");
+                if (existing.Status == ParticipationStatus.Confirmed || existing.Status == ParticipationStatus.Waiting)
+                {
+                    TempData["ErrorMessage"] = "คุณเข้าร่วมกิจกรรมนี้ไปแล้วครับ";
+                    return RedirectToAction("Home", "Home");
+                }
             }
 
             bool hasTimeConflict = _context.Events
@@ -257,7 +264,8 @@ namespace WebApplicationProject.Controllers
 
             if (hasTimeConflict)
             {
-                return BadRequest("คุณมีกิจกรรมอื่นในเวลาเดียวกันแล้ว");
+                TempData["ErrorMessage"] = "คุณมีกิจกรรมอื่นในเวลาเดียวกันแล้วครับ";
+                return RedirectToAction("Home", "Home");
             }
 
             ParticipationStatus status;
@@ -278,19 +286,36 @@ namespace WebApplicationProject.Controllers
                 return RedirectToAction("Home", "Home");
             }
 
-            ev.Participants.Add(new EventParticipation
+            if (existing != null && existing.Status == ParticipationStatus.Cancelled)
             {
-                EventId = ev.Id,
-                UserId = userId,
-                Status = status,
-                JoinedAt = DateTime.Now
-            });
+                existing.Status = status;
+                existing.JoinedAt = DateTime.Now;
+            }
+            else
+            {
+                ev.Participants.Add(new EventParticipation
+                {
+                    EventId = ev.Id,
+                    UserId = userId,
+                    Status = status,
+                    JoinedAt = DateTime.Now
+                });
+            }
 
             ev.CurrentParticipants = ev.Participants.Count(p => p.Status == ParticipationStatus.Confirmed);
             ev.CurrentWaiting = ev.Participants.Count(p => p.Status == ParticipationStatus.Waiting);
             _context.SaveChanges();
-            return RedirectToAction("Home", "Home");
+            if (status == ParticipationStatus.Confirmed)
+            {
+                TempData["SuccessMessage"] = "🎉 เข้าร่วมกิจกรรมสำเร็จ! คุณได้สิทธิ์เป็น 'ตัวจริง'";
+            }
+            else
+            {
+                TempData["SuccessMessage"] = "📝 เข้าร่วมกิจกรรมสำเร็จ! คุณอยู่ในรายชื่อ 'ตัวสำรอง' โปรดรอการยืนยันจากโฮสต์";
+            }
+            return RedirectToAction("Myevent");
         }
+
         [HttpPost]
         public IActionResult CancelJoin(int eventId)
         {
