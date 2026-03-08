@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApplicationProject.Data;
 
@@ -11,9 +12,11 @@ using WebApplicationProject.Data;
 namespace WebApplicationProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260307181820_AddTargetUserIdToReview")]
+    partial class AddTargetUserIdToReview
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,9 +52,6 @@ namespace WebApplicationProject.Migrations
                     b.Property<string>("Image")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsRegistrationClosed")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Location")
                         .IsRequired()
@@ -141,8 +141,6 @@ namespace WebApplicationProject.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TargetUserId");
-
                     b.HasIndex("UserId");
 
                     b.ToTable("Reviews");
@@ -208,21 +206,11 @@ namespace WebApplicationProject.Migrations
 
             modelBuilder.Entity("WebApplicationProject.Models.Review", b =>
                 {
-                    b.HasOne("WebApplicationProject.Models.User", "TargetUser")
+                    b.HasOne("WebApplicationProject.Models.User", null)
                         .WithMany("Reviewslist")
-                        .HasForeignKey("TargetUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("WebApplicationProject.Models.User", "Writer")
-                        .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("TargetUser");
-
-                    b.Navigation("Writer");
                 });
 
             modelBuilder.Entity("WebApplicationProject.Models.User", b =>
