@@ -18,79 +18,6 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-#navbar {
-    display: flex;
-    align-items: center;
-    background: linear-gradient(90deg, #FFD166, #FF8C42);
-    padding: 10px 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    position: sticky;
-    top: 0;
-    gap: 16px;
-}
-
-#weblogo {
-    margin-right: auto;
-    font-size: 28px;
-    font-weight: 800;
-    color: #4A2C00;
-}
-
-#navitem ul {
-    list-style-type: none;
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
-
-#navitem ul li a {
-    display: block;
-    color: black;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-    border-radius: 4px;
-}
-
-#navitem ul li a:hover {
-    background: rgba(255,255,255,0.35);
-}
-
-#navprofile {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-left: auto;
-}
-
-#profilename {
-    text-align: right;
-}
-
-#profilename h4,
-#profilename p {
-    margin: 0;
-    line-height: 1.2;
-}
-
-#profilename h4 {
-    font-size: 16px;
-    color: #333;
-}
-
-#profilename p {
-    font-size: 12px;
-    color: #888;
-}
-
-#navprofile img {
-    border: 2px solid white;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    object-fit: cover;
-}
-
 main {
     flex: 1;
     width: 100%;
@@ -128,63 +55,63 @@ form {
     gap: 10px;
 }
 
-form div {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    background: #FFD166;
-    border-radius: 10px 0 0 10px;
-}
+    form div {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        background: #FFD166;
+        border-radius: 10px 0 0 10px;
+    }
 
-form label {
-    flex-shrink: 0;
-    height: 50px;
-    width: 50px;
-    background: #FF8C42;
-    color: rgb(255, 255, 255);
-    border-radius: 10px 0 0 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+    form label {
+        flex-shrink: 0;
+        height: 50px;
+        width: 50px;
+        background: #FF8C42;
+        color: rgb(255, 255, 255);
+        border-radius: 10px 0 0 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-form input {
-    box-sizing: border-box;
-    flex-grow: 1;
-    min-width: 0;
-    height: 50px;
-    padding: 1em;
-    background: #FFF3D4;
-    border: none;
-    outline: none;
-    font-size: 16px;
-}
+    form input {
+        box-sizing: border-box;
+        flex-grow: 1;
+        min-width: 0;
+        height: 50px;
+        padding: 1em;
+        background: #FFF3D4;
+        border: none;
+        outline: none;
+        font-size: 16px;
+    }
 
-form button {
-    margin-top: 10px;
-    border: none;
-    padding: 0.85em 4em;
-    font-weight: 1000;
-    text-transform: uppercase;
-    background: linear-gradient(90deg, #FFB347, #FF8C42);
-    color: white;
-    border-radius: 30px;
-    cursor: pointer;
-}
+    form button {
+        margin-top: 10px;
+        border: none;
+        padding: 0.85em 4em;
+        font-weight: 1000;
+        text-transform: uppercase;
+        background: linear-gradient(90deg, #FFB347, #FF8C42);
+        color: white;
+        border-radius: 30px;
+        cursor: pointer;
+    }
 
-form button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 10px rgba(0,0,0,0.15);
-}
+        form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+        }
 
 a {
     color: #FF8C42;
     text-decoration: none;
 }
 
-a:hover {
-    color: #E06A1C;
-}
+    a:hover {
+        color: #E06A1C;
+    }
 
 #error-message {
     color: red;
@@ -194,37 +121,6 @@ a:hover {
 @media (max-width: 768px) {
     html {
         font-size: 11pt;
-    }
-
-    #navbar {
-        flex-wrap: wrap;
-        justify-content: center;
-        padding: 12px;
-    }
-
-    #weblogo {
-        width: 100%;
-        text-align: center;
-        margin-right: 0;
-    }
-
-    #navitem {
-        width: 100%;
-    }
-
-    #navitem ul {
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-    #navprofile {
-        width: 100%;
-        justify-content: center;
-        margin-left: 0;
-    }
-
-    #profilename {
-        display: none;
     }
 
     main {

@@ -1,109 +1,157 @@
 @model IEnumerable<WebApplicationProject.Models.Event>
-@using WebApplicationProject.Data
+@using Microsoft.AspNetCore.Http
+
 @{
+    ViewData["Title"] = "Home";
     int currentUserId = Context.Session.GetInt32("UserId") ?? 0;
 }
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
 
-    <link rel="stylesheet" href="~/css/homestyle.css">
+@section Styles {
+    <link rel="stylesheet" href="~/css/homestyle.css" asp-append-version="true" />
+}
 
+<div class="homepage-box">
+    <h2>Homepage</h2>
+    <p>ค้นหา Event ที่ต้องการ</p>
+</div>
 
-    </head>
+<div class="content-container bg-gray">
+    <div class="calendar-wrapper">
+        <div class="calendar-card">
+            <div class="calendar-header">
+                <button class="nav-btn" id="prevMonth" type="button">&#x276E;</button>
 
-    <body>
-        <div class="homepage-box">
-            <h2>Homepage</h2>
-            <p>Subtitle</p>
-        </div>
+                <div class="date-selectors">
+                    <select id="monthSelect">
+                        <option value="0">Jan</option>
+                        <option value="1">Feb</option>
+                        <option value="2">Mar</option>
+                        <option value="3">Apr</option>
+                        <option value="4">May</option>
+                        <option value="5">Jun</option>
+                        <option value="6">Jul</option>
+                        <option value="7">Aug</option>
+                        <option value="8">Sep</option>
+                        <option value="9">Oct</option>
+                        <option value="10">Nov</option>
+                        <option value="11">Dec</option>
+                    </select>
 
- 
-        <div class="content-container bg-gray">
-            <div class="calendar-wrapper">
-                <div class="calendar-card">
-                    <div class="calendar-header">
-                        <button class="nav-btn" id="prevMonth" type="button">&#x276E;</button>
-
-                        <div class="date-selectors">
-                            <select id="monthSelect">
-                                <option value="0">Jan</option>
-                                <option value="1">Feb</option>
-                                <option value="2">Mar</option>
-                                <option value="3">Apr</option>
-                                <option value="4">May</option>
-                                <option value="5">Jun</option>
-                                <option value="6">Jul</option>
-                                <option value="7">Aug</option>
-                                <option value="8">Sep</option>
-                                <option value="9">Oct</option>
-                                <option value="10">Nov</option>
-                                <option value="11">Dec</option>
-                            </select>
-
-                            <select id="yearSelect">
-                                <option value="2025">2025</option>
-                                <option value="2026" selected>2026</option>
-                                <option value="2027">2027</option>
-                            </select>
-                        </div>
-
-                        <button class="nav-btn" id="nextMonth" type="button">&#x276F;</button>
-                    </div>
-
-                    <div class="calendar-body">
-                        <div class="day-names">
-                            <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
-                        </div>
-                        <div class="days-grid" id="calendarGrid"></div>
-                    </div>
+                    <select id="yearSelect">
+                        <option value="2025">2025</option>
+                        <option value="2026" selected>2026</option>
+                        <option value="2027">2027</option>
+                    </select>
                 </div>
 
-                <div class="filter-bar">
-                    <div class="search-input">
-                        <input type="text"
-                               id="searchInput"
-                               placeholder="ค้นหาชื่อกิจกรรม..."
-                               style="border:none; outline:none; width:100%; background:transparent; font-family:inherit;">
-                    </div>
+                <button class="nav-btn" id="nextMonth" type="button">&#x276F;</button>
+            </div>
 
-                    <div class="search-input">
-                        <input type="text"
-                               id="searchTagInput"
-                               placeholder="ค้นหาตาม Tag (เช่น music)..."
-                               style="border:none; outline:none; width:100%; background:transparent; font-family:inherit;">
-
-                       
-                    </div>
-
-                    <div class="sort-filter">
-                        <span>Sort By</span>
-                        <select id="sortSelect" class="pill-select">
-                            <option value="date-desc">เวลา (ใหม่ - เก่า)</option>
-                            <option value="date-asc">เวลา (เก่า - ใหม่)</option>
-                            <option value="members-desc">ผู้เข้าร่วม (มาก - น้อย)</option>
-                            <option value="members-asc">ผู้เข้าร่วม (น้อย - มาก)</option>
-                            <option value="name-asc">ชื่อ (A - Z)</option>
-                            <option value="name-desc">ชื่อ (Z - A)</option>
-                        </select>
-                    </div>
+            <div class="calendar-body">
+                <div class="day-names">
+                    <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
                 </div>
-
+                <div class="days-grid" id="calendarGrid"></div>
             </div>
         </div>
-        <div class="content-container">
-            <div class="recommend-section" id="eventContainer" style="width:100%; max-width:900px;">
-                <div class="section-title">
-                    <h2 id="sectionHeader">Recommended Events</h2>
-                    <p>Subheading</p>
-                </div>
+
+        <div class="filter-bar">
+            <div class="search-input">
+                <input type="text"
+                       id="searchInput"
+                       placeholder="ค้นหาชื่อกิจกรรม..."
+                       style="border:none; outline:none; width:100%; background:transparent; font-family:inherit;">
+            </div>
+
+            <div class="search-input">
+                <input type="text"
+                       id="searchTagInput"
+                       placeholder="ค้นหาตาม Tag (เช่น music)..."
+                       style="border:none; outline:none; width:100%; background:transparent; font-family:inherit;">
+            </div>
+
+            <div class="sort-filter">
+                <span>Sort By</span>
+                <select id="sortSelect" class="pill-select">
+                    <option value="date-desc">เวลา (ใหม่ - เก่า)</option>
+                    <option value="date-asc">เวลา (เก่า - ใหม่)</option>
+                    <option value="members-desc">ผู้เข้าร่วม (มาก - น้อย)</option>
+                    <option value="members-asc">ผู้เข้าร่วม (น้อย - มาก)</option>
+                    <option value="name-asc">ชื่อ (A - Z)</option>
+                    <option value="name-desc">ชื่อ (Z - A)</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content-container">
+    <div class="recommend-section" id="eventContainer">
+        <div class="section-title">
+            <h2 id="sectionHeader">Recommended Events</h2>
+            <p>กิจกรรมที่เปิดรับสมัครและยังไม่เริ่ม</p>
+        </div>
+
+        @foreach (var ev in Model)
+        {
+            if (ev.DateTime < DateTime.Now || ev.IsRegistrationClosed)
+            {
+                continue;
+            }
+
+            bool isHost = ev.UserHostId == currentUserId;
+
+            <div class="Event" data-date="@ev.DateTime.ToString("yyyy-MM-dd")">
+                <div class="event-card">
+                    <div class="image-column">
+                        <div class="event-image">
+                            @if (!string.IsNullOrEmpty(ev.Image))
+                            {
+                                <img src="@ev.Image" alt="event image" class="event-img-fit" />
+                            }
+                        </div>
+                    </div>
+
+                    <div class="event-main">
+                        <h3 class="event-title title-flex">
+                            @ev.Title
+                            @if (isHost)
+                            {
+                                <span class="badge badge-host">Host</span>
+                            }
+                        </h3>
+
+                        <p class="event-desc">@ev.Description</p>
+
+                        <div class="event-chips">
+                            @if (ev.Tags != null && ev.Tags.Any())
+                            {
+                                foreach (var tag in ev.Tags)
+                                {
+                                    <button type="button" class="chip">@tag</button>
+                                }
+                            }
+                        </div>
+
+                        <div class="event-row">
+                            <span>@ev.Location</span>
+                            <span>@ev.DateTime.ToString("dd/MM/yyyy")</span>
+                        </div>
+
+                        <div class="event-actions normal-actions">
+                            <button type="button" class="view-btn view-info-btn">View Info</button>
+                        </div>
+
+                        <div class="extra-info">
+                            <p class="info-row"><strong>Location:</strong> @ev.Location</p>
+                            <p class="info-row">
+                                <strong>Date:</strong>
+                                @ev.DateTime.ToString("dd MMM yyyy HH:mm") - @ev.EndDateTime.ToString("dd MMM yyyy HH:mm")
+                            </p>
 
                 @foreach (var ev in Model)
                 {
-                    bool isTooClose = DateTime.Now >= ev.DateTime.AddMinutes(-1);
+                    bool isTooClose = DateTime.Now >= ev.DateTime.AddMinutes(-2);
 
                     if (ev.DateTime < DateTime.Now || ev.IsRegistrationClosed || isTooClose)
                     {
@@ -114,362 +162,260 @@
                             <div class="event-image">
                                 @if (!string.IsNullOrEmpty(ev.Image))
                                 {
-                                    <img src="@ev.Image"
-                                         alt="event image"
-                                         style="width:110px;height:110px;object-fit:cover;border-radius:8px;" />
+                                    <a asp-controller="Event"
+                                       asp-action="Manage"
+                                       asp-route-id="@ev.Id"
+                                       class="view-btn btn-dark-link">
+                                        Manage
+                                    </a>
+
+                                    <a asp-controller="Event"
+                                       asp-action="Edit"
+                                       asp-route-id="@ev.Id"
+                                       class="view-btn">
+                                        Edit
+                                    </a>
                                 }
-                            </div>
+                                else
+                                {
+                                    <form asp-controller="Event" asp-action="Join" method="post">
+                                        <input type="hidden" name="eventId" value="@ev.Id" />
+                                        <button type="submit" class="view-btn">Join</button>
+                                    </form>
+                                }
 
-                            <div class="event-main">
-                                <h3 class="event-title">@ev.Title</h3>
-                                <p class="event-desc">@ev.Description</p>
-
-                                <div class="event-chips">
-                                    @if (ev.Tags != null && ev.Tags.Any())
-                                    {
-                                        foreach (var tag in ev.Tags)
-                                        {
-                                            <button type="button" class="chip">@tag</button>
-                                        }
-                                    }
-                                </div>
-
-                                <div class="event-row">
-                                    <span>@ev.Location</span>
-                                    <span>@ev.DateTime.ToString("dd MMM yyyy")</span>
-                                </div>
-
-                                <div class="event-row">
-                                    <span>@ev.DateTime.ToString("HH:mm") - @ev.EndDateTime.ToString("HH:mm")</span>
-                                </div>
-
-                                <div class="event-actions">
-                                    <button type="button" class="view-btn view-info-btn">View Info</button>
-                                </div>
-                            </div>
-                            <div class="member-container">
-                                <div class="members">
-                                    @ev.CurrentParticipants/@ev.MaxParticipants Members
-                                </div>
-
-                                <div class="waiting">
-                                    @ev.CurrentWaiting/@ev.MaxWaiting Waiting
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="Event-ex">
-                            <div class="eventcard-ex">
-                                <div class="eventimage-ex">
-                                    @if (!string.IsNullOrEmpty(ev.Image))
-                                    {
-                                        <img src="@ev.Image"
-                                             alt="event image"
-                                             style="width:110px;height:110px;object-fit:cover;border-radius:8px;" />
-                                    }
-                                </div>
-
-                                <div style="flex:1;">
-                                    <h3>@ev.Title (Expanded)</h3>
-                                    <p>@ev.Description</p>
-
-                                    <p><strong>Location:</strong> @ev.Location</p>
-                                    <p><strong>Date:</strong> @ev.DateTime.ToString("dd MMM yyyy")</p>
-                                    <p><strong>Start:</strong> @ev.DateTime.ToString("HH:mm")</p>
-                                    <p><strong>End:</strong> @ev.EndDateTime.ToString("HH:mm")</p>
-
-                                    <div class="event-chips">
-                                        @if (ev.Tags != null && ev.Tags.Any())
-                                        {
-                                            foreach (var tag in ev.Tags)
-                                            {
-                                                <button type="button" class="chip">@tag</button>
-                                            }
-                                        }
-                                    </div>
-
-                                    <div class="event-actions">
-   
-                                        @if (ev.UserHostId == currentUserId)
-                                        {
-                                            <a class="join-btn"
-                                                   asp-controller="Event"
-                                                   asp-action="Edit"
-                                                   asp-route-id="@ev.Id">
-                                                Edit
-                                            </a>
-
-                                            <a class="join-btn"
-                                                   asp-controller="Event"
-                                                   asp-action="Manage"
-                                                   asp-route-id="@ev.Id">
-                                                Manage
-                                            </a>
-                                        }
-                                        else
-                                        {
-                                            <form asp-controller="Event" asp-action="Join" method="post">
-                                                <input type="hidden" name="eventId" value="@ev.Id" />
-                                                <button type="submit" class="join-btn">Join</button>
-                                            </form>
-                                        }
-
-                                        <button type="button" class="join-btn close-info-btn">Hide</button>
-
-                                    </div>
-                                </div>
-                                <div class="member-container">
-                                    <div class="members-ex">
-                                        @ev.CurrentParticipants/@ev.MaxParticipants Members
-                                    </div>
-
-                                    <div class="waiting">
-                                        @ev.CurrentWaiting/@ev.MaxWaiting Waiting
-                                    </div>
-                                </div>
+                                <button type="button" class="view-btn close-info-btn">Close</button>
                             </div>
                         </div>
                     </div>
-                }
+
+                    <div class="event-stats">
+                        <div class="members">
+                            @ev.CurrentParticipants/@ev.MaxParticipants Members
+                        </div>
+
+                        <div class="members waiting-box">
+                            @ev.CurrentWaiting/@ev.MaxWaiting Reserve
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        }
+    </div>
+</div>
 
-        <script>
-                document.addEventListener('DOMContentLoaded', function () {
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const monthSelect = document.getElementById('monthSelect');
+            const yearSelect = document.getElementById('yearSelect');
+            const calendarGrid = document.getElementById('calendarGrid');
+            const searchInput = document.getElementById('searchInput');
+            const searchTagInput = document.getElementById('searchTagInput');
+            const sortSelect = document.getElementById('sortSelect');
+            const eventContainer = document.getElementById('eventContainer');
+            const sectionHeader = document.getElementById('sectionHeader');
 
-                    const monthSelect = document.getElementById('monthSelect');
-                    const yearSelect = document.getElementById('yearSelect');
-                    const calendarGrid = document.getElementById('calendarGrid');
-                    const sectionHeader = document.getElementById('sectionHeader');
+            let currentSelectedDate = null;
 
-                    const searchInput = document.getElementById('searchInput');
-                    const searchTagInput = document.getElementById('searchTagInput');
+            function renderCalendar() {
+                if (!calendarGrid || !monthSelect || !yearSelect) return;
 
-                    let currentSelectedDate = null;
-                    let activeSearch = "name";
+                const year = parseInt(yearSelect.value);
+                const month = parseInt(monthSelect.value);
+                const firstDay = new Date(year, month, 1).getDay();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-                    function renderCalendar() {
-                        const year = parseInt(yearSelect.value);
-                        const month = parseInt(monthSelect.value);
-                        const firstDay = new Date(year, month, 1).getDay();
-                        const daysInMonth = new Date(year, month + 1, 0).getDate();
+                const today = new Date();
+                const todayDateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
-                        const today = new Date();
-                        const todayDateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+                calendarGrid.innerHTML = '';
 
-                        calendarGrid.innerHTML = '';
+                for (let i = 0; i < firstDay; i++) {
+                    const span = document.createElement('span');
+                    span.className = 'text-muted';
+                    calendarGrid.appendChild(span);
+                }
 
-                        for (let i = 0; i < firstDay; i++) {
-                            const span = document.createElement('span');
-                            span.className = 'text-muted';
-                            calendarGrid.appendChild(span);
-                        }
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const span = document.createElement('span');
+                    span.textContent = day;
+                    span.style.cursor = 'pointer';
 
-                        for (let day = 1; day <= daysInMonth; day++) {
-                            const span = document.createElement('span');
-                            span.textContent = day;
+                    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
-                            const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-
-                            if (dateStr === todayDateStr) {
-                                span.classList.add('highlight-day');
-                            }
-
-                            if (currentSelectedDate === dateStr) {
-                                span.classList.add('active-day');
-                            }
-
-                            span.addEventListener('click', () => {
-                                if (currentSelectedDate === dateStr) {
-                                    currentSelectedDate = null;
-                                    span.classList.remove('active-day');
-                                } else {
-                                    document.querySelectorAll('#calendarGrid span').forEach(s => s.classList.remove('active-day'));
-                                    span.classList.add('active-day');
-                                    currentSelectedDate = dateStr;
-                                }
-
-                                applyFilters();
-                            });
-
-                            calendarGrid.appendChild(span);
-                        }
+                    if (dateStr === todayDateStr) {
+                        span.classList.add('highlight-day');
+                        span.title = "Today";
                     }
 
-                    function applyFilters() {
-                        const searchText = (searchInput?.value || '').toLowerCase().trim();
-                        const searchTagText = (searchTagInput?.value || '').toLowerCase().trim();
-                        const searchTags = searchTagText.split(/[\s,]+/).filter(tag => tag.length > 0);
-
-                        let found = 0;
-                        const cards = document.querySelectorAll('.Event');
-
-                        cards.forEach(card => {
-                            const dateStr = card.getAttribute('data-date') || '';
-                            const title = card.querySelector('.event-title')?.textContent.toLowerCase() || '';
-                            const eventTags = Array.from(card.querySelectorAll('.chip'))
-                                .map(tag => tag.textContent.toLowerCase());
-
-                            const matchDate = !currentSelectedDate || dateStr === currentSelectedDate;
-
-                            let matchSearch = true;
-
-                            if (activeSearch === "name") {
-                                matchSearch = (searchText === "" || title.includes(searchText));
-                            } else if (activeSearch === "tag") {
-                                matchSearch = (searchTags.length === 0 || searchTags.some(t => eventTags.includes(t)));
-                            }
-
-                            if (matchDate && matchSearch) {
-                                card.style.display = "block";
-                                found++;
-                            } else {
-                                card.style.display = "none";
-                            }
-                        });
-
-                        if (sectionHeader) {
-                            sectionHeader.textContent = found > 0 ? "Events" : "No events found";
-                        }
+                    if (currentSelectedDate === dateStr) {
+                        span.classList.add('active-day');
                     }
 
-                    if (searchInput) {
-                        searchInput.addEventListener('input', () => {
-                            activeSearch = "name";
-                            applyFilters();
-                        });
-                    }
-
-                    if (searchTagInput) {
-                        searchTagInput.addEventListener('input', () => {
-                            activeSearch = "tag";
-                            applyFilters();
-                        });
-                    }
-
-                    const sortSelect = document.getElementById('sortSelect');
-                    const eventContainer = document.getElementById('eventContainer');
-
-                    if (sortSelect && eventContainer) {
-                        sortSelect.addEventListener('change', function () {
-                            const cards = Array.from(document.querySelectorAll('.Event'));
-                            const sortBy = this.value;
-
-                            cards.sort((a,b) => {
-                                const dateA = new Date(a.getAttribute('data-date') || 0);
-                                const dateB = new Date(b.getAttribute('data-date') || 0);
-
-                                const memA = a.querySelector('.members') ? parseInt(a.querySelector('.members').textContent.split('/')[0]) || 0 : 0;
-                                const memB = b.querySelector('.members') ? parseInt(b.querySelector('.members').textContent.split('/')[0]) || 0 : 0;
-
-                                const nameA = a.querySelector('.event-title')?.textContent.trim() || '';
-                                const nameB = b.querySelector('.event-title')?.textContent.trim() || '';
-
-                                switch(sortBy){
-                                    case 'date-asc': return dateA - dateB;
-                                    case 'date-desc': return dateB - dateA;
-                                    case 'members-asc': return memA - memB;
-                                    case 'members-desc': return memB - memA;
-                                    case 'name-asc': return nameA.localeCompare(nameB);
-                                    case 'name-desc': return nameB.localeCompare(nameA);
-                                    default: return 0;
-                                }
-                            });
-
-                            cards.forEach(card => eventContainer.appendChild(card));
-                        });
-
-                        sortSelect.dispatchEvent(new Event('change'));
-                    }
-
-                    const today = new Date();
-                    monthSelect.value = today.getMonth();
-                    yearSelect.value = today.getFullYear();
-
-                    renderCalendar();
-
-                    monthSelect.addEventListener('change', renderCalendar);
-                    yearSelect.addEventListener('change', renderCalendar);
-
-                    const prevMonth = document.getElementById('prevMonth');
-                    const nextMonth = document.getElementById('nextMonth');
-
-                    if (prevMonth) {
-                        prevMonth.addEventListener('click', () => {
-                            let m = parseInt(monthSelect.value);
-                            let y = parseInt(yearSelect.value);
-
-                            m--;
-                            if (m < 0){ m = 11; y--; }
-
-                            monthSelect.value = m;
-                            yearSelect.value = y;
-
+                    span.addEventListener('click', () => {
+                        if (currentSelectedDate === dateStr) {
                             currentSelectedDate = null;
-                            renderCalendar();
-                            applyFilters();
-                        });
-                    }
-
-                    if (nextMonth) {
-                        nextMonth.addEventListener('click', () => {
-                            let m = parseInt(monthSelect.value);
-                            let y = parseInt(yearSelect.value);
-
-                            m++;
-                            if (m > 11){ m = 0; y++; }
-
-                            monthSelect.value = m;
-                            yearSelect.value = y;
-
-                            currentSelectedDate = null;
-                            renderCalendar();
-                            applyFilters();
-                        });
-                    }
-
-                    document.addEventListener('click', function(e) {
-
-                        const viewBtn = e.target.closest('.view-info-btn');
-                        if (viewBtn) {
-                            const wrapper = viewBtn.closest('.Event');
-                            if (!wrapper) return;
-
-                            const normalCard = wrapper.querySelector('.normal-card');
-                            const expandSection = wrapper.querySelector('.Event-ex');
-
-                            if (normalCard) {
-                                normalCard.style.display = 'none';
-                            }
-
-                            if (expandSection) {
-                                expandSection.classList.add('active');
-                            }
-
-                            return;
+                            span.classList.remove('active-day');
+                        } else {
+                            document.querySelectorAll('#calendarGrid span').forEach(s => s.classList.remove('active-day'));
+                            span.classList.add('active-day');
+                            currentSelectedDate = dateStr;
                         }
 
-                        const closeBtn = e.target.closest('.close-info-btn');
-                        if (closeBtn) {
-                            const wrapper = closeBtn.closest('.Event');
-                            if (!wrapper) return;
-
-                            const normalCard = wrapper.querySelector('.normal-card');
-                            const expandSection = wrapper.querySelector('.Event-ex');
-
-                            if (normalCard) {
-                                normalCard.style.display = 'flex';
-                            }
-
-                            if (expandSection) {    
-                                expandSection.classList.remove('active');
-                            }
-                        }
+                        applyFilters();
                     });
 
-                    applyFilters();
+                    calendarGrid.appendChild(span);
+                }
+            }
+
+            function applyFilters() {
+                const searchText = searchInput ? searchInput.value.toLowerCase().trim() : '';
+                const searchTagText = searchTagInput ? searchTagInput.value.toLowerCase().trim() : '';
+                const searchTags = searchTagText.split(/[\s,]+/).filter(tag => tag.length > 0);
+
+                let found = 0;
+                const currentCards = document.querySelectorAll('.Event');
+
+                currentCards.forEach(card => {
+                    const dateStr = card.getAttribute('data-date');
+                    const titleElement = card.querySelector('.event-title');
+                    const title = titleElement ? titleElement.textContent.toLowerCase() : '';
+                    const eventTags = Array.from(card.querySelectorAll('.chip')).map(tag => tag.textContent.toLowerCase());
+
+                    const matchDate = !currentSelectedDate || dateStr === currentSelectedDate;
+                    const matchName = !searchText || title.includes(searchText);
+                    const matchTag = searchTags.length === 0 || searchTags.every(searchTag => eventTags.includes(searchTag));
+
+                    if (matchDate && matchName && matchTag) {
+                        card.style.display = 'block';
+                        found++;
+                    } else {
+                        card.style.display = 'none';
+                    }
                 });
-        </script>
-    </body>
-</html>
+
+                if (sectionHeader) {
+                    sectionHeader.textContent = found > 0 ? "Recommended Events" : "No events found";
+                }
+            }
+
+            function handleSort() {
+                if (!sortSelect || !eventContainer) return;
+
+                const cards = Array.from(document.querySelectorAll('.Event'));
+                const sortBy = sortSelect.value;
+
+                cards.sort((a, b) => {
+                    const dateA = new Date(a.getAttribute('data-date') || 0);
+                    const dateB = new Date(b.getAttribute('data-date') || 0);
+
+                    const memBoxA = a.querySelector('.members');
+                    const memBoxB = b.querySelector('.members');
+                    const memA = memBoxA ? parseInt(memBoxA.textContent.split('/')[0]) || 0 : 0;
+                    const memB = memBoxB ? parseInt(memBoxB.textContent.split('/')[0]) || 0 : 0;
+
+                    const titleA = a.querySelector('.event-title') ? a.querySelector('.event-title').textContent.trim() : '';
+                    const titleB = b.querySelector('.event-title') ? b.querySelector('.event-title').textContent.trim() : '';
+
+                    switch (sortBy) {
+                        case 'date-asc': return dateA - dateB;
+                        case 'date-desc': return dateB - dateA;
+                        case 'members-asc': return memA - memB;
+                        case 'members-desc': return memB - memA;
+                        case 'name-asc': return titleA.localeCompare(titleB);
+                        case 'name-desc': return titleB.localeCompare(titleA);
+                        default: return 0;
+                    }
+                });
+
+                cards.forEach(card => eventContainer.appendChild(card));
+            }
+
+            function toggleEventInfo(targetBtn, isOpening) {
+                const cardMain = targetBtn.closest('.event-main');
+                if (!cardMain) return;
+
+                const extraInfo = cardMain.querySelector('.extra-info');
+                const normalActions = cardMain.querySelector('.normal-actions');
+
+                if (extraInfo) extraInfo.style.display = isOpening ? 'block' : 'none';
+                if (normalActions) normalActions.style.display = isOpening ? 'none' : 'flex';
+            }
+
+            function init() {
+                const today = new Date();
+                if (monthSelect) monthSelect.value = today.getMonth();
+                if (yearSelect) yearSelect.value = today.getFullYear();
+                renderCalendar();
+
+                if (monthSelect) monthSelect.addEventListener('change', renderCalendar);
+                if (yearSelect) yearSelect.addEventListener('change', renderCalendar);
+
+                const prevMonth = document.getElementById('prevMonth');
+                const nextMonth = document.getElementById('nextMonth');
+
+                if (prevMonth) {
+                    prevMonth.addEventListener('click', () => {
+                        let m = parseInt(monthSelect.value);
+                        let y = parseInt(yearSelect.value);
+
+                        m--;
+                        if (m < 0) { m = 11; y--; }
+
+                        monthSelect.value = m;
+                        yearSelect.value = y;
+                        currentSelectedDate = null;
+                        renderCalendar();
+                        applyFilters();
+                    });
+                }
+
+                if (nextMonth) {
+                    nextMonth.addEventListener('click', () => {
+                        let m = parseInt(monthSelect.value);
+                        let y = parseInt(yearSelect.value);
+
+                        m++;
+                        if (m > 11) { m = 0; y++; }
+
+                        monthSelect.value = m;
+                        yearSelect.value = y;
+                        currentSelectedDate = null;
+                        renderCalendar();
+                        applyFilters();
+                    });
+                }
+
+                if (searchInput) searchInput.addEventListener('input', applyFilters);
+                if (searchTagInput) {
+                    searchTagInput.addEventListener('input', applyFilters);
+                    searchTagInput.addEventListener('keypress', function (e) {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            applyFilters();
+                        }
+                    });
+                }
+
+                if (sortSelect) {
+                    sortSelect.addEventListener('change', handleSort);
+                    handleSort();
+                }
+
+                document.addEventListener('click', function (e) {
+                    if (e.target.classList.contains('view-info-btn')) {
+                        toggleEventInfo(e.target, true);
+                    } else if (e.target.classList.contains('close-info-btn')) {
+                        toggleEventInfo(e.target, false);
+                    }
+                });
+
+                applyFilters();
+            }
+
+            init();
+        });
+    </script>
+}
