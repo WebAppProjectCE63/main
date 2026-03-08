@@ -23,11 +23,19 @@ namespace WebApplicationProject.Controllers
         public IActionResult profilepage(int? id = null)
         {
             int targetId = id ?? CurrentUserId;
+            if (CurrentUserId == 0) {
+                TempData["ErrorMessage"] = "คุณยังไม่ได้ login เข้าสู่ระบบ";
+                return RedirectToAction("Login","Account");
+            }
             User ? currentUser = _context.Users
                 .Include(u => u.Reviewslist)
                 .FirstOrDefault(u => u.Id == targetId);
 
-            if (currentUser == null) return NotFound();
+            if (currentUser == null) 
+            {
+                TempData["ErrorMessage"] = "ไม่พบบัญชีดังกล่าว";
+                return RedirectToAction("profilepage", new { id = CurrentUserId }); 
+            }
 
             var viewModel = new ProfilePageViewModel
             {
