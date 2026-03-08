@@ -7,6 +7,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
 
     <link rel="stylesheet" href="~/css/homestyle.css">
@@ -15,6 +16,27 @@
     </head>
 
     <body>
+        @if (TempData["ErrorMessage"] != null)
+        {
+
+            <div id="errorAlert" style="background-color: #f8d7da; color: #842029; padding: 15px; border: 1px solid #f5c2c7; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+
+                <span>@TempData["ErrorMessage"]</span>
+
+                <button onclick="document.getElementById('errorAlert').style.display='none'" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #842029; font-weight: bold;">&times;</button>
+            </div>
+
+            <script>
+                    setTimeout(function() {
+                        var alertElement = document.getElementById('errorAlert');
+                        if (alertElement) {
+                            alertElement.style.transition = "opacity 0.5s ease";
+                            alertElement.style.opacity = "0";
+                            setTimeout(function() { alertElement.style.display = 'none'; }, 500);
+                        }
+                    }, 5000);
+            </script>
+        }
         <div class="homepage-box">
             <h2>Homepage</h2>
             <p>Subtitle</p>
@@ -107,8 +129,6 @@
                         continue;
                     }
                     <div class="Event" data-date="@ev.DateTime.ToString("yyyy-MM-dd")">
-
-                       
                         <div class="event-card normal-card">
                             <div class="event-image">
                                 @if (!string.IsNullOrEmpty(ev.Image))
@@ -138,18 +158,14 @@
                                     <span>@ev.DateTime.ToString("dd/MM/yyyy")</span>
                                 </div>
 
-
                                 <div class="event-row">
-                                    <span>
-                                        @ev.DateTime.ToString("HH:mm") - @ev.EndDateTime.ToString("HH:mm")
-                                    </span>
+                                    <span>@ev.DateTime.ToString("HH:mm") - @ev.EndDateTime.ToString("HH:mm")</span>
                                 </div>
 
                                 <div class="event-actions">
                                     <button type="button" class="view-btn view-info-btn">View Info</button>
                                 </div>
                             </div>
-
                             <div class="member-container">
                                 <div class="members">
                                     @ev.CurrentParticipants/@ev.MaxParticipants Members
@@ -161,9 +177,9 @@
                             </div>
                         </div>
 
-                  
+
                         <div class="Event-ex">
-                            <div class="eventcard-ex expanded-card">
+                            <div class="eventcard-ex">
                                 <div class="eventimage-ex">
                                     @if (!string.IsNullOrEmpty(ev.Image))
                                     {
@@ -174,12 +190,13 @@
                                 </div>
 
                                 <div style="flex:1;">
-                                    <h3>@ev.Title</h3>
+                                    <h3>@ev.Title (Expanded)</h3>
                                     <p>@ev.Description</p>
 
                                     <p><strong>Location:</strong> @ev.Location</p>
                                     <p><strong>Date:</strong> @ev.DateTime.ToString("dd MMM yyyy")</p>
-                                    <p><strong>Time:</strong> @ev.DateTime.ToString("HH:mm") - @ev.EndDateTime.ToString("HH:mm")</p>
+                                    <p><strong>Start:</strong> @ev.DateTime.ToString("HH:mm")</p>
+                                    <p><strong>End:</strong> @ev.EndDateTime.ToString("HH:mm")</p>
 
                                     <div class="event-chips">
                                         @if (ev.Tags != null && ev.Tags.Any())
@@ -193,7 +210,7 @@
 
                                     <div class="event-actions">
    
-                                    @if (ev.UserHostId == currentUserId)
+                                        @if (ev.UserHostId == currentUserId)
                                         {
                                             <a class="join-btn"
                                                    asp-controller="Event"
@@ -218,9 +235,9 @@
                                         }
 
                                         <button type="button" class="join-btn close-info-btn">Hide</button>
+
                                     </div>
                                 </div>
-
                                 <div class="member-container">
                                     <div class="members-ex">
                                         @ev.CurrentParticipants/@ev.MaxParticipants Members
@@ -234,7 +251,6 @@
                         </div>
                     </div>
                 }
-                
             </div>
         </div>
 
@@ -248,10 +264,9 @@
 
                     const searchInput = document.getElementById('searchInput');
                     const searchTagInput = document.getElementById('searchTagInput');
-                    const searchTagBtn = document.getElementById('searchTagBtn');
 
                     let currentSelectedDate = null;
-                    let activeSearch = "name"; 
+                    let activeSearch = "name";
 
                     function renderCalendar() {
                         const year = parseInt(yearSelect.value);
@@ -271,7 +286,6 @@
                         }
 
                         for (let day = 1; day <= daysInMonth; day++) {
-
                             const span = document.createElement('span');
                             span.textContent = day;
 
@@ -286,14 +300,11 @@
                             }
 
                             span.addEventListener('click', () => {
-
                                 if (currentSelectedDate === dateStr) {
                                     currentSelectedDate = null;
                                     span.classList.remove('active-day');
                                 } else {
-
                                     document.querySelectorAll('#calendarGrid span').forEach(s => s.classList.remove('active-day'));
-
                                     span.classList.add('active-day');
                                     currentSelectedDate = dateStr;
                                 }
@@ -305,22 +316,17 @@
                         }
                     }
 
-
                     function applyFilters() {
-
                         const searchText = (searchInput?.value || '').toLowerCase().trim();
                         const searchTagText = (searchTagInput?.value || '').toLowerCase().trim();
-
                         const searchTags = searchTagText.split(/[\s,]+/).filter(tag => tag.length > 0);
 
                         let found = 0;
                         const cards = document.querySelectorAll('.Event');
 
                         cards.forEach(card => {
-
                             const dateStr = card.getAttribute('data-date') || '';
                             const title = card.querySelector('.event-title')?.textContent.toLowerCase() || '';
-
                             const eventTags = Array.from(card.querySelectorAll('.chip'))
                                 .map(tag => tag.textContent.toLowerCase());
 
@@ -329,22 +335,17 @@
                             let matchSearch = true;
 
                             if (activeSearch === "name") {
-
                                 matchSearch = (searchText === "" || title.includes(searchText));
-
                             } else if (activeSearch === "tag") {
-
                                 matchSearch = (searchTags.length === 0 || searchTags.some(t => eventTags.includes(t)));
                             }
 
                             if (matchDate && matchSearch) {
                                 card.style.display = "block";
                                 found++;
-                            }
-                            else {
+                            } else {
                                 card.style.display = "none";
                             }
-
                         });
 
                         if (sectionHeader) {
@@ -370,14 +371,11 @@
                     const eventContainer = document.getElementById('eventContainer');
 
                     if (sortSelect && eventContainer) {
-
                         sortSelect.addEventListener('change', function () {
-
                             const cards = Array.from(document.querySelectorAll('.Event'));
                             const sortBy = this.value;
 
                             cards.sort((a,b) => {
-
                                 const dateA = new Date(a.getAttribute('data-date') || 0);
                                 const dateB = new Date(b.getAttribute('data-date') || 0);
 
@@ -388,7 +386,6 @@
                                 const nameB = b.querySelector('.event-title')?.textContent.trim() || '';
 
                                 switch(sortBy){
-
                                     case 'date-asc': return dateA - dateB;
                                     case 'date-desc': return dateB - dateA;
                                     case 'members-asc': return memA - memB;
@@ -414,14 +411,11 @@
                     monthSelect.addEventListener('change', renderCalendar);
                     yearSelect.addEventListener('change', renderCalendar);
 
-
                     const prevMonth = document.getElementById('prevMonth');
                     const nextMonth = document.getElementById('nextMonth');
 
                     if (prevMonth) {
-
                         prevMonth.addEventListener('click', () => {
-
                             let m = parseInt(monthSelect.value);
                             let y = parseInt(yearSelect.value);
 
@@ -432,16 +426,13 @@
                             yearSelect.value = y;
 
                             currentSelectedDate = null;
-
                             renderCalendar();
                             applyFilters();
                         });
                     }
 
                     if (nextMonth) {
-
                         nextMonth.addEventListener('click', () => {
-
                             let m = parseInt(monthSelect.value);
                             let y = parseInt(yearSelect.value);
 
@@ -452,55 +443,48 @@
                             yearSelect.value = y;
 
                             currentSelectedDate = null;
-
                             renderCalendar();
                             applyFilters();
                         });
                     }
 
-
-                    document.addEventListener('click', function(e){
+                    document.addEventListener('click', function(e) {
 
                         const viewBtn = e.target.closest('.view-info-btn');
-
-                        if(viewBtn){
-
+                        if (viewBtn) {
                             const wrapper = viewBtn.closest('.Event');
-                            if(!wrapper) return;
+                            if (!wrapper) return;
 
                             const normalCard = wrapper.querySelector('.normal-card');
                             const expandSection = wrapper.querySelector('.Event-ex');
 
-                            if(normalCard){
-                                normalCard.style.display = "none";
+                            if (normalCard) {
+                                normalCard.style.display = 'none';
                             }
 
-                            if(expandSection){
-                                expandSection.classList.add("active");
+                            if (expandSection) {
+                                expandSection.classList.add('active');
                             }
 
                             return;
                         }
 
                         const closeBtn = e.target.closest('.close-info-btn');
-
-                        if(closeBtn){
-
+                        if (closeBtn) {
                             const wrapper = closeBtn.closest('.Event');
-                            if(!wrapper) return;
+                            if (!wrapper) return;
 
                             const normalCard = wrapper.querySelector('.normal-card');
                             const expandSection = wrapper.querySelector('.Event-ex');
 
-                            if(normalCard){
-                                normalCard.style.display = "flex";
+                            if (normalCard) {
+                                normalCard.style.display = 'flex';
                             }
 
-                            if(expandSection){
-                                expandSection.classList.remove("active");
+                            if (expandSection) {    
+                                expandSection.classList.remove('active');
                             }
                         }
-
                     });
 
                     applyFilters();
