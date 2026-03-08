@@ -26,7 +26,36 @@
                     <h3>Gender</h3>
                     <p>@Model.UserInfo.Gender</p>
                 </div>
+                <div class="long-info">
+                    <h3>Rating</h3>
+                    @{
+                        double averageScore = Model.UserInfo.Reviewslist.Any() ? Model.UserInfo.Reviewslist.Average(r => r.stars) : 0;
+                        int totalReviews = Model.UserInfo.Reviewslist.Count();
+                        int roundScore = (int)Math.Round(averageScore, MidpointRounding.AwayFromZero);
+                    }
+                    @if (totalReviews == 0)
+                    {
+                        <p>ผู้ใช้ยังไม่ได้รับ Review ใดๆ</p>
+                    }
+                    else
+                    {
+                        <p class="stars">
+                            @for (int i = 0; i < roundScore; i++)
+                            {
+                                <span>★</span>
+                            }
+                            @for (int i = roundScore; i < 5; i++)
+                            {
+                                <span>☆</span>
+                            }
+                            <span class="review-info" onclick="scorrInto('review-section')">
+                                @averageScore.ToString("0.0") (@totalReviews รีวิว)
+                            </span>
+                        </p>
+                    }
+                </div>
             </div>
+            
             <div class="private-content-mock">
                 <div>🔒</div>
                 <h2>บัญชีนี้เป็นบัญชีส่วนตัว</h2>

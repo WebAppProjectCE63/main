@@ -12,24 +12,6 @@
     <link rel="stylesheet" href="~/css/myevent.css">
 </head>
 <body>
-    @if (TempData["ErrorMessage"] != null)
-    {
-        <div id="errorAlert" style="background-color: #f8d7da; color: #842029; padding: 15px; border: 1px solid #f5c2c7; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-            <span>@TempData["ErrorMessage"]</span>
-            <button onclick="document.getElementById('errorAlert').style.display='none'" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #842029; font-weight: bold;">&times;</button>
-        </div>
-
-        <script>
-            setTimeout(function() {
-                var alertElement = document.getElementById('errorAlert');
-                if (alertElement) {
-                    alertElement.style.transition = "opacity 0.5s ease";
-                    alertElement.style.opacity = "0";
-                    setTimeout(function() { alertElement.style.display = 'none'; }, 500);
-                }
-            }, 5000);
-        </script>
-    }
     <div id="event-header">
         <h1>My Events</h1>
         <p>กิจกรรมของฉัน</p>
@@ -106,13 +88,12 @@
             @foreach (var ev in Model)
             {
                 var isHost = ev.UserHostId == currentUserId;
-                var participantInfo = ev.Participants.FirstOrDefault(p => p.UserId == currentUserId && p.Status != ParticipationStatus.Remove);
+                var participantInfo = ev.Participants.FirstOrDefault(p => p.UserId == currentUserId && p.Status != ParticipationStatus.Remove && p.Status != ParticipationStatus.Cancelled);
 
                 if (!isHost && participantInfo == null)
                 {
                     continue;
                 }
-
                 var maxWaiting = (int)Math.Ceiling(ev.MaxParticipants * 0.5);
                 var currentWaiting = ev.Participants.Count(p => p.Status == ParticipationStatus.Waiting);
 
@@ -149,6 +130,12 @@
                             }
 
                             <span class="status-badge @statusClass" style="width: 100%; box-sizing: border-box;">@timeStatusText</span>
+                            @if (ev.IsRegistrationClosed)
+                            {
+                                <span class="status-badge statis-close" style="width: 100%; box-sizing: border-box; background-color: #dc3545; color: white; margin-top: -4px; font-size: 0.85em; padding: 2px;">
+                                    🔒 Closed
+                                </span>
+                            }
 
                         </div>
 
@@ -161,8 +148,12 @@
                                 }
                                 else if (participantInfo != null)
                                 {
-                                    var statusText = participantInfo.Status == ParticipationStatus.Confirmed ? "Joined" : "Waiting";
-                                    var badgeClass = participantInfo.Status == ParticipationStatus.Confirmed ? "badge-joined" : "badge-waiting";
+                                    bool isClosedWaitlist = (ev.IsRegistrationClosed || DateTime.Now >= ev.DateTime) && participantInfo.Status == ParticipationStatus.Waiting;
+                                    var statusText = participantInfo.Status == ParticipationStatus.Confirmed ? "Joined" :
+                                    (isClosedWaitlist ? "Not Selected" : "Waiting");
+
+                                    var badgeClass = participantInfo.Status == ParticipationStatus.Confirmed ? "badge-joined" :
+                                    (isClosedWaitlist ? "badge-closed" : "badge-waiting");
                                     <span class="badge @badgeClass">@statusText</span>
                                 }
                             </h3>
@@ -208,31 +199,53 @@
                                         }
                                         @if (DateTime.Now >= ev.DateTime)
                                         {
-                                            <button type="button" class="view-btn" onclick="window.location.href='@Url.Action("Review", "Event", new { id = ev.Id })'">
+                                            <button type="button" class="view-btn" onclick="window.location.href='@Url.Action("Review", "Review", new { id = ev.Id })'">
                                                 View Reviews
                                             </button>
                                         }
                                     }
                                     else
                                     {
-                                        // สำหรับผู้เข้าร่วม (Participants)
                                         @if (DateTime.Now >= ev.DateTime)
                                         {
-                                            <button type="button" class="view-btn" onclick="window.location.href='@Url.Action("Review", "Event", new { id = ev.Id })'">
-                                                Review Event
-                                            </button>
+                                            @if (participantInfo?.Status == WebApplicationProject.Models.ParticipationStatus.Confirmed)
+                                            {
+                                                <button type="button" class="view-btn" onclick="window.location.href='@Url.Action("Review", "Review", new { id = ev.Id })'">
+                                                    Review Event
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <button type="button" class="view-btn btn-disabled" disabled>
+                                                    Event Closed (Not Selected)
+                                                </button>
+                                            }
                                         }
                                         else
                                         {
                                             <button type="button" class="view-btn btn-disabled" disabled>
-                                                @(participantInfo?.Status == WebApplicationProject.Models.ParticipationStatus.Confirmed ? "Joined" : "Waiting for Confirmation")
+                                                @if (participantInfo?.Status == WebApplicationProject.Models.ParticipationStatus.Confirmed)
+                                                {
+                                                    <text>Joined</text>
+                                                }
+                                                else if (ev.IsRegistrationClosed)
+                                                {
+                                                    <text>Event Closed (Not Selected)</text>
+                                                }
+                                                else
+                                                {
+                                                    <text>Waiting for Confirmation</text>
+                                                }
                                             </button>
 
-                                            <form action="@Url.Action("CancelJoin", "Event")" method="post" style="display:inline;"
-                                                  onsubmit="return confirm('คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการเข้าร่วมกิจกรรมนี้?');">
-                                                <input type="hidden" name="eventId" value="@ev.Id" />
-                                                <button type="submit" class="view-btn btn-danger-outline">Cancel Join</button>
-                                            </form>
+                                            @if (!ev.IsRegistrationClosed)
+                                            {
+                                                <form action="@Url.Action("CancelJoin", "Event")" method="post" style="display:inline;"
+                                                      onsubmit="return confirm('คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการเข้าร่วมกิจกรรมนี้?');">
+                                                    <input type="hidden" name="eventId" value="@ev.Id" />
+                                                    <button type="submit" class="view-btn btn-danger-outline">Cancel Join</button>
+                                                </form>
+                                            }
                                         }
                                     }
                                     <button type="button" class="view-btn btn-link close-info-btn">Close</button>

@@ -25,9 +25,27 @@ namespace WebApplicationProject.Controllers
         {
             // 1. ดึงข้อมูล Event
             var ev = _context.Events.Include(e => e.Participants).FirstOrDefault(e => e.Id == id);
-            if (ev == null) return NotFound();
+            if (ev == null) 
+            {
+                TempData["ErrorMessage"] = "ไม่พบกิจกรรมดังกล่าว";
+                return RedirectToAction("Myevent", "Event");
+            }
 
             int currentUserId = CurrentUserId;
+            if (CurrentUserId == 0)
+            {
+                TempData["ErrorMessage"] = "คุณยังไม่ได้เข้าสู่ระบบ";
+                return RedirectToAction("Login", "Account");
+            }
+
+            bool isHost = ev.UserHostId == currentUserId;
+            bool isConfirmedParticipant = ev.Participants.Any(p => p.UserId == currentUserId && p.Status == ParticipationStatus.Confirmed);
+
+            if (!isHost && !isConfirmedParticipant)
+            {
+                TempData["ErrorMessage"] = "คุณไม่เกี่ยวข้องกับกิจกรรมดังกล่าว";
+                return RedirectToAction("Myevent", "Event");
+            }
 
             var viewModel = new ReviewEventViewModel
             {
@@ -89,10 +107,10 @@ namespace WebApplicationProject.Controllers
         [HttpPost]
         public IActionResult SubmitReview(int EventId, int UserId, int stars, string reviewtitle, int TargetUserId, string reviewbody, bool showname)
         {
-            var targetUser = _context.Users.Include(u => u.Reviewslist).FirstOrDefault(u => u.Id == TargetUserId);
-            if (targetUser == null) return NotFound();
-
-            var existing = targetUser.Reviewslist.FirstOrDefault(r => r.EventId == EventId && r.UserId == UserId);
+            var existing = _context.Reviews.FirstOrDefault(r =>
+                                r.EventId == EventId &&
+                                r.UserId == UserId &&
+                                r.TargetUserId == TargetUserId);
             if (existing != null)
             {
                 existing.stars = stars;
@@ -106,12 +124,13 @@ namespace WebApplicationProject.Controllers
                 {
                     EventId = EventId,
                     UserId = UserId,
+                    TargetUserId = TargetUserId,
                     stars = stars,
                     reviewtitle = reviewtitle,
                     reviewbody = reviewbody,
                     IsAnonymous = showname
                 };
-                targetUser.Reviewslist.Add(newReview);
+                _context.Reviews.Add(newReview);
             }
             _context.SaveChanges();
             return RedirectToAction("Review", new { id = EventId });

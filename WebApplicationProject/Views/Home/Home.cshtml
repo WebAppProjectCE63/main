@@ -124,7 +124,7 @@
 
                 @foreach (var ev in Model)
                 {
-                    if (ev.DateTime < DateTime.Now)
+                    if (ev.DateTime < DateTime.Now || ev.IsRegistrationClosed)
                     {
                         continue;
                     }
