@@ -1,87 +1,12 @@
 ﻿/* =========================================
-   1. GLOBAL & NAVBAR
+   1. GLOBAL
    ========================================= */
 body {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
     color: #333;
-    background-color: #fff;
-}
-
-#navbar {
-    display: flex;
-    align-items: center;
-    background-color: white;
-    padding: 10px 40px;
-    border-bottom: 1px solid #ffe0b2;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
-#weblogo {
-    margin-right: auto;
-}
-
-#navitem {
-    position: absolute;
-    right: 250px;
-}
-
-    #navitem ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        gap: 20px;
-    }
-
-        #navitem ul li a {
-            display: block;
-            color: #666;
-            text-align: center;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 14px;
-            transition: color 0.3s ease;
-        }
-
-            #navitem ul li a.active,
-            #navitem ul li a:hover {
-                color: #FF8C00;
-            }
-
-#navprofile {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-left: auto;
-}
-
-#profilename {
-    text-align: right;
-}
-
-    #profilename h4 {
-        font-size: 14px;
-        margin: 0;
-        color: #333;
-    }
-
-    #profilename p {
-        font-size: 12px;
-        margin: 0;
-        color: #aaa;
-    }
-
-#navprofile img {
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    object-fit: cover;
-    border: 2px solid #FF8C00;
+    background-color: #FFF8ED;
 }
 
 /* =========================================
@@ -90,20 +15,20 @@ body {
 #event-header {
     text-align: center;
     padding: 60px 20px;
-    background-color: #FFF3E0;/* พื้นหลังสีเหลืองอ่อน */
-    border-bottom: 3px solid #FF8C00;
+    background: linear-gradient(180deg, #FFE7B3, #FFD08A);
+    border-bottom: 3px solid #FF9F1C;
 }
 
     #event-header h1 {
         font-size: 48px;
         margin: 0;
         font-weight: bold;
-        color: #E65100;/* ตัวหนังสือสีส้มเข้ม */
+        color: #6B3E00;
     }
 
     #event-header p {
         font-size: 24px;
-        color: #FF9800; /* สีส้มกลาง */
+        color: #8A6A45;
         margin: 10px 0 0 0;
     }
 
@@ -114,7 +39,7 @@ body {
 }
 
 .bg-gray {
-    background-color: #FFF3E0;/*สีส้มอ่อน*/
+    background-color: #FFF0D9;
     padding-bottom: 60px;
 }
 
@@ -130,11 +55,11 @@ body {
     .section-title h2 {
         font-size: 24px;
         margin: 0 0 5px 0;
-        color: #E65100;
+        color: #7A4300;
     }
 
     .section-title p {
-        color: #888;
+        color: #8A6A45;
         font-size: 14px;
         margin: 0;
     }
@@ -148,11 +73,11 @@ body {
 }
 
 .calendar-card {
-    background: white;
+    background: #FFFDF8;
     border-radius: 12px;
     padding: 20px;
-    box-shadow: 0 4px 15px rgba(255, 140, 0, 0.1);/* เงาสีส้มอ่อน */
-    border: 1px solid #FFE0B2;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    border: 1px solid #FFE0A8;
 }
 
 .calendar-header {
@@ -170,17 +95,17 @@ body {
 }
 
     .date-selectors select {
-        border: 1px solid #FFB74D;
+        border: 1px solid #FFD89A;
         padding: 8px;
         border-radius: 6px;
-        background: white;
+        background: #FFF8ED;
         width: 100%;
         color: #333;
         outline: none;
     }
 
         .date-selectors select:focus {
-            border-color: #FF8C00;
+            border-color: #FF9F1C;
         }
 
 .nav-btn {
@@ -188,6 +113,7 @@ body {
     background: none;
     cursor: pointer;
     font-size: 16px;
+    color: #6B3E00;
     transition: transform 0.2s;
 }
 
@@ -200,7 +126,7 @@ body {
     grid-template-columns: repeat(7, 1fr);
     text-align: center;
     font-size: 12px;
-    color: #FF9800;/* ตัวย่อวันสีส้ม */
+    color: #A07A45;
     font-weight: bold;
     margin-bottom: 10px;
 }
@@ -226,21 +152,20 @@ body {
     }
 
         .days-grid span:hover {
-            background-color: #FFE0B2;
+            background-color: #FFE2A8;
         }
 
     .days-grid .active-day {
-        background-color: #FF8C00;/* วันที่เลือกเป็นสีส้ม */
-        
+        background-color: #FF9F1C;
         color: white;
     }
 
     .days-grid .highlight-day {
-        background-color: #FFF9C4;  /* ไฮไลท์สีเหลือง */
+        background-color: #FFE2A8;
     }
 
     .days-grid .text-muted {
-        color: #ccc;
+        color: #E0C79D;
     }
 
 .filter-bar {
@@ -260,12 +185,12 @@ body {
     align-items: center;
     color: #888;
     font-size: 14px;
-    border: 1px solid #FFE0B2;
+    border: 1px solid #FFE0A8;
 }
 
     .search-input:focus-within {
-        border-color: #FF8C00;
-        box-shadow: 0 0 5px rgba(255, 140, 0, 0.3);
+        border-color: #FF9F1C;
+        box-shadow: 0 0 5px rgba(255, 159, 28, 0.3);
     }
 
 .sort-filter {
@@ -276,13 +201,13 @@ body {
 
     .sort-filter span {
         font-weight: bold;
-        color: #E65100;
+        color: #7A4300;
         font-size: 14px;
     }
 
 .pill-select {
-    background: white;
-    border: 1px solid #FFB74D;
+    background: #FFF8ED;
+    border: 1px solid #FFD89A;
     padding: 8px 16px;
     border-radius: 20px;
     font-size: 14px;
@@ -302,23 +227,24 @@ body {
 .event-card {
     display: flex;
     gap: 18px;
-    background: #fff; 
-    border: 2px solid #FFE0B2;   /* ขอบการ์ดสีส้มอ่อน */
+    background: #FFFDF8;
+    border: 2px solid #FFD89A;
     border-radius: 12px;
     padding: 18px;
     align-items: flex-start;
     transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
     .event-card:hover {
         transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(255, 140, 0, 0.15);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
     }
 
 .event-image {
     width: 130px;
     height: 130px;
-    background: #FFE0B2;
+    background: #FFE7C2;
     border-radius: 8px;
     flex-shrink: 0;
     overflow: hidden;
@@ -342,7 +268,7 @@ body {
     margin: 0;
     font-size: 20px;
     font-weight: bold;
-    color: #333;
+    color: #6B3E00;
 }
 
 .title-flex {
@@ -354,7 +280,7 @@ body {
 
 .event-desc {
     margin: 8px 0 12px;
-    color: #666;
+    color: #7c7b7b;
     font-size: 14px;
     line-height: 1.5;
 }
@@ -367,7 +293,7 @@ body {
 }
 
 .chip {
-    background: #FF8C00;    /* แท็กสีส้ม */
+    background: #FF9F1C;
     color: #fff;
     border: none;
     border-radius: 18px;
@@ -384,7 +310,7 @@ body {
     flex-wrap: wrap;
     margin-bottom: 12px;
     font-size: 14px;
-    color: #555;
+    color: #6B5A45;
 }
 
 /* =========================================
@@ -398,24 +324,25 @@ body {
 }
 
 .badge-host {
-    background: #FF8C00;    /* Host สีส้ม */
+    background: #FF9F1C;
     color: #fff;
 }
 
 .badge-joined {
-    background: #4caf50;    /* Joined สีเขียว */
+    background: #4caf50;
     color: #fff;
 }
 
 .badge-waiting {
-    background: #FFB300;  /* Waiting สีเหลืองเข้ม */
-    color: #fff;
+    background: #FFD166;
+    color: #5A3200;
 }
 
 .badge-closed {
-    background: #dc3545; /* สีแดง */
+    background: #dc3545;
     color: #fff;
 }
+
 .event-actions {
     display: flex;
     align-items: center;
@@ -431,8 +358,8 @@ body {
 }
 
 .view-btn {
-    border: 1px solid #FFB74D;
-    background: #FFF3E0;
+    border: 1px solid #F4B860;
+    background: #FFF3D6;
     padding: 8px 16px;
     border-radius: 8px;
     cursor: pointer;
@@ -444,25 +371,25 @@ body {
     box-sizing: border-box;
     font-size: 14px;
     font-weight: bold;
-    color: #E65100;
+    color: #6B3E00;
     text-decoration: none;
     transition: all 0.2s;
 }
 
     .view-btn:hover {
-        background: #FFE0B2;
+        background: #FFE2A8;
     }
 
 .btn-dark-link {
-    border: 1px solid #FFB74D;
-    background: #FFF3E0;
-    color: #E65100;
+    border: 1px solid #F4B860;
+    background: #FFF3D6;
+    color: #6B3E00;
 }
 
     .btn-dark-link:hover {
-        background: #FFE0B2;
-        border-color: #FFB74D;
-        color: #E65100;
+        background: #FFE2A8;
+        border-color: #F4B860;
+        color: #6B3E00;
     }
 
 .btn-disabled {
@@ -486,6 +413,7 @@ body {
         background: #dc3545;
         color: white;
     }
+
 .status-badge {
     display: inline-block;
     padding: 8px 12px;
@@ -493,24 +421,24 @@ body {
     font-size: 14px;
     font-weight: bold;
     text-align: center;
-    color: #fff; 
+    color: #fff;
 }
 
 .status-upcoming {
-    background-color: #4CAF50; 
+    background-color: #4CAF50;
 }
 
 .status-ongoing {
-    background-color: #FF9800; 
+    background-color: #FF9F1C;
 }
 
 .status-ended {
-    background-color: #6C757D; 
+    background-color: #6C757D;
 }
 
-.statis-close{
-
+.statis-close {
 }
+
 /* =========================================
    7. STATS & EXTRA INFO
    ========================================= */
@@ -523,27 +451,27 @@ body {
 }
 
 .members {
-    background: #FFF8E1;
-    border: 1px solid #FFE0B2;
+    background: #FFF3D6;
+    border: 1px solid #F4C56A;
     border-radius: 10px;
     padding: 10px 16px;
     height: fit-content;
     white-space: nowrap;
     font-size: 13px;
-    color: #E65100;
+    color: #6B3E00;
     font-weight: bold;
 }
 
 .waiting-box {
-    background-color: #FFF3E0;
-    border-color: #FFCC80;
-    color: #E65100;
+    background-color: #FFE7B3;
+    border-color: #F4C56A;
+    color: #7A4300;
 }
 
 .extra-info {
     display: none;
     margin-top: 15px;
-    border-top: 1px dashed #FFCC80;
+    border-top: 1px dashed #F4C56A;
     padding-top: 15px;
 }
 
@@ -634,5 +562,4 @@ body {
         width: 100%;
         flex-wrap: wrap;
     }
-
 }
