@@ -51,7 +51,11 @@
             </div>
             <div class="meta-info"><b>สถานที่: </b><span id="prevLocation">@Model.Location</span></div>
             <a href="@Url.Action("Edit", "Event", new {id = Model.Id})" class="btnLink">แก้ไขกิจกรรม</a>
-
+            <button id="toggleRegBtn" type="button"
+                    class="btn-toggle @(Model.IsRegistrationClosed ? "btn-toggle-open" : "btn-toggle-close")"
+                    onclick="toggleRegistrationStatus(@Model.Id)">
+                @(Model.IsRegistrationClosed ? "✅ เปิดรับสมัครอีกครั้ง" : "❌ ปิดรับสมัคร")
+            </button>
         </div>
     </div>
     <div class="mngParti">
@@ -161,7 +165,10 @@
                                             }
                                         </td>
                                         <td>@ticket.JoinedAt.ToString("dd/MM/yy HH:mm")</td>
-                                        <td><button onclick="promoteUser(@Model.Id, @user.Id)">เพิ่ม</button></td>
+                                        <td>
+                                            <button onclick="promoteUser(@Model.Id, @user.Id)">เพิ่ม</button>
+                                            <button onclick="removeWaitingUser(@Model.Id, @user.Id)">ลบ</button>
+                                        </td>
                                     </tr>
                                     order += 1;
                                 }

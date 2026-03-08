@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace WebApplicationProject.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -28,7 +28,8 @@ namespace WebApplicationProject.Migrations
                     MaxWaiting = table.Column<int>(type: "int", nullable: false),
                     CurrentParticipants = table.Column<int>(type: "int", nullable: false),
                     CurrentWaiting = table.Column<int>(type: "int", nullable: false),
-                    UserHostId = table.Column<int>(type: "int", nullable: false)
+                    UserHostId = table.Column<int>(type: "int", nullable: false),
+                    IsRegistrationClosed = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
