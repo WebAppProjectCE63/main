@@ -30,6 +30,24 @@
             }, 5000);
         </script>
     }
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div id="successAlert" style="background-color: #d1e7dd; color: #0f5132; padding: 15px; border: 1px solid #badbcc; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin:0;">
+            <span>@TempData["SuccessMessage"]</span>
+            <button onclick="document.getElementById('successAlert').style.display='none'" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #0f5132; font-weight: bold;">&times;</button>
+        </div>
+
+        <script>
+            setTimeout(function() {
+                var alertElement = document.getElementById('successAlert');
+                if (alertElement) {
+                    alertElement.style.transition = "opacity 0.5s ease";
+                    alertElement.style.opacity = "0";
+                    setTimeout(function() { alertElement.style.display = 'none'; }, 500);
+                }
+            }, 5000); // กล่องจะค่อยๆ จางหายไปเองใน 5 วินาที
+        </script>
+    }
     <div id="event-header">
         <h1>My Events</h1>
         <p>กิจกรรมของฉัน</p>
@@ -106,13 +124,12 @@
             @foreach (var ev in Model)
             {
                 var isHost = ev.UserHostId == currentUserId;
-                var participantInfo = ev.Participants.FirstOrDefault(p => p.UserId == currentUserId && p.Status != ParticipationStatus.Remove);
+                var participantInfo = ev.Participants.FirstOrDefault(p => p.UserId == currentUserId && p.Status != ParticipationStatus.Remove && p.Status != ParticipationStatus.Cancelled);
 
                 if (!isHost && participantInfo == null)
                 {
                     continue;
                 }
-
                 var maxWaiting = (int)Math.Ceiling(ev.MaxParticipants * 0.5);
                 var currentWaiting = ev.Participants.Count(p => p.Status == ParticipationStatus.Waiting);
 
