@@ -100,6 +100,11 @@ namespace WebApplicationProject.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateProfile(User editUser, bool IsPublic, bool ShowEmail, bool ShowJoinedEvents, bool ShowHostedEvents, IFormFile uploadImage)
         {
+            if (CurrentUserId == 0)
+            {
+                TempData["ErrorMessage"] = "คุณยังไม่ได้ login เข้าสู่ระบบ";
+                return RedirectToAction("Login", "Account");
+            }
             var ogUser = _context.Users.FirstOrDefault(u => u.Id == editUser.Id);
             if (ogUser == null)
             {
