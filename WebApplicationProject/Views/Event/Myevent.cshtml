@@ -246,7 +246,7 @@
                                         {
                                             @if (participantInfo?.Status == WebApplicationProject.Models.ParticipationStatus.Confirmed)
                                             {
-                                                <button type="button" class="view-btn" onclick="window.location.href='@Url.Action("Review", "Event", new { id = ev.Id })'">
+                                                <button type="button" class="view-btn" onclick="window.location.href='@Url.Action("Review", "Review", new { id = ev.Id })'">
                                                     Review Event
                                                 </button>
                                             }
