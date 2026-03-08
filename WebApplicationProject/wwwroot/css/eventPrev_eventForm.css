@@ -94,3 +94,32 @@ h3 {
 .parti .waiting{
     flex: 1;
 }
+
+.btn-toggle {
+    display: inline-block;
+    border: none;
+    padding: 8px 15px;
+    cursor: pointer;
+    margin-left: 10px;
+    border-radius: 8px;
+    color: white;
+    font-family: inherit;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.btn-toggle-open {
+    background-color: #28a745;
+}
+
+.btn-toggle-open:hover {
+    background-color: #218838;
+}
+
+.btn-toggle-close {
+    background-color: #dc3545;
+}
+
+.btn-toggle-close:hover {
+    background-color: #c82333;
+}

@@ -12,8 +12,8 @@ using WebApplicationProject.Data;
 namespace WebApplicationProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260307084332_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260308015622_InitialDB")]
+    partial class InitialDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -52,6 +52,9 @@ namespace WebApplicationProject.Migrations
                     b.Property<string>("Image")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsRegistrationClosed")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Location")
                         .IsRequired()

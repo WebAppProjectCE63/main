@@ -412,6 +412,10 @@ body {
     color: #fff;
 }
 
+.badge-closed {
+    background: #dc3545; /* สีแดง */
+    color: #fff;
+}
 .event-actions {
     display: flex;
     align-items: center;
@@ -504,6 +508,9 @@ body {
     background-color: #6C757D; 
 }
 
+.statis-close{
+
+}
 /* =========================================
    7. STATS & EXTRA INFO
    ========================================= */
