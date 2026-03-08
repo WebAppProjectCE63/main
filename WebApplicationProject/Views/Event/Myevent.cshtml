@@ -184,9 +184,9 @@
                                 }
                                 else if (participantInfo != null)
                                 {
-                                    bool isClosedWaitlist = ev.IsRegistrationClosed && participantInfo.Status == ParticipationStatus.Waiting;
+                                    bool isClosedWaitlist = (ev.IsRegistrationClosed || DateTime.Now >= ev.DateTime) && participantInfo.Status == ParticipationStatus.Waiting;
                                     var statusText = participantInfo.Status == ParticipationStatus.Confirmed ? "Joined" :
-                                    (isClosedWaitlist ? "Waitlist (Closed)" : "Waiting");
+                                    (isClosedWaitlist ? "Not Selected" : "Waiting");
 
                                     var badgeClass = participantInfo.Status == ParticipationStatus.Confirmed ? "badge-joined" :
                                     (isClosedWaitlist ? "badge-closed" : "badge-waiting");
