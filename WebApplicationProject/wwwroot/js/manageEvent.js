@@ -67,3 +67,66 @@ function promoteUser(eventId, userId) {
             alert("ไม่สามารถติดต่อระบบหลังบ้านได้ กรุณาลองใหม่อีกครั้ง");
         });
 }
+function removeWaitingUser(eventId, userId) {
+    if (!confirm("ยืนยันการปฏิเสธผู้ใช้นี้ออกจากรายชื่อสำรอง?")) {
+        return;
+    }
+    fetch(`/Event/RemoveWaiting?eventId=${eventId}&userId=${userId}`, { method: 'POST' })
+        .then(async response => {
+            if (response.ok) {
+                const waitSpan = document.getElementById("currentWait");
+                let currentWaitNumber = parseInt(waitSpan.innerText);
+                waitSpan.innerText = currentWaitNumber - 1;
+
+                const rowToRemove = document.getElementById(`row_${userId}`);
+                rowToRemove.remove();
+
+                const waitingSeqNumbers = document.querySelectorAll('#waitingTable .seqNumber');
+                waitingSeqNumbers.forEach((td, index) => {
+                    td.innerText = index + 1;
+                });
+            } else {
+                const errorMsg = await response.text();
+                alert(errorMsg);
+            }
+        })
+        .catch(error => {
+            console.error("Fetch Error:", error);
+            alert("ไม่สามารถติดต่อระบบหลังบ้านได้ กรุณาลองใหม่อีกครั้ง");
+        });
+}
+function toggleRegistrationStatus(eventId) {
+    const btn = document.getElementById('toggleRegBtn');
+
+    const isCurrentlyClosed = btn.innerText.includes('เปิดรับสมัครอีกครั้ง');
+
+    if (!isCurrentlyClosed) {
+        if (!confirm('แน่ใจหรือไม่ว่าต้องการปิดรับสมัคร? กิจกรรมจะหายไปจากหน้าแรก')) {
+            return; 
+        }
+    }
+
+    fetch(`/Event/ToggleRegistration?id=${eventId}`, {
+        method: 'POST'
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                if (data.isClosed) {
+                    btn.innerHTML = '✅ เปิดรับสมัครอีกครั้ง';
+                    btn.classList.remove('btn-toggle-close');
+                    btn.classList.add('btn-toggle-open');
+                } else {
+                    btn.innerHTML = '❌ ปิดรับสมัคร';
+                    btn.classList.remove('btn-toggle-open');
+                    btn.classList.add('btn-toggle-close');
+                }
+            } else {
+                alert(data.message || 'เกิดข้อผิดพลาด');
+            }
+        })
+        .catch(error => {
+            console.error('Fetch Error:', error);
+            alert("ไม่สามารถติดต่อระบบหลังบ้านได้ กรุณาลองใหม่อีกครั้ง");
+        });
+}

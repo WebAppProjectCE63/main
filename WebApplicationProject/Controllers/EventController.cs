@@ -200,22 +200,55 @@ namespace WebApplicationProject.Controllers
 
             return null;
         }
+
+        [HttpPost]
+        public IActionResult RemoveWaiting(int eventId, int userId)
+        {
+            var eventToManage = _context.Events.Include(e => e.Participants).FirstOrDefault(e => e.Id == eventId);
+            if (eventToManage == null) return NotFound("ไม่มีกิจกรรมนี้");
+                
+            var ticket = eventToManage.Participants.FirstOrDefault(t => t.UserId == userId && t.Status == ParticipationStatus.Waiting);
+            if (ticket == null) return NotFound("ไม่มีผู้ใช้นี้ในรายชื่อสำรอง");
+
+            ticket.Status = ParticipationStatus.Remove;
+            eventToManage.CurrentWaiting = eventToManage.Participants.Count(p => p.Status == ParticipationStatus.Waiting);
+            _context.SaveChanges();
+            return Ok();
+        }
+
         [HttpPost]
         public IActionResult Join(int eventId)
         {
             var ev = _context.Events.Include(e => e.Participants).FirstOrDefault(e => e.Id == eventId);
             if (ev == null) return NotFound("ไม่พบกิจกรรมนี้");
 
-            int userId = CurrentUserId;
+            if (ev.IsRegistrationClosed)
+            {
+                TempData["ErrorMessage"] = "กิจกรรมนี้ปิดรับสมัครแล้ว";
+                return RedirectToAction("Home", "Home");
+            }
+            if (DateTime.Now >= ev.DateTime)
+            {
+                TempData["ErrorMessage"] = "กิจกรรมนี้เริ่มไปแล้ว ไม่สามารถเข้าร่วมได้ครับ";
+                return RedirectToAction("Home", "Home");
+            }
 
+            int userId = CurrentUserId;
             var existing = ev.Participants.FirstOrDefault(p => p.UserId == userId);
 
             if (existing != null)
             {
                 if (existing.Status == ParticipationStatus.Remove)
-                    return BadRequest("คุณถูกนำออกจากกิจกรรมนี้และไม่สามารถเข้าร่วมซ้ำได้");
+                {
+                    TempData["ErrorMessage"] = "คุณถูกนำออกจากกิจกรรมนี้และไม่สามารถเข้าร่วมซ้ำได้ครับ";
+                    return RedirectToAction("Home", "Home");
+                }
 
-                return BadRequest("คุณเข้าร่วมกิจกรรมนี้แล้ว");
+                if (existing.Status == ParticipationStatus.Confirmed || existing.Status == ParticipationStatus.Waiting)
+                {
+                    TempData["ErrorMessage"] = "คุณเข้าร่วมกิจกรรมนี้ไปแล้วครับ";
+                    return RedirectToAction("Home", "Home");
+                }
             }
 
             bool hasTimeConflict = _context.Events
@@ -231,7 +264,8 @@ namespace WebApplicationProject.Controllers
 
             if (hasTimeConflict)
             {
-                return BadRequest("คุณมีกิจกรรมอื่นในเวลาเดียวกันแล้ว");
+                TempData["ErrorMessage"] = "คุณมีกิจกรรมอื่นในเวลาเดียวกันแล้วครับ";
+                return RedirectToAction("Home", "Home");
             }
 
             ParticipationStatus status;
@@ -252,38 +286,72 @@ namespace WebApplicationProject.Controllers
                 return RedirectToAction("Home", "Home");
             }
 
-            ev.Participants.Add(new EventParticipation
+            if (existing != null && existing.Status == ParticipationStatus.Cancelled)
             {
-                EventId = ev.Id,
-                UserId = userId,
-                Status = status,
-                JoinedAt = DateTime.Now
-            });
+                existing.Status = status;
+                existing.JoinedAt = DateTime.Now;
+            }
+            else
+            {
+                ev.Participants.Add(new EventParticipation
+                {
+                    EventId = ev.Id,
+                    UserId = userId,
+                    Status = status,
+                    JoinedAt = DateTime.Now
+                });
+            }
 
             ev.CurrentParticipants = ev.Participants.Count(p => p.Status == ParticipationStatus.Confirmed);
             ev.CurrentWaiting = ev.Participants.Count(p => p.Status == ParticipationStatus.Waiting);
             _context.SaveChanges();
-            return RedirectToAction("Home", "Home");
+            if (status == ParticipationStatus.Confirmed)
+            {
+                TempData["SuccessMessage"] = "🎉 เข้าร่วมกิจกรรมสำเร็จ! คุณได้สิทธิ์เป็น 'ตัวจริง'";
+            }
+            else
+            {
+                TempData["SuccessMessage"] = "📝 เข้าร่วมกิจกรรมสำเร็จ! คุณอยู่ในรายชื่อ 'ตัวสำรอง' โปรดรอการยืนยันจากโฮสต์";
+            }
+            return RedirectToAction("Myevent");
         }
+
         [HttpPost]
         public IActionResult CancelJoin(int eventId)
         {
             var ev = _context.Events.Include(e => e.Participants).FirstOrDefault(e => e.Id == eventId);
             if (ev == null) return NotFound("ไม่พบกิจกรรมนี้");
-
+            if (ev.IsRegistrationClosed)
+            {
+                TempData["ErrorMessage"] = "กิจกรรมนี้ปิดรับสมัครและสรุปยอดแล้ว ไม่สามารถยกเลิกได้ครับ";
+                return RedirectToAction("Myevent");
+            }
             int userId = CurrentUserId;
             var ticket = ev.Participants.FirstOrDefault(p => p.UserId == userId && p.Status != ParticipationStatus.Remove);
 
             if (ticket != null)
             {
                 ticket.Status = ParticipationStatus.Cancelled;
-
+                ev.CurrentWaiting = ev.Participants.Count(p => p.Status == ParticipationStatus.Waiting);
                 ev.CurrentParticipants = ev.Participants.Count(p => p.Status == ParticipationStatus.Confirmed);
                 _context.SaveChanges();
             }
 
             return RedirectToAction("Myevent");
         }
-         
+        [HttpPost]
+        public IActionResult ToggleRegistration(int id)
+        {
+            var ev = _context.Events.FirstOrDefault(e => e.Id == id);
+            if (ev == null) return Json(new { success = false, message = "ไม่พบกิจกรรมนี้" });
+
+            if (!IsHost(ev)) return Json(new { success = false, message = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้" });
+
+            ev.IsRegistrationClosed = !ev.IsRegistrationClosed;
+            _context.SaveChanges();
+
+            return Json(new { success = true, isClosed = ev.IsRegistrationClosed });
+        }
+
     }
 }

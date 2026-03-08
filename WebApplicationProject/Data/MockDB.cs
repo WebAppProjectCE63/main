@@ -13,6 +13,7 @@ namespace WebApplicationProject.Data
             new Event
             {
                 Id = 1, Title = "ดนตรีในสวน (Music in the Park)", Description = "มาร่วมฟังดนตรีสดบรรยากาศชิลๆ ยามเย็น", Image = "https://img2.pic.in.th/cover-1.md.jpg", Location = "สวนลุมพินี กรุงเทพฯ", DateTime = DateTime.Now.AddDays(3).Date.AddHours(17), EndDateTime = DateTime.Now.AddDays(3).Date.AddHours(20), Tags = new List<string> { "ดนตรี", "ผ่อนคลาย", "กลางแจ้ง" }, MaxParticipants = 2, CurrentParticipants = 2, MaxWaiting = 1, CurrentWaiting = 1, UserHostId = 101,
+                IsRegistrationClosed = true, // 🚨 ปิดรับสมัครแล้ว (เพราะคนเต็ม)
                 Participants = new List<EventParticipation>
                 {
                     new EventParticipation { Id = 1, EventId = 1, UserId = 103, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-2) },
@@ -23,6 +24,7 @@ namespace WebApplicationProject.Data
             new Event
             {
                 Id = 2, Title = "Workshop ทำเซรามิก", Description = "เรียนรูปั้นถ้วยกาแฟด้วยตัวเอง", Image = "https://img5.pic.in.th/file/secure-sv1/images204a713eaf5498ef.jpg", Location = "Thonglor Art Space", DateTime = DateTime.Now.AddDays(10).Date.AddHours(10), EndDateTime = DateTime.Now.AddDays(11).Date.AddHours(16), Tags = new List<string> { "Workshop", "ศิลปะ", "งานฝีมือ" }, MaxParticipants = 10, CurrentParticipants = 8, MaxWaiting = 5, CurrentWaiting = 5, UserHostId = 102,
+                IsRegistrationClosed = false, // ยังเปิดรับสมัครอยู่
                 Participants = new List<EventParticipation>
                 {
                     new EventParticipation { Id = 4, EventId = 2, UserId = 103, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-10) },
@@ -42,41 +44,43 @@ namespace WebApplicationProject.Data
             },
             new Event
             {
-                Id = 5, Title = "Morning Run & Coffee", Description = "วิ่งเบา ๆ 5K แล้วไปกินกาแฟด้วยกัน", Image = "https://images.unsplash.com/photo-1520975661595-6453be3f7070", Location = "สวนเบญจกิติ", DateTime = DateTime.Now.AddDays(1).Date.AddHours(6), EndDateTime = DateTime.Now.AddDays(1).Date.AddHours(9), Tags = new List<string> { "กีฬา", "สุขภาพ", "coffee" }, MaxParticipants = 6, CurrentParticipants = 0, MaxWaiting = 3, CurrentWaiting = 0, UserHostId = 105, Participants = new List<EventParticipation>()
+                Id = 5, Title = "Morning Run & Coffee", Description = "วิ่งเบา ๆ 5K แล้วไปกินกาแฟด้วยกัน", Image = "https://images.unsplash.com/photo-1520975661595-6453be3f7070", Location = "สวนเบญจกิติ", DateTime = DateTime.Now.AddDays(1).Date.AddHours(6), EndDateTime = DateTime.Now.AddDays(1).Date.AddHours(9), Tags = new List<string> { "กีฬา", "สุขภาพ", "coffee" }, MaxParticipants = 6, CurrentParticipants = 0, MaxWaiting = 3, CurrentWaiting = 0, UserHostId = 105, IsRegistrationClosed = false, Participants = new List<EventParticipation>()
             },
             new Event
             {
-                Id = 6, Title = "Night Photography Walk", Description = "เดินถ่ายรูปกลางคืน", Image = "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee", Location = "Bangkok Old Town", DateTime = DateTime.Now.AddDays(7).Date.AddHours(20), EndDateTime = DateTime.Now.AddDays(7).Date.AddHours(23), Tags = new List<string> { "ถ่ายรูป", "กลางคืน" }, MaxParticipants = 5, CurrentParticipants = 1, MaxWaiting = 2, CurrentWaiting = 0, UserHostId = 105,
+                Id = 6, Title = "Night Photography Walk", Description = "เดินถ่ายรูปกลางคืน", Image = "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee", Location = "Bangkok Old Town", DateTime = DateTime.Now.AddDays(7).Date.AddHours(20), EndDateTime = DateTime.Now.AddDays(7).Date.AddHours(23), Tags = new List<string> { "ถ่ายรูป", "กลางคืน" }, MaxParticipants = 5, CurrentParticipants = 1, MaxWaiting = 2, CurrentWaiting = 0, UserHostId = 105, IsRegistrationClosed = false,
                 Participants = new List<EventParticipation> { new EventParticipation { Id = 20, EventId = 6, UserId = 103, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-1) } }
             },
             new Event
             {
-                Id = 3, Title = "Board Game Night ลากยาว", Description = "เล่นบอร์ดเกมลากยาวข้ามคืนสำหรับสายฮาร์ดคอร์", Image = "https://images.unsplash.com/photo-1606509036992-4399d5c5afe4", Location = "Samyan Mitrtown", DateTime = DateTime.Now.AddDays(5).Date.AddHours(20), EndDateTime = DateTime.Now.AddDays(6).Date.AddHours(02), Tags = new List<string> { "เกม", "สังคม", "บอร์ดเกม" }, MaxParticipants = 5, CurrentParticipants = 0, MaxWaiting = 3, CurrentWaiting = 0, UserHostId = 103, Participants = new List<EventParticipation>()
+                Id = 3, Title = "Board Game Night ลากยาว", Description = "เล่นบอร์ดเกมลากยาวข้ามคืนสำหรับสายฮาร์ดคอร์", Image = "https://images.unsplash.com/photo-1606509036992-4399d5c5afe4", Location = "Samyan Mitrtown", DateTime = DateTime.Now.AddDays(5).Date.AddHours(20), EndDateTime = DateTime.Now.AddDays(6).Date.AddHours(02), Tags = new List<string> { "เกม", "สังคม", "บอร์ดเกม" }, MaxParticipants = 5, CurrentParticipants = 0, MaxWaiting = 3, CurrentWaiting = 0, UserHostId = 103, IsRegistrationClosed = false, Participants = new List<EventParticipation>()
             },
             new Event
             {
-                Id = 4, Title = "Street Food Tour เยาวราช", Description = "พาเดินกินของอร่อยยามค่ำคืน", Image = "https://images.unsplash.com/photo-1550547660-d9450f859349", Location = "Yaowarat Road", DateTime = DateTime.Now.AddDays(7).Date.AddHours(18), EndDateTime = DateTime.Now.AddDays(7).Date.AddHours(22), Tags = new List<string> { "อาหาร", "เที่ยวกลางคืน", "streetfood" }, MaxParticipants = 3, CurrentParticipants = 0, MaxWaiting = 2, CurrentWaiting = 0, UserHostId = 104, Participants = new List<EventParticipation>()
+                Id = 4, Title = "Street Food Tour เยาวราช", Description = "พาเดินกินของอร่อยยามค่ำคืน", Image = "https://images.unsplash.com/photo-1550547660-d9450f859349", Location = "Yaowarat Road", DateTime = DateTime.Now.AddDays(7).Date.AddHours(18), EndDateTime = DateTime.Now.AddDays(7).Date.AddHours(22), Tags = new List<string> { "อาหาร", "เที่ยวกลางคืน", "streetfood" }, MaxParticipants = 3, CurrentParticipants = 0, MaxWaiting = 2, CurrentWaiting = 0, UserHostId = 104, IsRegistrationClosed = false, Participants = new List<EventParticipation>()
             },
             new Event
             {
-                Id = 9, Title = "Night Market Walk", Description = "เดินเที่ยวตลาดกลางคืน", Image = "https://images.unsplash.com/photo-1504674900247-0877df9cc836", Location = "Train Night Market", DateTime = DateTime.Now.AddDays(7).Date.AddHours(20), EndDateTime = DateTime.Now.AddDays(7).Date.AddHours(23), Tags = new List<string> { "ตลาด", "อาหาร", "nightlife" }, MaxParticipants = 5, CurrentParticipants = 1, MaxWaiting = 2, CurrentWaiting = 0, UserHostId = 105,
+                Id = 9, Title = "Night Market Walk", Description = "เดินเที่ยวตลาดกลางคืน", Image = "https://images.unsplash.com/photo-1504674900247-0877df9cc836", Location = "Train Night Market", DateTime = DateTime.Now.AddDays(7).Date.AddHours(20), EndDateTime = DateTime.Now.AddDays(7).Date.AddHours(23), Tags = new List<string> { "ตลาด", "อาหาร", "nightlife" }, MaxParticipants = 5, CurrentParticipants = 1, MaxWaiting = 2, CurrentWaiting = 0, UserHostId = 105, IsRegistrationClosed = false,
                 Participants = new List<EventParticipation> { new EventParticipation { Id = 30, EventId = 9, UserId = 103, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-1) } }
             },
             
-            // 🏁 🚨 Event 10: (เพิ่มแนนซี่ 104 เข้าไปเป็นผู้ร่วมงานด้วย เพื่อให้สอดคล้องกับรีวิว) 
+            // 🏁 🚨 Event 10: 
             new Event
             {
                 Id = 10, Title = "Past Event: นิทรรศการศิลปะดิจิทัล", Description = "เดินชมนิทรรศการศิลปะที่จบไปแล้ว (สำหรับทดสอบปุ่ม Review โดยเฉพาะ)", Image = "https://images.unsplash.com/photo-1536924940846-227afb31e2a5", Location = "BACC", DateTime = DateTime.Now.AddDays(-5).Date.AddHours(10), EndDateTime = DateTime.Now.AddDays(-5).Date.AddHours(18), Tags = new List<string> { "ศิลปะ", "นิทรรศการ", "จบแล้ว" }, MaxParticipants = 10, CurrentParticipants = 3, MaxWaiting = 2, CurrentWaiting = 0, UserHostId = 101,
+                IsRegistrationClosed = true, // 🚨 ปิดรับสมัครแล้ว (เพราะงานจบแล้ว)
                 Participants = new List<EventParticipation>
                 {
                     new EventParticipation { Id = 40, EventId = 10, UserId = 102, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-10) },
                     new EventParticipation { Id = 41, EventId = 10, UserId = 103, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-9) },
-                    new EventParticipation { Id = 42, EventId = 10, UserId = 104, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-8) } // แนนซี่มางานนี้
+                    new EventParticipation { Id = 42, EventId = 10, UserId = 104, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-8) }
                 }
             },
             new Event
             {
                 Id = 11, Title = "Ongoing Event: ล้อมวงเล่าเรื่องสยองขวัญ", Description = "กิจกรรมกำลังดำเนินอยู่! เข้ามาร่วมฟังเรื่องหลอนๆ สดๆ ด้วยกัน (สำหรับทดสอบป้าย Ongoing โดยเฉพาะ)", Image = "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c", Location = "Discord Channel (Online)", DateTime = DateTime.Now.AddHours(-1), EndDateTime = DateTime.Now.AddHours(2), Tags = new List<string> { "ออนไลน์", "เล่าเรื่อง", "Ongoing" }, MaxParticipants = 20, CurrentParticipants = 5, MaxWaiting = 0, CurrentWaiting = 0, UserHostId = 104,
+                IsRegistrationClosed = true, // 🚨 ปิดรับสมัครแล้ว (งานเริ่มไปแล้ว)
                 Participants = new List<EventParticipation>
                 {
                     new EventParticipation { Id = 50, EventId = 11, UserId = 102, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-3) },
@@ -84,17 +88,18 @@ namespace WebApplicationProject.Data
                 }
             },
             
-            // 🏁 🚨 Event 12: (เพิ่มคนเข้าร่วมให้สอดคล้องกับคนที่จะมารีวิว User 102 และให้ User 102 รีวิว)
+            // 🏁 🚨 Event 12: 
             new Event
             {
                 Id = 12, Title = "Host Event: งานสัมมนา AI ยุคใหม่", Description = "งานสัมมนาที่คุณเป็นคนจัดและจบไปแล้ว (สำหรับทดสอบการจัดการหลังงานจบ)", Image = "https://images.unsplash.com/photo-1485827404703-89b55fcc595e", Location = "BITEC Bangna", DateTime = DateTime.Now.AddDays(-10).Date.AddHours(9), EndDateTime = DateTime.Now.AddDays(-10).Date.AddHours(16), Tags = new List<string> { "สัมมนา", "AI", "Technology" }, MaxParticipants = 50, CurrentParticipants = 30, MaxWaiting = 0, CurrentWaiting = 0, UserHostId = 102,
+                IsRegistrationClosed = true, // 🚨 ปิดรับสมัครแล้ว (งานจบแล้ว)
                 Participants = new List<EventParticipation>
                 {
                     new EventParticipation { Id = 60, EventId = 12, UserId = 103, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-12) },
                     new EventParticipation { Id = 61, EventId = 12, UserId = 105, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-11) },
-                    new EventParticipation { Id = 62, EventId = 12, UserId = 106, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-11) }, // ชูใจ
-                    new EventParticipation { Id = 63, EventId = 12, UserId = 107, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-11) }, // มานี
-                    new EventParticipation { Id = 64, EventId = 12, UserId = 108, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-11) }  // วีระ
+                    new EventParticipation { Id = 62, EventId = 12, UserId = 106, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-11) },
+                    new EventParticipation { Id = 63, EventId = 12, UserId = 107, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-11) },
+                    new EventParticipation { Id = 64, EventId = 12, UserId = 108, Status = ParticipationStatus.Confirmed, JoinedAt = DateTime.Now.AddDays(-11) }
                 }
             }
         };

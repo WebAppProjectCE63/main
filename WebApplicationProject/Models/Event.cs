@@ -16,5 +16,6 @@
         public int CurrentWaiting { get; set; }
         public int UserHostId { get; set; }
         public List<EventParticipation> Participants { get; set; } = new List<EventParticipation>();
+        public bool IsRegistrationClosed { get; set; } = false;
     }
 }
