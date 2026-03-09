@@ -218,3 +218,52 @@ table {
         color: #FF9F1C;
         text-decoration: underline;
     }
+
+@media (max-width: 768px) {
+    .head {
+        padding: 40px 15px; 
+    }
+
+        .head h1 {
+            font-size: 32px;
+        }
+
+        .head p {
+            font-size: 18px;
+        }
+
+    .my-container {
+        padding: 20px 15px;
+    }
+    .eventPrev {
+        flex-direction: column;
+        padding: 15px;
+    }
+
+    .eventImage img {
+        width: 100%;
+        height: auto;
+        max-height: 250px;
+    }
+
+    .partiTable {
+        overflow-x: auto;
+        padding: 10px;
+    }
+
+    table {
+        min-width: 600px; 
+    }
+
+    .tableHeader {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .btnLink, .btn-toggle {
+        width: 100%; 
+        text-align: center;
+        margin-right: 0;
+    }
+}
