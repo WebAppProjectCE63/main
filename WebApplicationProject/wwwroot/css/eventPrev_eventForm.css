@@ -4,9 +4,11 @@
 }
 
 .my-container {
+    width: 100%;
     max-width: 1000px;
     margin: 0 auto;
     padding: 40px 20px;
+    box-sizing: border-box;
 }
 
 h3 {
@@ -24,6 +26,7 @@ h3 {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    box-sizing: border-box;
 }
 
     .eventForm div > label {
@@ -208,57 +211,59 @@ h3 {
         background: #dc3545;
         color: white;
     }
+
+/* Responsive สำหรับหน้าจอมือถือและแท็บเล็ต */
 @media (max-width: 768px) {
-
-    .head {
-        padding: 40px 15px;
-    }
-
-        .head h1 {
-            font-size: 32px; 
-        }
-
-        .head p {
-            font-size: 18px;
-        }
-
-    .my-container {
-        padding: 20px 15px;
-    }
-
-    .period, .parti {
-        flex-direction: column;
+    /* แก้ปัญหากล่องเวลาและจำนวนคนทะลุจอ */
+    .period,
+    .parti {
+        flex-direction: column; /* เปลี่ยนจากเรียงแนวนอนเป็นแนวตั้ง */
         gap: 10px;
     }
 
+    /* ปรับปุ่มกดให้กางเต็มจอเพื่อให้นิ้วกดง่ายขึ้น */
     .eventForm button {
         width: 100%;
         margin-right: 0;
-        margin-bottom: 10px;
+        margin-top: 10px;
+    }
+
+    #btnRst {
+        margin-top: 10px;
     }
 
     .eventPrev {
         flex-direction: column;
-        align-items: center;
-        text-align: center;
+        padding: 15px;
     }
 
     .eventImage Img {
-        width: 100%; 
-        max-height: 200px;
-        flex: none;
+        width: 100%;
+        max-width: 100%;
+        height: auto;
     }
 
-    .eventDetail {
-        flex: none;
+    .mngParti {
         width: 100%;
-    }
-
-    .btnLink, .btn-toggle {
-        display: block; 
-        width: 100%;
+        display: flex;
+        flex-direction: column; /* ถ้ามีตารางตัวสำรองด้วย ลงข้างล่าง */
+        gap: 20px;
         box-sizing: border-box;
-        text-align: center;
-        margin-right: 0;
+    }
+
+    .partiTable {
+        width: 100%;
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        box-sizing: border-box;
+    }
+
+    .table-responsive {
+        width: 100%;
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
     }
 }
+
