@@ -4,27 +4,12 @@
     box-sizing: border-box;
 }
 
-html {
-    font-size: 12pt;
-    text-align: center;
-}
-
-body {
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background: #FFF7E6;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-main {
-    flex: 1;
+.login-container {
     width: 100%;
+    min-height: calc(100vh - 120px); /* ลบพื้นที่ Navbar ด้านบนออก */
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0 auto;
     padding: 20px;
 }
 
@@ -119,14 +104,6 @@ a {
 }
 
 @media (max-width: 768px) {
-    html {
-        font-size: 11pt;
-    }
-
-    main {
-        align-items: flex-start;
-        padding: 20px 12px;
-    }
 
     .wrapper {
         max-width: 100%;
@@ -144,9 +121,15 @@ a {
 }
 
 @media (max-width: 480px) {
+    .login-container {
+        padding: 10px;
+        align-items: flex-start;
+        padding-top: 30px;
+    }
+
     .wrapper {
         border-radius: 12px;
-        padding: 16px 12px;
+        padding: 8px 12px;
     }
 
     h1 {

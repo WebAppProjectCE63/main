@@ -5,6 +5,7 @@
 @{
     var username = Context.Session.GetString("Username");
     var userId = Context.Session.GetInt32("UserId");
+    var image = Context.Session.GetString("Userimage");
 }
 <head>
     <meta charset="utf-8" />
@@ -25,42 +26,52 @@
             <div id="weblogo">
                 <img src="https://placehold.co/200x50/333333/ffffff?text=MY+LOGO" alt="Logo">
             </div>
-
-            <div id="navitem">
-                <ul>
-                    <li><a asp-controller="Home" asp-action="Home">Home</a></li>
-                    <li><a asp-controller="Event" asp-action="MyEvent">Event</a></li>
-                    <li><a asp-controller="Event" asp-action="Create">Add Event</a></li>
-                    <li><a asp-controller="Home" asp-action="Index">Index Debug</a></li>
-                </ul>
-            </div>
-
+            
+            <button id="mobileMenuBtn">
+                ☰
+            </button>
+            <div id="navContent">
+                <div id="navitem">
+                    <ul>
+                        <li><a asp-controller="Home" asp-action="Home">Home</a></li>
+                        <li><a asp-controller="Event" asp-action="MyEvent">Event</a></li>
+                        <li><a asp-controller="Event" asp-action="Create">Add Event</a></li>
+                        @* <li><a asp-controller="Home" asp-action="Index">Index Debug</a></li> *@
+                    </ul>
+                </div>
+            
             <div id="navprofile">
 
                 <div id="profilename">
 
                     @if (!string.IsNullOrEmpty(username))
                     {
+                        <a asp-controller="Profile" asp-action="profilepage" asp-route-id="@userId.Value">
                         <h4>@username</h4>
 
                         @if (userId.HasValue)
                         {
                             <p>ID: @userId.Value</p>
                         }
+                        </a>
 
                         <a asp-controller="Account" asp-action="Logout">Logout</a>
                     }
                     else
                     {
-                        <a asp-controller="Account" asp-action="Login">Login</a>
+                        <a asp-controller="Account" asp-action="Signup" class="btn-nav btn-signup">Signup</a>
+                        <a asp-controller="Account" asp-action="Login" class="btn-nav btn-login">Login</a>
                     }
 
                 </div>
-
-                <img src="https://ui-avatars.com/api/?name=John+Doe&background=random&color=fff&size=128" alt="Profile">
-
+                @if (!string.IsNullOrEmpty(username))
+                {
+                    <a asp-controller="Profile" asp-action="profilepage" asp-route-id="@userId.Value">
+                        <img src="@image" alt="Profile" />
+                    </a>
+                }
             </div>
-
+            </div>
         </nav>
     </header>
 
