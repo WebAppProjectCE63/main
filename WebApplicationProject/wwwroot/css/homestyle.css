@@ -449,6 +449,36 @@
         flex-wrap: wrap;
     }
 }
+.event-host-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+    margin-bottom: 14px;
+}
+
+.host-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.host-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.host-name {
+    color: #f28c00;
+    font-weight: 600;
+}
+
+.host-link:hover .host-name {
+    text-decoration: underline;
+}
 
 @media screen and (max-width: 480px) {
     .homepage-box h2 {
