@@ -24,7 +24,14 @@ namespace WebApplicationProject.Controllers
                 TempData["ErrorMessage"] = "คุณยังไม่ได้ login เข้าสู่ระบบ";
                 return RedirectToAction("Login", "Account");
             }
+
             var events = _context.Events.Include(e => e.Participants).ToList();
+            var hostIds = events.Select(e => e.UserHostId).Distinct().ToList();
+            var hostDict = _context.Users
+                                   .Where(u => hostIds.Contains(u.Id))
+                                   .ToDictionary(u => u.Id, u => u);
+
+            ViewBag.HostDict = hostDict;
             return View(events);
         }
         public IActionResult Create()
@@ -244,13 +251,14 @@ namespace WebApplicationProject.Controllers
         [HttpPost]
         public IActionResult RemoveWaiting(int eventId, int userId)
         {
-            if (CurrentUserId == 0) {
+            if (CurrentUserId == 0)
+            {
                 TempData["ErrorMessage"] = "คุณยังไม่ได้ login เข้าสู่ระบบ";
-                return RedirectToAction("Login","Account");
+                return RedirectToAction("Login", "Account");
             }
             var eventToManage = _context.Events.Include(e => e.Participants).FirstOrDefault(e => e.Id == eventId);
             if (eventToManage == null) return NotFound("ไม่มีกิจกรรมนี้");
-                
+
             var ticket = eventToManage.Participants.FirstOrDefault(t => t.UserId == userId && t.Status == ParticipationStatus.Waiting);
             if (ticket == null) return NotFound("ไม่มีผู้ใช้นี้ในรายชื่อสำรอง");
 
@@ -415,7 +423,7 @@ namespace WebApplicationProject.Controllers
             return Json(new
             {
                 isRegistrationClosed = ev.IsRegistrationClosed,
-                dateTime = ev.DateTime 
+                dateTime = ev.DateTime
             });
         }
 

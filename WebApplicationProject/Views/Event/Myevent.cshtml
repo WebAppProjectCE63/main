@@ -4,10 +4,14 @@
 @{
     int currentUserId = Context.Session.GetInt32("UserId") ?? 0;
 }
-
-@section Styles {
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>My Events</title>
     <link rel="stylesheet" href="~/css/myevent.css">
-}
+</head>
+<body>
     <div class="pagebanner">
         <h1>My Events</h1>
         <p>กิจกรรมของฉัน</p>
@@ -183,8 +187,28 @@
                             </div>
 
                             <div class="extra-info">
+                                @{
+                                    var hostDict = ViewBag.HostDict as Dictionary<int, WebApplicationProject.Models.User>;
+                                    var hostUser = (hostDict != null && hostDict.ContainsKey(ev.UserHostId)) ? hostDict[ev.UserHostId] : null;
+                                }
+                                <p class="info-row host-info-row">
+                                    <strong>Host:</strong>
+                                    @if (hostUser != null)
+                                    {
+                                        <a href="@Url.Action("profilepage", "Profile", new { id = ev.UserHostId })" class="host-link">
+                                            <img src="@hostUser.Image" alt="Host Image" />
+                                            @hostUser.FName @hostUser.SName
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span>Unknown Host</span>
+                                    }
+                                </p>
+
                                 <p class="info-row"><strong>Location:</strong> @ev.Location</p>
                                 <p class="info-row"><strong>Date:</strong> @ev.DateTime.ToString("dd MMM yyyy HH:mm") - @ev.EndDateTime.ToString("dd MMM yyyy HH:mm")</p>
+
 
                                 <div class="extra-actions">
                                     @if (isHost)
@@ -259,6 +283,6 @@
             }
         </div>
     </div>
-@section Scripts {
     <script src="~/js/myevent.js"></script>
-}
+</body>
+</html>
