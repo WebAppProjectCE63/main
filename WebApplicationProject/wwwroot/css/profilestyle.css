@@ -246,13 +246,15 @@ body {
 
 .rating {
     display: flex;
-    min-height: 400px;
-    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: fit-content;
+    max-width: 100%;
+    padding: 16px 20px;
     background: linear-gradient(180deg, #FFF3D6, #FFE7B3);
-    padding: 20px;
-    margin: auto;
-    text-align: left;
+    border: 1px solid #F4C56A;
     border-radius: 16px;
+    box-sizing: border-box;
 }
 
 .ratinglist {
@@ -262,10 +264,12 @@ body {
 }
 
 .stars {
-    font-size: 30px;
-    letter-spacing: 2px;
-    margin-bottom: 15px;
+    font-size: 24px;
+    letter-spacing: 3px;
     color: #FF9F1C;
+    white-space: nowrap;
+    margin: 0;
+    flex-shrink: 0;
 }
 
 .reviewblock h3 {
