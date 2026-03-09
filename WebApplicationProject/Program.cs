@@ -43,7 +43,7 @@ app.UseRequestLocalization(localizationOptions);
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Home}/")
+    pattern: "{controller=Home}/{action=Home}/{id?}")
     .WithStaticAssets();
 
 app.Run();
