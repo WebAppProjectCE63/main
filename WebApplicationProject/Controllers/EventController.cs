@@ -51,14 +51,26 @@ namespace WebApplicationProject.Controllers
                 TempData["ErrorMessage"] = "คุณยังไม่ได้ login เข้าสู่ระบบ";
                 return RedirectToAction("Login", "Account");
             }
-            if (newEvent.MaxParticipants < 1) return BadRequest("จำนวนผู้เข้าร่วมไม่ถูกต้อง");
+            if (newEvent.MaxParticipants < 1)
+            {
+                TempData["ErrorMessage"] = "จำนวนผู้เข้าร่วมไม่ถูกต้อง";
+                return RedirectToAction("Create", "Event");
+            }
             int maxAllowedWait = (int)Math.Ceiling(newEvent.MaxParticipants / 2.0);
             if (newEvent.MaxWaiting > maxAllowedWait || newEvent.MaxWaiting < 0)
             {
                 return BadRequest("จำนวนตัวสำรองเกินขีดจำกัดที่กำหนดไว้");
             }
-            if (newEvent.DateTime < DateTime.Now) return BadRequest("วันที่ไม่ถูกต้อง");
-            if (newEvent.DateTime > newEvent.EndDateTime) return BadRequest("วันที่ไม่ถูกต้อง");
+            if (newEvent.DateTime < DateTime.Now)
+            {
+                TempData["ErrorMessage"] = "วันที่ไม่ถูกต้อง";
+                return RedirectToAction("Create", "Event");
+            }
+            if (newEvent.DateTime > newEvent.EndDateTime)
+            {
+                TempData["ErrorMessage"] = "วันที่ไม่ถูกต้อง";
+                return RedirectToAction("Create", "Event");
+            }
             string ImageUrl = await UploadImageAsync(uploadImage);
             newEvent.Image = ImageUrl ?? "https://img2.pic.in.th/image-icon-symbol-design-illustration-vector.md.jpg";
             newEvent.Tags = ProcessTags(Request.Form["Tag"]);
@@ -100,25 +112,42 @@ namespace WebApplicationProject.Controllers
             var ogEvent = _context.Events.FirstOrDefault(e => e.Id == editEvent.Id);
             if (ogEvent != null)
             {
-                if (!IsHost(ogEvent))
+                if(!IsHost(ogEvent))
                 {
                     TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
                     return RedirectToAction("Myevent");
                 }
-                if (editEvent.MaxParticipants < ogEvent.CurrentParticipants || editEvent.MaxParticipants < 1) return BadRequest("จำนวนผู้เข้าร่วมไม่ถูกต้อง");
+                if (editEvent.DateTime <= DateTime.Now.AddMinutes(2))
+                {
+                    TempData["ErrorMessage"] = "วันที่ไม่ถูกต้อง";
+                    return RedirectToAction("Create", "Event");
+                }
+                if (editEvent.DateTime > editEvent.EndDateTime)
+                {
+                    TempData["ErrorMessage"] = "วันที่ไม่ถูกต้อง";
+                    return RedirectToAction("Create", "Event");
+                }
+                if (editEvent.MaxParticipants < ogEvent.CurrentParticipants || editEvent.MaxParticipants < 1)
+                {
+                    TempData["ErrorMessage"] = "จำนวนผู้เข้าร่วมไม่ถูกต้อง";
+                    return RedirectToAction("Edit", "Event", new { id = editEvent.Id });
+                }
                 int minRequiredPartiForWait = ogEvent.CurrentWaiting > 0 ? (ogEvent.CurrentWaiting * 2 - 1) : 1;
                 if (editEvent.MaxParticipants < minRequiredPartiForWait)
                 {
-                    return BadRequest($"ไม่สามารถลดจำนวนตัวจริงได้ ต้องตั้งไว้อย่างน้อย {minRequiredPartiForWait} คน เพื่อให้สอดคล้องกับตัวสำรองที่มีอยู่แล้ว ({ogEvent.CurrentWaiting} คน)");
+                    TempData["ErrorMessage"] = "จำนวนผู้เข้าร่วมไม่ถูกต้อง";
+                    return RedirectToAction("Edit", "Event", new { id = editEvent.Id });
                 }
                 if (editEvent.MaxWaiting < ogEvent.CurrentWaiting)
                 {
-                    return BadRequest("ไม่สามารถลดจำนวนรับสำรองให้น้อยกว่าคนที่อยู่ในคิวปัจจุบันได้");
+                    TempData["ErrorMessage"] = "จำนวนผู้เข้าร่วมไม่ถูกต้อง";
+                    return RedirectToAction("Edit", "Event", new { id = editEvent.Id });
                 }
                 int maxAllowedWait = (int)Math.Ceiling(editEvent.MaxParticipants / 2.0);
                 if (editEvent.MaxWaiting > maxAllowedWait || editEvent.MaxWaiting < 0)
                 {
-                    return BadRequest("จำนวนตัวสำรองเกินขีดจำกัดที่กำหนดไว้");
+                    TempData["ErrorMessage"] = "จำนวนผู้เข้าร่วมไม่ถูกต้อง";
+                    return RedirectToAction("Edit", "Event", new { id = editEvent.Id });
                 }
                 string newImageUrl = await UploadImageAsync(uploadImage);
                 if (newImageUrl != null)
@@ -284,7 +313,7 @@ namespace WebApplicationProject.Controllers
                 TempData["ErrorMessage"] = "กิจกรรมนี้ปิดรับสมัครแล้ว";
                 return RedirectToAction("Home", "Home");
             }
-            if (DateTime.Now >= ev.DateTime)
+            if (ev.DateTime <= DateTime.Now.AddMinutes(2))
             {
                 TempData["ErrorMessage"] = "กิจกรรมนี้เริ่มไปแล้ว ไม่สามารถเข้าร่วมได้ครับ";
                 return RedirectToAction("Home", "Home");
