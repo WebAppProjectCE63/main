@@ -99,6 +99,11 @@ namespace WebApplicationProject.Controllers
                 TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
                 return RedirectToAction("Myevent");
             }
+            if (DateTime.Now >= eventToEdit.DateTime)
+            {
+                TempData["ErrorMessage"] = "กิจกรรมกำลังดำเนินการหรือจบลงแล้ว ไม่สามารถแก้ไขข้อมูลได้";
+                return RedirectToAction("Myevent");
+            }
             return View(eventToEdit);
         }
         [HttpPost]
@@ -115,6 +120,11 @@ namespace WebApplicationProject.Controllers
                 if(!IsHost(ogEvent))
                 {
                     TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
+                    return RedirectToAction("Myevent");
+                }
+                if (DateTime.Now >= ogEvent.DateTime)
+                {
+                    TempData["ErrorMessage"] = "กิจกรรมกำลังดำเนินการหรือจบลงแล้ว ไม่สามารถบันทึกการแก้ไขได้";
                     return RedirectToAction("Myevent");
                 }
                 if (editEvent.DateTime <= DateTime.Now.AddMinutes(2))
@@ -185,6 +195,11 @@ namespace WebApplicationProject.Controllers
             if (!IsHost(eventToManage))
             {
                 TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
+                return RedirectToAction("Myevent");
+            }
+            if (DateTime.Now >= eventToManage.DateTime)
+            {
+                TempData["ErrorMessage"] = "กิจกรรมเริ่มดำเนินการไปแล้ว ไม่สามารถจัดการผู้เข้าร่วมได้อีก";
                 return RedirectToAction("Myevent");
             }
             var participantIds = eventToManage.Participants.Select(p => p.UserId).ToList();
