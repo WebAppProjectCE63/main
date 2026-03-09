@@ -148,42 +148,126 @@
         async function updateEventStatusRealtime() {
             const now = new Date();
             for (const card of document.querySelectorAll('.Event')) {
-                const eventId = card.querySelector('input[name="eventId"]')?.value;
+                const eventIdInput = card.querySelector('input[name="eventId"]');
+                const eventId = eventIdInput ? eventIdInput.value : null;
                 if (!eventId) continue;
 
                 try {
-                    const response = await fetch(`/Event/CheckStatus/${eventId}`);
+                    // ดึงสถานะปัจจุบัน (ห้ามใช้ Cache เพื่อให้มัน Real-time จริงๆ)
+                    const response = await fetch(`/Event/CheckStatus/${eventId}`, { cache: "no-store" });
+                    if (!response.ok) continue;
                     const data = await response.json();
 
                     const eventStartTime = new Date(data.dateTime);
                     const closeTime = new Date(eventStartTime.getTime() - (2 * 60 * 1000));
 
                     const isActuallyLocked = data.isRegistrationClosed || (now >= closeTime);
+                    const isOngoing = now >= eventStartTime;
 
+                    // -------------------------------------------------------------
+                    // 1. จัดการป้ายใต้รูปภาพ (แก้ปัญหาป้ายขึ้นซ้อนกันแบบเด็ดขาด)
+                    // -------------------------------------------------------------
                     const imageColumn = card.querySelector('.image-column');
-                    const lockedBadge = card.querySelector('.statis-close');
-                    const badge = card.querySelector('.badge');
+                    if (imageColumn) {
+                        const allBadges = imageColumn.querySelectorAll('.status-badge');
 
-                    if (isActuallyLocked) {
-                        if (imageColumn && !lockedBadge) {
-                            const newLockedBadge = document.createElement('span');
-                            newLockedBadge.className = 'status-badge statis-close';
-                            newLockedBadge.style.cssText = 'width: 100%; box-sizing: border-box; background-color: #dc3545; color: white; margin-top: -4px; font-size: 0.85em; padding: 2px; text-align: center; display: block;';
-                            newLockedBadge.innerHTML = '🔒 Locked';
-                            imageColumn.appendChild(newLockedBadge);
-                        }
+                        // เช็คก่อนว่าเซิร์ฟเวอร์ส่งป้าย Ended (งานจบแล้ว) มาหรือเปล่า
+                        const isEnded = Array.from(allBadges).some(b => b.textContent.trim() === "Ended");
 
-                        if (badge && (badge.textContent.trim() === "Waiting" || badge.classList.contains('badge-waiting'))) {
-                            badge.textContent = "Not Selected";
-                            badge.className = "badge badge-closed"; 
-                        }
+                        // ลบป้ายสถานะเดิมทิ้งให้หมดเพื่อเคลียร์พื้นที่
+                        allBadges.forEach(b => b.remove());
+
+                        // สร้างป้ายใหม่ขึ้นมาแค่อันเดียว
+                        const newBadge = document.createElement('span');
+                        newBadge.className = 'status-badge';
+                        newBadge.style.cssText = 'width: 100%; box-sizing: border-box; text-align: center; display: block; padding: 2px;';
+
+                        if (isEnded) {
+                            newBadge.classList.add('status-ended');
+                            newBadge.textContent = 'Ended';
+                        } else if (isOngoing) {
+                            newBadge.classList.add('status-ongoing');
+                            newBadge.textContent = 'Ongoing';
+                        } else if (isActuallyLocked) {
+                            newBadge.classList.add('statis-close');
+                            newBadge.style.backgroundColor = '#dc3545';
+                            newBadge.style.color = 'white';
+                            newBadge.style.marginTop = '-4px';
+                            newBadge.textContent = '🔒 Locked';
                         } else {
-                        if (lockedBadge) lockedBadge.remove();
-
-                        if (badge && (badge.textContent.trim() === "Not Selected" || badge.classList.contains('badge-closed'))) {
-                            badge.textContent = "Waiting";
-                            badge.className = "badge badge-waiting";
+                            newBadge.classList.add('status-upcoming');
+                            newBadge.textContent = 'Upcoming';
                         }
+
+                        // แปะป้ายใหม่เข้าไปใต้รูปภาพ
+                        const imgDiv = imageColumn.querySelector('.event-image');
+                        if (imgDiv) imgDiv.after(newBadge);
+                    }
+
+                    // -------------------------------------------------------------
+                    // 2. จัดการป้าย Waiting <-> Not Selected สำหรับตัวสำรอง
+                    // -------------------------------------------------------------
+                    const participantBadge = card.querySelector('.event-title .badge');
+                    if (participantBadge && !participantBadge.classList.contains('badge-host')) {
+                        if (isActuallyLocked && (participantBadge.textContent.trim() === "Waiting" || participantBadge.classList.contains('badge-waiting'))) {
+                            participantBadge.textContent = "Not Selected";
+                            participantBadge.className = "badge badge-closed";
+                        } else if (!isActuallyLocked && (participantBadge.textContent.trim() === "Not Selected" || participantBadge.classList.contains('badge-closed'))) {
+                            participantBadge.textContent = "Waiting";
+                            participantBadge.className = "badge badge-waiting";
+                        }
+                    }
+
+                    // -------------------------------------------------------------
+                    // 3. จัดการปุ่ม (ซ่อน Manage/Edit -> สลับเป็น View Reviews)
+                    // -------------------------------------------------------------
+                    const isHost = card.querySelector('.badge-host') !== null;
+                    const isHome = window.location.pathname.toLowerCase().includes('/home');
+
+                    if (isHost && !isHome) {
+                        const editBtns = card.querySelectorAll('a[href*="Edit"]');
+                        const deleteForms = card.querySelectorAll('form[action*="Delete"]');
+                        const manageBtns = card.querySelectorAll('a[href*="Manage"]');
+
+                        if (isOngoing || Array.from(imageColumn?.querySelectorAll('.status-badge') || []).some(b => b.textContent.trim() === "Ended")) {
+                            // ถ้างานเริ่มไปแล้ว -> ซ่อนปุ่มแก้ไข/ลบ/จัดการ ทั้งหมด
+                            editBtns.forEach(btn => btn.style.display = 'none');
+                            deleteForms.forEach(form => form.style.display = 'none');
+                            manageBtns.forEach(btn => btn.style.display = 'none');
+
+                            // สร้างปุ่ม View Reviews ขึ้นมาแทนที่โดยไม่ต้อง Refresh
+                            const actionsContainers = card.querySelectorAll('.normal-actions, .extra-actions');
+                            actionsContainers.forEach(container => {
+                                if (!container.querySelector('.review-auto-btn') && !container.querySelector('button[onclick*="Review"]')) {
+                                    const reviewBtn = document.createElement('button');
+                                    reviewBtn.className = 'view-btn review-auto-btn';
+                                    reviewBtn.type = 'button';
+                                    reviewBtn.textContent = 'View Reviews';
+                                    reviewBtn.onclick = () => window.location.href = `/Review/Review/${eventId}`;
+                                    container.appendChild(reviewBtn);
+                                }
+                            });
+                        } else if (isActuallyLocked) {
+                            // ถ้าล็อกแล้วแต่ยังไม่เริ่มงาน -> ซ่อนแก้ไข/ลบ และเปลี่ยน Manage เป็น View Summary
+                            editBtns.forEach(btn => btn.style.display = 'none');
+                            deleteForms.forEach(form => form.style.display = 'none');
+                            manageBtns.forEach(btn => {
+                                btn.style.display = 'inline-block';
+                                btn.textContent = 'View Summary';
+                            });
+                        } else {
+                            // กลับเป็นปกติ
+                            editBtns.forEach(btn => btn.style.display = 'inline-block');
+                            deleteForms.forEach(form => form.style.display = 'inline-block');
+                            manageBtns.forEach(btn => {
+                                btn.style.display = 'inline-block';
+                                btn.textContent = btn.classList.contains('btn-dark-link') && !btn.closest('.normal-actions') ? 'Manage Event' : 'Manage';
+                            });
+                        }
+                    } else if (!isHost && !isHome) {
+                        // ซ่อนปุ่ม Cancel Join สำหรับ User ทั่วไปเมื่อถูกล็อก
+                        const cancelForm = card.querySelector('form[action*="CancelJoin"]');
+                        if (cancelForm) cancelForm.style.display = isActuallyLocked ? 'none' : 'inline-block';
                     }
                 } catch (e) {
                     console.error("Polling error:", e);

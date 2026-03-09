@@ -178,7 +178,7 @@
                                 <button type="button" class="view-btn view-info-btn">View Info</button>
                                 @if (isHost)
                                 {
-                                    @if (DateTime.Now <= ev.EndDateTime)
+                                    @if (DateTime.Now < ev.DateTime)
                                     {
                                         <a href="@Url.Action("Manage", "Event", new { id = ev.Id })" class="view-btn btn-dark-link">Manage</a>
                                         <a href="@Url.Action("Edit", "Event", new { id = ev.Id })" class="view-btn btn-link">Edit</a>
@@ -213,12 +213,17 @@
                                 <div class="extra-actions">
                                     @if (isHost)
                                     {
-                                        @if (DateTime.Now <= ev.EndDateTime)
+                                        @if (DateTime.Now < ev.DateTime)
                                         {
                                             <a href="@Url.Action("Manage", "Event", new { id = ev.Id })" class="view-btn btn-dark-link">Manage Event</a>
                                             <a href="@Url.Action("Edit", "Event", new { id = ev.Id })" class="view-btn btn-link">Edit</a>
+
+                                            <form action="@Url.Action("Delete", "Event")" method="post" style="display:inline;" onsubmit="return confirm('Are you sure?');">
+                                                <input type="hidden" name="id" value="@ev.Id" />
+                                                <button type="submit" class="view-btn btn-danger-outline">Delete</button>
+                                            </form>
                                         }
-                                        @if (DateTime.Now >= ev.DateTime)
+                                        else
                                         {
                                             <button type="button" class="view-btn" onclick="window.location.href='@Url.Action("Review", "Review", new { id = ev.Id })'">
                                                 View Reviews
