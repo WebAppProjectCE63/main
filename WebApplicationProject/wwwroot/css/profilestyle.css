@@ -245,11 +245,9 @@ body {
 }
 
 .rating {
-    display: flex;
     align-items: center;
     gap: 16px;
-    width: fit-content;
-    max-width: 100%;
+    width: 100%;
     padding: 16px 20px;
     background: linear-gradient(180deg, #FFF3D6, #FFE7B3);
     border: 1px solid #F4C56A;
@@ -259,8 +257,11 @@ body {
 
 .ratinglist {
     display: flex;
-    gap: 20px;
+    gap: 30px;
     flex-wrap: wrap;
+    padding: 30px;
+/*    align-content: space-between;*/
+    justify-content: space-between;
 }
 
 .stars {
@@ -638,6 +639,21 @@ input[type="file"].form-control {
 }
 
 @media (max-width: 768px) {
+    .rating {
+        align-content:center;
+    }
+
+    .ratinglist {
+        align-content: center;
+        justify-content: center;
+/*        max-height: 600px;
+        overflow-y: auto;*/
+    }
+
+    .reviewblock {
+        width: 90%;
+    }
+
     .moreinfo {
         grid-template-columns: repeat(2, 1fr);
         gap: 15px;

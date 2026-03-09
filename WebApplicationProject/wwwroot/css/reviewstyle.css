@@ -13,7 +13,7 @@
 
 .modal-content {
     background-color: #FFFDF8;
-    margin: 2% auto;
+    margin: 3% auto;
     padding: 30px;
     border-radius: 16px;
     width: 80%;
@@ -193,6 +193,9 @@ input:focus + .slider {
 @media (max-width: 992px) 
 {
     .modal-content {
+        margin-top: 2fr;
         max-width: 90%;
+        max-height: 80%;
+        padding: 15px;
     }
 }
