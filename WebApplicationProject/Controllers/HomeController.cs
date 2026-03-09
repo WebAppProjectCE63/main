@@ -26,6 +26,8 @@ namespace WebApplicationProject.Controllers
         public IActionResult Home()
         {
             var events = _context.Events.Include(e => e.Participants).ToList();
+            var users = _context.Users.ToList();
+            ViewBag.Users = users;
             return View(events);
         }
 

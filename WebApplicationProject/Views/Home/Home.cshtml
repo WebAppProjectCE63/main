@@ -120,6 +120,8 @@
             }
 
             bool isHost = ev.UserHostId == currentUserId;
+            var users = ViewBag.Users as List<WebApplicationProject.Models.User>;
+            var host = users?.FirstOrDefault(u => u.Id == ev.UserHostId);
 
             <div class="Event" data-date="@ev.DateTime.ToString("yyyy-MM-dd")" data-event-date="@ev.DateTime.ToString("yyyy-MM-ddTHH:mm:ss")">
                 <input type="hidden" name="eventId" value="@ev.Id" />
@@ -157,6 +159,15 @@
                         <div class="event-row">
                             <span>@ev.Location</span>
                             <span>@ev.DateTime.ToString("dd/MM/yyyy")</span>
+                        </div>
+                        <div class="event-host">
+                            <a asp-controller="Profile"
+                                   asp-action="profilepage"
+                                   asp-route-id="@ev.UserHostId">
+                                <img src="@(host != null && !string.IsNullOrEmpty(host.Image) ? host.Image : "https://ui-avatars.com/api/?name=" + Uri.EscapeDataString(host.Username))"
+                                     class="host-avatar"
+                                     title="View Host Profile" />
+                            </a>
                         </div>
 
                         <div class="event-actions normal-actions">
