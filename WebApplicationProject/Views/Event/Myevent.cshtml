@@ -4,14 +4,10 @@
 @{
     int currentUserId = Context.Session.GetInt32("UserId") ?? 0;
 }
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>My Events</title>
+
+@section Styles {
     <link rel="stylesheet" href="~/css/myevent.css">
-</head>
-<body>
+}
     <div class="pagebanner">
         <h1>My Events</h1>
         <p>กิจกรรมของฉัน</p>
@@ -263,6 +259,6 @@
             }
         </div>
     </div>
+@section Scripts {
     <script src="~/js/myevent.js"></script>
-</body>
-</html>
+}

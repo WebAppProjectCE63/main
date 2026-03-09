@@ -68,6 +68,7 @@
                 <div class="numOfParti"><span id="currentParti">@Model.CurrentParticipants</span> / @Model.MaxParticipants Member</div>
             </div>
             <hr />
+            <div class="table-responsive">
             <table>
                 <thead>
                     <tr>
@@ -115,6 +116,7 @@
                     }
                 </tbody>
             </table>
+            </div>
         </div>
         @if (Model.MaxWaiting > 0)
         {
@@ -124,6 +126,7 @@
                     <div class="numOfParti"><span id="currentWait">@Model.CurrentWaiting</span> / @Model.MaxWaiting Member</div>
                 </div>
                 <hr />
+                <div class="table-responsive">
                 <table>
                     <thead>
                         <tr>
@@ -176,6 +179,7 @@
                         }
                     </tbody>
                 </table>
+                </div>
             </div>
         }
     </div>
