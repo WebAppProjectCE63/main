@@ -419,6 +419,33 @@ body {
 
 .statis-close {
 }
+.host-info-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.host-link {
+    color: #FF9F1C;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+    .host-link:hover {
+        color: #D97A00;
+        text-decoration: underline;
+    }
+
+    .host-link img {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
 
 /* =========================================
    7. STATS & EXTRA INFO
@@ -465,24 +492,6 @@ body {
    8. MOBILE RESPONSIVE (MEDIA QUERIES)
    ========================================= */
 @media screen and (max-width: 768px) {
-    #navbar {
-        padding: 15px 20px;
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    #navitem {
-        position: static;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-    }
-
-    #navprofile {
-        margin-left: 0;
-        width: 100%;
-        justify-content: center;
-    }
 
     #event-header {
         padding: 40px 15px;
@@ -530,7 +539,6 @@ body {
 
     .event-chips,
     .event-row,
-    .event-actions,
     .extra-actions {
         justify-content: center;
     }
@@ -543,4 +551,42 @@ body {
         width: 100%;
         flex-wrap: wrap;
     }
+
+    .extra-info {
+        width: 100%;
+        text-align: left;
+    }
+
+    .info-row {
+        text-align: left;
+    }
+
+    .host-info-row {
+        justify-content: flex-start; 
+    }
+
+    .event-actions,
+    .extra-actions {
+        display: flex;
+        flex-direction: column; 
+        width: 100%;
+        gap: 10px;
+    }
+
+        .event-actions .view-btn,
+        .extra-actions .view-btn {
+            width: 100% !important;
+            box-sizing: border-box;
+        }
+
+        .extra-actions form {
+            width: 100%;
+            margin: 0;
+            display: block;
+        }
+
+            .extra-actions form .view-btn {
+                width: 100% !important;
+            }
+}
 }

@@ -185,8 +185,26 @@
                                     }
                                 }
                             </div>
-
                             <div class="extra-info">
+                                @{
+                                    var hostDict = ViewBag.HostDict as Dictionary<int, WebApplicationProject.Models.User>;
+                                    var hostUser = (hostDict != null && hostDict.ContainsKey(ev.UserHostId)) ? hostDict[ev.UserHostId] : null;
+                                }
+                                <p class="info-row host-info-row">
+                                    <strong>Host:</strong>
+                                    @if (hostUser != null)
+                                    {
+                                        <a href="@Url.Action("profilepage", "Profile", new { id = ev.UserHostId })" class="host-link">
+                                            <img src="@hostUser.Image" alt="Host Image" />
+                                            @hostUser.FName @hostUser.SName
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span>Unknown Host</span>
+                                    }
+                                </p>
+
                                 <p class="info-row"><strong>Location:</strong> @ev.Location</p>
                                 <p class="info-row"><strong>Date:</strong> @ev.DateTime.ToString("dd MMM yyyy HH:mm") - @ev.EndDateTime.ToString("dd MMM yyyy HH:mm")</p>
 

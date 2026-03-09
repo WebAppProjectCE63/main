@@ -24,7 +24,14 @@ namespace WebApplicationProject.Controllers
                 TempData["ErrorMessage"] = "คุณยังไม่ได้ login เข้าสู่ระบบ";
                 return RedirectToAction("Login", "Account");
             }
+
             var events = _context.Events.Include(e => e.Participants).ToList();
+            var hostIds = events.Select(e => e.UserHostId).Distinct().ToList();
+            var hostDict = _context.Users
+                                   .Where(u => hostIds.Contains(u.Id))
+                                   .ToDictionary(u => u.Id, u => u);
+
+            ViewBag.HostDict = hostDict;
             return View(events);
         }
         public IActionResult Create()
