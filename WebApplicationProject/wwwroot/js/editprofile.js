@@ -36,6 +36,32 @@ document.addEventListener("DOMContentLoaded", function () {
     const prevEmail = document.getElementById("prevEmail");
     const prevImg = document.getElementById("prevImg");
 
+    const privateSwitch = document.getElementById("IsPublic");
+    const showEmail = document.getElementById("ShowEmail");
+    const showJoined = document.getElementById("ShowJoinedEvents");
+    const showHosted = document.getElementById("ShowHostedEvents");
+
+    privateSwitch.addEventListener("change", function () {
+        if (privateSwitch.checked) {
+            showEmail.checked = false;
+            showJoined.checked = false;
+            showHosted.checked = false;
+        }
+        else if (showEmail.checked && showJoined.checked && showHosted.checked) {
+            privateSwitch.checked = false;
+        }
+    });
+
+    function checkSubSwitches() {
+        if (showEmail.checked || showJoined.checked && showHosted.checked) {
+            privateSwitch.checked = false;
+        }
+    }
+
+    showEmail.addEventListener("change", checkSubSwitches);
+    showJoined.addEventListener("change", checkSubSwitches);
+    showHosted.addEventListener("change", checkSubSwitches);
+
     if (inputFname && prevFname) {
         inputFname.addEventListener("input", function () { prevFname.innerText = this.value || '(ชื่อ)'; });
     }

@@ -369,6 +369,7 @@
                     }
                     else
                     {
+                        <a asp-controller="Profile" asp-action="profilepage" asp-route-id="@author.Id">
                         <div class="reviewprofile">
                             <img src=@author.Image alt="Profile">
                             <div class="reviewname">
@@ -376,6 +377,7 @@
                                 <p>@author.SName</p>
                             </div>
                         </div>
+                        </a>
                     }
                 </div>
             }
@@ -421,28 +423,28 @@
                 <div class="setting">
                     <label class="lable_switch">PrivateAccount</label>
                     <label class="switch">
-                        <input type="checkbox" name="IsPublic" value="true" @(Model.UserInfo.Settings.PrivateAccount ? "checked" : "")>
+                        <input type="checkbox" name="IsPublic" id="IsPublic" value="true" @(Model.UserInfo.Settings.PrivateAccount ? "checked" : "")>
                         <span class="slider"></span>
                     </label>
                 </div>
                 <div class="setting">
                     <label class="lable_switch">ShowEmail</label>
                     <label class="switch">
-                        <input type="checkbox" name="ShowEmail" value="true" @(Model.UserInfo.Settings.ShowEmail ? "checked" : "")>
+                        <input type="checkbox" name="ShowEmail" id="ShowEmail" value="true" @(Model.UserInfo.Settings.ShowEmail ? "checked" : "")>
                         <span class="slider"></span>
                     </label>
                 </div>
                 <div class="setting">
                     <label class="lable_switch">ShowJoinedEvents</label>
                     <label class="switch">
-                        <input type="checkbox" name="ShowJoinedEvents" value="true" @(Model.UserInfo.Settings.ShowJoinedEvents ? "checked" : "")>
+                        <input type="checkbox" name="ShowJoinedEvents" id="ShowJoinedEvents" value="true" @(Model.UserInfo.Settings.ShowJoinedEvents ? "checked" : "")>
                         <span class="slider"></span>
                     </label>
                 </div>
                 <div class="setting">
                     <label class="lable_switch">ShowHostedEvents</label>
                     <label class="switch">
-                        <input type="checkbox" name="ShowHostedEvents" value="true" @(Model.UserInfo.Settings.ShowHostedEvents ? "checked" : "")>
+                        <input type="checkbox" name="ShowHostedEvents" id="ShowHostedEvents" value="true" @(Model.UserInfo.Settings.ShowHostedEvents ? "checked" : "")>
                         <span class="slider"></span>
                     </label>
                 </div>
