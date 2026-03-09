@@ -49,10 +49,10 @@
                         <a asp-controller="Profile" asp-action="profilepage" asp-route-id="@userId.Value">
                         <h4>@username</h4>
 
-                        @if (userId.HasValue)
+                        @* @if (userId.HasValue)
                         {
                             <p>ID: @userId.Value</p>
-                        }
+                        } *@
                         </a>
 
                         <a asp-controller="Account" asp-action="Logout">Logout</a>

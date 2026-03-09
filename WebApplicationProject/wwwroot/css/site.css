@@ -306,3 +306,23 @@ main {
     cursor: pointer;
     margin-left: auto;
 }
+
+.pagebanner {
+    text-align: center;
+    padding: 60px 20px;
+    background: linear-gradient(180deg, #FFE7B3, #FFD08A);
+    border-bottom: 3px solid #FF9F1C;
+}
+
+    .pagebanner h1 {
+        font-size: 48px;
+        margin: 0;
+        font-weight: bold;
+        color: #6B3E00;
+    }
+
+    .pagebanner p {
+        font-size: 24px;
+        color: #8A6A45;
+        margin: 10px 0 0 0;
+    }

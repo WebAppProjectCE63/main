@@ -2,24 +2,6 @@
     box-sizing: border-box;
 }
 
-.homepage-box {
-    background: linear-gradient(180deg, #FFE7B3, #FFD08A);
-    padding: 70px 20px;
-    text-align: center;
-}
-
-    .homepage-box h2 {
-        font-size: 40px;
-        margin: 0;
-        color: #6B3E00;
-    }
-
-    .homepage-box p {
-        font-size: 20px;
-        margin-top: 8px;
-        color: #8A6A45;
-    }
-
 .content-container {
     padding: 40px;
     display: flex;
