@@ -166,7 +166,7 @@
                                    asp-route-id="@ev.UserHostId">
                                 <img src="@(host != null && !string.IsNullOrEmpty(host.Image) ? host.Image : "https://ui-avatars.com/api/?name=" + Uri.EscapeDataString(host.Username))"
                                      class="host-avatar"
-                                     title="View Host Profile" />
+                                     title="@(host != null ? host.FName + " " + host.SName : "Host")" />
                             </a>
                         </div>
 
