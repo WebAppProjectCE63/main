@@ -160,13 +160,19 @@
                             <span>@ev.Location</span>
                             <span>@ev.DateTime.ToString("dd/MM/yyyy")</span>
                         </div>
-                        <div class="event-host">
+                        <div class="event-host-row">
+                            <strong>Host:</strong>
                             <a asp-controller="Profile"
                                    asp-action="profilepage"
-                                   asp-route-id="@ev.UserHostId">
-                                <img src="@(host != null && !string.IsNullOrEmpty(host.Image) ? host.Image : "https://ui-avatars.com/api/?name=" + Uri.EscapeDataString(host.Username))"
-                                     class="host-avatar"
-                                     title="@(host != null ? host.FName + " " + host.SName : "Host")" />
+                                   asp-route-id="@ev.UserHostId"
+                                   class="host-link">
+                                <img src="@(host != null && !string.IsNullOrEmpty(host.Image)
+                                                         ? host.Image
+                                                         : "https://ui-avatars.com/api/?name=" + Uri.EscapeDataString(host?.Username ?? "User"))"
+                                     class="host-avatar" />
+                                <span class="host-name">
+                                    @(host != null ? host.FName + " " + host.SName : "Unknown")
+                                </span>
                             </a>
                         </div>
 
