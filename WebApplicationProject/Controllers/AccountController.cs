@@ -113,8 +113,9 @@ namespace WebApplicationProject.Controllers
             {
                 HttpContext.Session.SetInt32("UserId", user.Id);
                 HttpContext.Session.SetString("Username", user.Username);
+                HttpContext.Session.SetString("Userimage", user.Image);
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Home", "Home");
             }
             
             ViewBag.Error = "Email or Password incorrect";
