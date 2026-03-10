@@ -201,6 +201,25 @@
     font-size: 14px;
 }
 
+.view-btn {
+    border: 1px solid #F4B860;
+    background: #FFF3D6;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    min-width: 95px;
+    text-align: center;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    font-size: 14px;
+    font-weight: bold;
+    color: #6B3E00;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
