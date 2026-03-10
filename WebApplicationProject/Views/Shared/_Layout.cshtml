@@ -3,79 +3,196 @@
 <!DOCTYPE html>
 <html lang="en">
 @{
-        var username = Context.Session.GetString("Username");
-        var userId = Context.Session.GetInt32("UserId"); //test id
+    var username = Context.Session.GetString("Username");
+    var userId = Context.Session.GetInt32("UserId");
+    var image = Context.Session.GetString("Userimage");
 }
-
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - WebApplicationProject</title>
-    <script type="importmap"></script>
 
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/WebApplicationProject.styles.css" asp-append-version="true" />
+
+    @await RenderSectionAsync("Styles", required: false)
 </head>
+
 <body>
+
     <header>
         <nav id="navbar">
+
             <div id="weblogo">
-                <img src="https://placehold.co/200x50/333333/ffffff?text=MY+LOGO" alt="Logo">
+                <img src="https://i.ibb.co/5WhJMddb/Expedition-Express-Logo.png" alt="Logo">
             </div>
-
-            <div id="navitem">
-                <ul>
-                    <li><a href="https://localhost:7293/home/home">Home</a></li>
-                    <li><a href="https://localhost:7293/event/myevent">Event</a></li>
-                    <li><a href="https://localhost:7293/event/create">Add Event</a></li>
-                    <li><a href="https://localhost:7293/home/index">Index Debug</a></li>
-                </ul>
-            </div>
-
+            
+            <button id="mobileMenuBtn">
+                ☰
+            </button>
+            <div id="navContent">
+                <div id="navitem">
+                    <ul>
+                        <li><a asp-controller="Home" asp-action="Home">Home</a></li>
+                        <li><a asp-controller="Event" asp-action="MyEvent">My Event</a></li>
+                        <li><a asp-controller="Event" asp-action="Create">Create Event</a></li>
+                        @* <li><a asp-controller="Home" asp-action="Index">Index Debug</a></li> *@
+                    </ul>
+                </div>
+            
             <div id="navprofile">
-                @*<div id="profilename">
-                    <h4>ชื่อ</h4> <p>นามสกุล</p>
-                </div>*@
-                @{
-                    var username = Context.Session.GetString("Username");
-                    var userId = Context.Session.GetInt32("UserId"); //for testing reason
-                }
 
                 <div id="profilename">
+
                     @if (!string.IsNullOrEmpty(username))
                     {
+                        <a asp-controller="Profile" asp-action="profilepage" asp-route-id="@userId.Value">
                         <h4>@username</h4>
-                        @if (userId.HasValue) //for test
+
+                        @* @if (userId.HasValue)
                         {
                             <p>ID: @userId.Value</p>
-                        }
-                        @if (username != null)
-                        {
-                            <a asp-controller="Account" asp-action="Logout">Logout</a>
-                        }
+                        } *@
+                        </a>
+
+                        <a asp-controller="Account" asp-action="Logout">Logout</a>
                     }
                     else
                     {
-                        <a asp-controller="Account" asp-action="Login">Login</a>
+                        <a asp-controller="Account" asp-action="Signup" class="btn-nav btn-signup">Signup</a>
+                        <a asp-controller="Account" asp-action="Login" class="btn-nav btn-login">Login</a>
                     }
+
                 </div>
-                <img src="https://ui-avatars.com/api/?name=John+Doe&background=random&color=fff&size=128" alt="Profile">
+                @if (!string.IsNullOrEmpty(username))
+                {
+                    <a asp-controller="Profile" asp-action="profilepage" asp-route-id="@userId.Value">
+                        <img src="@image" alt="Profile" />
+                    </a>
+                }
+            </div>
             </div>
         </nav>
     </header>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div id="errorAlert" class="temp-alert error-alert">
+
+            <span>@TempData["ErrorMessage"]</span>
+
+            <button onclick="document.getElementById('errorAlert').style.display='none'">
+                &times;
+            </button>
+
+        </div>
+
+        <script>
+                setTimeout(function () {
+                    var alertElement = document.getElementById('errorAlert');
+                    if (alertElement) {
+                        alertElement.style.opacity = "0";
+                        setTimeout(function () {
+                            alertElement.style.display = 'none';
+                        }, 500);
+                    }
+                }, 5000);
+        </script>
+    }
+
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div id="successAlert" class="temp-alert success-alert">
+
+            <span>@TempData["SuccessMessage"]</span>
+
+            <button onclick="document.getElementById('successAlert').style.display='none'">
+                &times;
+            </button>
+
+        </div>
+
+        <script>
+                setTimeout(function () {
+                    var alertElement = document.getElementById('successAlert');
+                    if (alertElement) {
+                        alertElement.style.opacity = "0";
+                        setTimeout(function () {
+                            alertElement.style.display = 'none';
+                        }, 500);
+                    }
+                }, 5000);
+        </script>
+    }
+
 
     <main role="main">
         @RenderBody()
     </main>
 
+
     <footer class="my-footer">
         <div>
-            &copy; 2569 - WebApplicationProject - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2569 - WebApplicationProject -
+            <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
 
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        async function updateEventStatusRealtime() {
+            const now = new Date();
+            for (const card of document.querySelectorAll('.Event')) {
+                const eventId = card.querySelector('input[name="eventId"]')?.value;
+                if (!eventId) continue;
+
+                try {
+                    const response = await fetch(`/Event/CheckStatus/${eventId}`);
+                    const data = await response.json();
+
+                    const eventStartTime = new Date(data.dateTime);
+                    const closeTime = new Date(eventStartTime.getTime() - (2 * 60 * 1000));
+
+                    const isActuallyLocked = data.isRegistrationClosed || (now >= closeTime);
+
+                    const imageColumn = card.querySelector('.image-column');
+                    const lockedBadge = card.querySelector('.statis-close');
+                    const badge = card.querySelector('.badge');
+
+                    if (isActuallyLocked) {
+                        if (imageColumn && !lockedBadge) {
+                            const newLockedBadge = document.createElement('span');
+                            newLockedBadge.className = 'status-badge statis-close';
+                            newLockedBadge.style.cssText = 'width: 100%; box-sizing: border-box; background-color: #dc3545; color: white; margin-top: -4px; font-size: 0.85em; padding: 2px; text-align: center; display: block;';
+                            newLockedBadge.innerHTML = '🔒 Locked';
+                            imageColumn.appendChild(newLockedBadge);
+                        }
+
+                        if (badge && (badge.textContent.trim() === "Waiting" || badge.classList.contains('badge-waiting'))) {
+                            badge.textContent = "Not Selected";
+                            badge.className = "badge badge-closed";
+                        }
+                        } else {
+                        if (lockedBadge) lockedBadge.remove();
+
+                        if (badge && (badge.textContent.trim() === "Not Selected" || badge.classList.contains('badge-closed'))) {
+                            badge.textContent = "Waiting";
+                            badge.className = "badge badge-waiting";
+                        }
+                    }
+                } catch (e) {
+                    console.error("Polling error:", e);
+                }
+            }
+        }
+
+        setInterval(updateEventStatusRealtime, 10000);
+        updateEventStatusRealtime();
+    </script>
 </body>
 </html>

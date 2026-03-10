@@ -1,6 +1,8 @@
 ﻿@model WebApplicationProject.Models.ProfilePageViewModel
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="~/css/profilestyle.css">
+
 <div class="pagebanner">
     <h1>Profile</h1>
     <p>รายละเอียดข้อมูลส่วนบุคคล</p>
@@ -11,7 +13,7 @@
         <img src=@Model.UserInfo.Image alt="Profile" id="prevImg">
     </div>
     <div class="profileinfo">
-        @if (Model.UserInfo.Settings.PrivateAccount && WebApplicationProject.Data.MockDB.CurrentLoggedInUserId != Model.UserInfo.Id)
+        @if (Model.UserInfo.Settings.PrivateAccount && Model.CurrentLoggedInUserId != Model.UserInfo.Id)
         {
             <div class="moreinfo">
                 <div class="gender">
@@ -21,10 +23,41 @@
                     </h1>
                 </div>
                 <div class="age">
-                        <h3>Gender</h3>
-                        <p>@Model.UserInfo.Gender</p>
+                    <h3>Gender</h3>
+                    <p>@Model.UserInfo.Gender</p>
                 </div>
             </div>
+            <div class="moreinfo">
+                <div class="long-info">
+                    <h3>Rating</h3>
+                    @{
+                        double averageScore = Model.UserInfo.Reviewslist.Any() ? Model.UserInfo.Reviewslist.Average(r => r.stars) : 0;
+                        int totalReviews = Model.UserInfo.Reviewslist.Count();
+                        int roundScore = (int)Math.Round(averageScore, MidpointRounding.AwayFromZero);
+                    }
+                    @if (totalReviews == 0)
+                    {
+                        <p>ผู้ใช้ยังไม่ได้รับ Review ใดๆ</p>
+                    }
+                    else
+                    {
+                        <p class="stars">
+                            @for (int i = 0; i < roundScore; i++)
+                            {
+                                <span>★</span>
+                            }
+                            @for (int i = roundScore; i < 5; i++)
+                            {
+                                <span>☆</span>
+                            }
+                            <span class="review-info" onclick="scorrInto('review-section')">
+                                @averageScore.ToString("0.0") (@totalReviews รีวิว)
+                            </span>
+                        </p>
+                    }
+                </div>
+            </div>
+            
             <div class="private-content-mock">
                 <div>🔒</div>
                 <h2>บัญชีนี้เป็นบัญชีส่วนตัว</h2>
@@ -92,7 +125,7 @@
                     <p>@age</p>
                 </div>
             </div>
-            @if (WebApplicationProject.Data.MockDB.CurrentLoggedInUserId == Model.UserInfo.Id)
+            @if (Model.CurrentLoggedInUserId == Model.UserInfo.Id)
 
             {
                 <button class="edit-btn" onclick="openEditModal()">Edit Profile</button>
@@ -104,13 +137,15 @@
 <div class="activitycolumn">
     <h2>Recent Host Activity</h2>
     <p>กิจกรรมที่เคยสร้าง</p>
-    @if (((WebApplicationProject.Data.MockDB.CurrentLoggedInUserId == Model.UserInfo.Id ||
+    @if (((Model.CurrentLoggedInUserId == Model.UserInfo.Id ||
         (!Model.UserInfo.Settings.PrivateAccount && Model.UserInfo.Settings.ShowHostedEvents))
         && (Model.HostedEvents != null && Model.HostedEvents.Any())))
+
     {
         <div class="activitylist">
-        @foreach (var ev in Model.HostedEvents)
+        @foreach ( var evModel in Model.HostedEvents)
         {
+            var ev = evModel.EventData;
             <div class="activity">
                 <div class="activityimg">
                     <img src=@ev.Image alt="Event">
@@ -156,14 +191,9 @@
                     </div>
                     <div class="member-row">
                         <div class="avatars">
-                        @foreach (var ticket in ev.Participants.Where(p => p.Status == ParticipationStatus.Confirmed).Take(3))
+                        @foreach (var user in evModel.ParticipantAvatars)
                         {
-                            var userID = ticket.UserId;
-                            var user = WebApplicationProject.Data.MockDB.UsersList.FirstOrDefault(u => u.Id == userID);
-                            if (user != null)
-                            {
-                                <img src="@(user.Image)" alt="@user.FName" title="@user.FName @user.SName">
-                            }
+                            <img src="@user.Image" alt="@user.FName" title="@user.FName @user.SName">
                         }
                         @if (ev.CurrentParticipants > 3)
                         {
@@ -179,7 +209,7 @@
     }
     else if (Model.UserInfo.Settings.ShowHostedEvents && (Model.HostedEvents == null || 
     !Model.HostedEvents.Any()) && (!Model.UserInfo.Settings.PrivateAccount ||
-    WebApplicationProject.Data.MockDB.CurrentLoggedInUserId == Model.UserInfo.Id))
+    Model.CurrentLoggedInUserId == Model.UserInfo.Id))
     {
         <div class="private-content-mock">
             <div>📭</div>
@@ -200,14 +230,15 @@
 <div class="activitycolumn">
     <h2>Recent Join Activity</h2>
     <p>กิจกรรมที่เคยเข้าร่วม</p>
-    @if ((WebApplicationProject.Data.MockDB.CurrentLoggedInUserId == Model.UserInfo.Id ||
+    @if ((Model.CurrentLoggedInUserId == Model.UserInfo.Id ||
             (!Model.UserInfo.Settings.PrivateAccount && Model.UserInfo.Settings.ShowJoinedEvents))
             && (Model.JoinedEvents != null && Model.JoinedEvents.Any()))
         {
             <div class="activitylist">
-                @foreach (var ev in Model.JoinedEvents)
+            @foreach (var evModel in Model.JoinedEvents)
                 {
-                    <div class="activity">
+                var ev = evModel.EventData;
+                <div class="activity">
                         <div class="activityimg">
                             <img src=@ev.Image alt="Event">
                         </div>
@@ -252,14 +283,9 @@
                             </div>
                             <div class="member-row">
                                 <div class="avatars">
-                                @foreach (var ticket in ev.Participants.Where(p => p.Status == ParticipationStatus.Confirmed).Take(3))
+                                @foreach (var user in evModel.ParticipantAvatars)
                                 {
-                                    var userID = ticket.UserId;
-                                    var user = WebApplicationProject.Data.MockDB.UsersList.FirstOrDefault(u => u.Id == userID);
-                                    if (user != null)
-                                    {
-                                        <img src="@(user.Image)" alt="@user.FName" title="@user.FName @user.SName">
-                                    }
+                                    <img src="@user.Image" alt="@user.FName" title="@user.FName @user.SName">
                                 }
                                 @if (ev.CurrentParticipants > 3)
                                 {
@@ -275,7 +301,7 @@
         }
         else if (Model.UserInfo.Settings.ShowJoinedEvents && (Model.JoinedEvents == null || 
         !Model.JoinedEvents.Any()) && (!Model.UserInfo.Settings.PrivateAccount || 
-        WebApplicationProject.Data.MockDB.CurrentLoggedInUserId == Model.UserInfo.Id))
+        Model.CurrentLoggedInUserId == Model.UserInfo.Id))
         {
             <div class="private-content-mock">
                 <div>📭</div>
@@ -294,7 +320,7 @@
 </div>
 <div class="rating" id="review-section">
     <h1>Rating</h1>
-    @if (Model.UserInfo.Settings.PrivateAccount && WebApplicationProject.Data.MockDB.CurrentLoggedInUserId != Model.UserInfo.Id)
+    @if (Model.UserInfo.Settings.PrivateAccount && Model.CurrentLoggedInUserId != Model.UserInfo.Id)
     {
         <div class="private-content-mock content-mock">
             <div>🔒</div>
@@ -312,10 +338,11 @@
     else
     {
         <div class="ratinglist">
-            @foreach (var rw in Model.UserInfo.Reviewslist)
+            @foreach (var rwModel in Model.Reviews)
             {
-                var author = WebApplicationProject.Data.MockDB.UsersList.FirstOrDefault(u => u.Id == rw.UserId);
-                var events = WebApplicationProject.Data.MockDB.EventList.FirstOrDefault(e => e.Id == rw.EventId);
+                var rw = rwModel.ReviewData;
+                var author = rwModel.Author;
+                var eventTitle = rwModel.EventTitle;
                 <div class="reviewblock">
                     <div class="stars">
                         @for (int i = 0; i < rw.stars; i++)
@@ -327,16 +354,31 @@
                             <span>☆</span>
                         }
                     </div>
-                    <h3>form @events.Title</h3>
+                    <h3>form @eventTitle</h3>
                     <h2>@rw.reviewtitle</h2>
                     <p class="reviewbody">@rw.reviewbody</p>
-                    <div class="reviewprofile">
-                        <img src=@author.Image alt="Profile">
-                        <div class="reviewname">
-                            <h4>@author.FName</h4>
-                            <p>@author.SName</p>
+                    @if (rw.IsAnonymous)
+                    {
+                        <div class="reviewprofile">
+                            <img src="https://ui-avatars.com/api/?name=Anonymous&background=random" alt="Profile">
+                            <div class="reviewname">
+                                <h4>Anonymous</h4>
+                                <p>ผู้รีวิวไม่ระบุชื่อ</p>
+                            </div>
                         </div>
-                    </div>
+                    }
+                    else
+                    {
+                        <a asp-controller="Profile" asp-action="profilepage" asp-route-id="@author.Id">
+                        <div class="reviewprofile">
+                            <img src=@author.Image alt="Profile">
+                            <div class="reviewname">
+                                <h4>@author.FName</h4>
+                                <p>@author.SName</p>
+                            </div>
+                        </div>
+                        </a>
+                    }
                 </div>
             }
         </div>
@@ -365,36 +407,44 @@
             <input type="file" name="uploadImage" id="inputImg" class="form-control" accept="image/*" />
                 <label>Email</label>
                 <input type="text" name="Email" id="inputEmail" value="@Model.UserInfo.Email" class="form-control" />
+                <div class="form-group">
+                    <label for="Gender">Gender</label>
+                    <select name="Gender" id="inputGender" class="form-control">
+                        <option value="">-- เลือกเพศ --</option>
+                        <option value="@((int)Genders.Male)" selected="@(Model.UserInfo.Gender == Genders.Male)">Male</option>
+                        <option value="@((int)Genders.Female)" selected="@(Model.UserInfo.Gender == Genders.Female)">Female</option>
+                        <option value="@((int)Genders.Other)" selected="@(Model.UserInfo.Gender == Genders.Other)">Other</option>
+                    </select>
+                </div>
                 <br>
-                <input type="text" name="SName" id="inputSname" value="@Model.UserInfo.SName" class="form-control" />
-                <label>Profile Image</label>
+                
             </div>
             <div class="setting_list">
                 <div class="setting">
                     <label class="lable_switch">PrivateAccount</label>
                     <label class="switch">
-                        <input type="checkbox" name="IsPublic" value="true" @(Model.UserInfo.Settings.PrivateAccount ? "checked" : "")>
+                        <input type="checkbox" name="IsPublic" id="IsPublic" value="true" @(Model.UserInfo.Settings.PrivateAccount ? "checked" : "")>
                         <span class="slider"></span>
                     </label>
                 </div>
                 <div class="setting">
                     <label class="lable_switch">ShowEmail</label>
                     <label class="switch">
-                        <input type="checkbox" name="ShowEmail" value="true" @(Model.UserInfo.Settings.ShowEmail ? "checked" : "")>
+                        <input type="checkbox" name="ShowEmail" id="ShowEmail" value="true" @(Model.UserInfo.Settings.ShowEmail ? "checked" : "")>
                         <span class="slider"></span>
                     </label>
                 </div>
                 <div class="setting">
                     <label class="lable_switch">ShowJoinedEvents</label>
                     <label class="switch">
-                        <input type="checkbox" name="ShowJoinedEvents" value="true" @(Model.UserInfo.Settings.ShowJoinedEvents ? "checked" : "")>
+                        <input type="checkbox" name="ShowJoinedEvents" id="ShowJoinedEvents" value="true" @(Model.UserInfo.Settings.ShowJoinedEvents ? "checked" : "")>
                         <span class="slider"></span>
                     </label>
                 </div>
                 <div class="setting">
                     <label class="lable_switch">ShowHostedEvents</label>
                     <label class="switch">
-                        <input type="checkbox" name="ShowHostedEvents" value="true" @(Model.UserInfo.Settings.ShowHostedEvents ? "checked" : "")>
+                        <input type="checkbox" name="ShowHostedEvents" id="ShowHostedEvents" value="true" @(Model.UserInfo.Settings.ShowHostedEvents ? "checked" : "")>
                         <span class="slider"></span>
                     </label>
                 </div>

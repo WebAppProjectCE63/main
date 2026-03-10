@@ -12,12 +12,25 @@
 }
 
 .modal-content {
-    background: white;
-    padding: 20px 30px;
-    border-radius: 8px;
-    width: 400px;
+    background-color: #FFFDF8;
+    margin: 3% auto;
+    padding: 30px;
+    border-radius: 16px;
+    width: 80%;
+    max-width: 40%;
+    max-height: 95%;
+    overflow-y: auto;
+    padding-right: 10px;
+    scrollbar-width: thin;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
     position: relative;
+    border: 1px solid #FFD89A;
 }
+
+    .modal-content h1 {
+        margin-top: 0.5%;
+        color: #6B3E00;
+    }
 
 .close-btn {
     position: absolute;
@@ -42,21 +55,59 @@
     margin-bottom: 15px;
 }
 
+    /* ตกแต่ง Label ของฟอร์ม */
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+        color: #5C3B12;
+    }
+
+/* กล่องกรอกข้อความรีวิว */
 .form-control {
+    display: block;
     width: 100%;
-    padding: 8px;
-    margin-top: 5px;
+    padding: 10px 12px;
+    font-size: 1rem;
+    font-weight: 400;
+    color: #5C3B12;
+    background-color: #FFF8ED;
+    border: 1px solid #FFD89A;
+    box-sizing: border-box;
+    border-radius: 8px;
+    font-family: inherit;
+    transition: all 0.2s ease-in-out;
 }
 
+    /* เวลาผู้ใช้คลิกพิมพ์ ให้เปลี่ยนสีขอบและมีแสง */
+    .form-control:focus {
+        color: #5C3B12;
+        background-color: #fff;
+        border-color: #FFB347;
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(255, 159, 28, 0.18);
+    }
+
 .btn-submit {
-    width: auto;
-    height: 70%;
-    margin-top: 30px;
-    background-color: #333;
-    border-radius: 8px;
-    color: #ffffff;
-    font-size: large;
+    width: 100%;
+    margin-top: 20px;
+    background: linear-gradient(90deg, #FFD166, #FF9F1C); /* ไล่สีเหลือง-ส้ม */
+    border: none;
+    border-radius: 10px;
+    color: #5A3200;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
+
+    .btn-submit:hover {
+        background: linear-gradient(90deg, #FFC44D, #FF8C1A);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(255, 159, 28, 0.3);
+    }
+
 
 .setting {
     display: flex;
@@ -113,15 +164,23 @@ input:focus + .slider {
     box-shadow: 0 0 1px #2196F3;
 }
 
-.profile-circle {
+.exampleprofile {
+    flex-direction: column;
     display: flex;
     align-items: center;
-    width: auto; /*ของเดิม 150px*/
-    height: 270px;
+    justify-content: center;
+    gap: 20px;
+    padding: 15px;
+    margin: auto;
+}
+
+.profile-circle {
+    width: 150px;
+    height: 150px;
     overflow: hidden;
     border-radius: 50%;
-    border: 2px solid #333;
-    aspect-ratio: 1 / 1;
+    border: 3px solid #FF9F1C;
+    align-items: center;
 }
 
 .preview-img {
@@ -129,4 +188,14 @@ input:focus + .slider {
     height: 100%;
     object-fit: cover;
     display: block;
+}
+
+@media (max-width: 992px) 
+{
+    .modal-content {
+        margin-top: 2fr;
+        max-width: 90%;
+        max-height: 80%;
+        padding: 15px;
+    }
 }

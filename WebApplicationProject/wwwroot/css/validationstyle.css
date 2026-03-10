@@ -1,118 +1,39 @@
 ﻿* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
-html {
-    font-size: 12pt;
-    text-align: center;
-}
-
-body {
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-
-#navbar {
-    display: flex;
-    align-items: center;
-    background-color: white;
-    padding: 0 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    position: sticky;
-    top: 0;
-}
-
-#navitem {
-    margin-left: auto;
-    margin-right: 70px;
-}
-
-    #navitem ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-self: flex-end;
-        gap: 5px;
-    }
-
-        #navitem ul li a {
-            display: block;
-            color: black;
-            text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-            border-radius: 4px;
-        }
-
-            #navitem ul li a:hover {
-                background-color: #f5f5f5;
-            }
-
-#navprofile {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-#profilename {
-    text-align: right;
-}
-
-    #profilename h4,
-    #profilename p {
-        margin: 0;
-        line-height: 1.2;
-    }
-
-    #profilename h4 {
-        font-size: 16px;
-        color: #333;
-    }
-
-    #profilename p {
-        font-size: 12px;
-        color: #888;
-    }
-
-#navprofile img {
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    object-fit: cover;
-}
-
-main {
-    flex: 1;
+.login-container {
     width: 100%;
+    min-height: calc(100vh - 120px); /* ลบพื้นที่ Navbar ด้านบนออก */
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0 auto;
+    padding: 20px;
 }
 
 .wrapper {
     width: 100%;
+    max-width: 500px;
     padding: 20px;
-    background-color: #e6e6e6;
+    background: white;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    border-top: 6px solid #FF8C42;
     border-radius: 15px;
-    min-width: 500px;
-    width: 500px;
 }
 
 h1 {
     font-size: 3rem;
     font-weight: 900;
     text-transform: uppercase;
+    color: #FF8C42;
 }
 
 form {
-    width: min(1500px, 100%);
+    width: 100%;
     margin-top: 20px;
-    margin-bottom: 50px;
+    margin-bottom: 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -120,10 +41,10 @@ form {
 }
 
     form div {
-        width: 40%;
+        width: 100%;
         display: flex;
         justify-content: center;
-        background-color: #686868;
+        background: #FFD166;
         border-radius: 10px 0 0 10px;
     }
 
@@ -131,7 +52,7 @@ form {
         flex-shrink: 0;
         height: 50px;
         width: 50px;
-        background-color: #686868;
+        background: #FF8C42;
         color: rgb(255, 255, 255);
         border-radius: 10px 0 0 10px;
         display: flex;
@@ -145,30 +66,73 @@ form {
         min-width: 0;
         height: 50px;
         padding: 1em;
+        background: #FFF3D4;
+        border: none;
+        outline: none;
+        font-size: 16px;
     }
 
     form button {
         margin-top: 10px;
         border: none;
-        border-radius: 1000;
         padding: 0.85em 4em;
         font-weight: 1000;
         text-transform: uppercase;
-        background-color: rgb(255, 255, 255);
+        background: linear-gradient(90deg, #FFB347, #FF8C42);
+        color: white;
+        border-radius: 30px;
+        cursor: pointer;
     }
 
         form button:hover {
-            background-color: rgb(185, 185, 185);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.15);
         }
 
 a {
+    color: #FF8C42;
     text-decoration: none;
 }
 
     a:hover {
-        color: rgb(43, 95, 172);
+        color: #E06A1C;
     }
 
 #error-message {
     color: red;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+
+    .wrapper {
+        max-width: 100%;
+        padding: 20px 16px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    form button {
+        width: 100%;
+        padding: 0.9em 1em;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        padding: 10px;
+        align-items: flex-start;
+        padding-top: 30px;
+    }
+
+    .wrapper {
+        border-radius: 12px;
+        padding: 8px 12px;
+    }
+
+    h1 {
+        font-size: 1.6rem;
+    }
 }

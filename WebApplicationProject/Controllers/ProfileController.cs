@@ -4,48 +4,108 @@ using System.Net.Http;
 using System.Text.Json;
 using System.IO;
 using WebApplicationProject.Data;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System;
+using Microsoft.EntityFrameworkCore;
 namespace WebApplicationProject.Controllers
 {
     public class ProfileController : Controller
     {
+        private readonly ApplicationDbContext _context;
+
+        public ProfileController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+        private int CurrentUserId => HttpContext.Session.GetInt32("UserId") ?? 0;
         public IActionResult profilepage(int? id = null)
         {
-            int targetId = id ?? MockDB.CurrentLoggedInUserId;
+            int targetId = id ?? CurrentUserId;
+            if (CurrentUserId == 0) {
+                TempData["ErrorMessage"] = "คุณยังไม่ได้ login เข้าสู่ระบบ";
+                return RedirectToAction("Login","Account");
+            }
+            User ? currentUser = _context.Users
+                .Include(u => u.Reviewslist)
+                .FirstOrDefault(u => u.Id == targetId);
 
-            var joineventList = MockDB.EventList.Where(ev => ev.Participants.Any(p => p.UserId == targetId)).ToList();
-
-            var hosteventList = GetMyHostedEvents(MockDB.EventList, targetId);
-
-            var reviewList = MockDB.UsersList.FirstOrDefault(u => u.Id == targetId).Reviewslist;
-
-            User currentUser = MockDB.UsersList.FirstOrDefault(u => u.Id == targetId);
+            if (currentUser == null) 
+            {
+                TempData["ErrorMessage"] = "ไม่พบบัญชีดังกล่าว";
+                return RedirectToAction("profilepage", new { id = CurrentUserId }); 
+            }
 
             var viewModel = new ProfilePageViewModel
             {
                 UserInfo = currentUser,
-                HostedEvents = hosteventList,
-                JoinedEvents = joineventList,
+                CurrentLoggedInUserId = CurrentUserId
             };
 
-            if (currentUser.Settings.PrivateAccount && currentUser.Id != MockDB.CurrentLoggedInUserId)
+            if (currentUser.Settings != null && currentUser.Settings.PrivateAccount && currentUser.Id != CurrentUserId)
             {
-                viewModel.HostedEvents = new List<Event>();
-                viewModel.JoinedEvents = new List<Event>();
+                return View(viewModel);
             }
+            var allEvents = _context.Events.Include(e => e.Participants).ToList();
+            var allUsers = _context.Users.ToList();
+
+            var rawHostedEvents = GetMyHostedEvents(allEvents, targetId);
+            viewModel.HostedEvents = rawHostedEvents.Select(ev => new EventDisplayModel
+            {
+                EventData = ev,
+                ParticipantAvatars = allUsers.Where(u => ev.Participants
+                    .Where(p => p.Status == ParticipationStatus.Confirmed)
+                    .Select(p => p.UserId)
+                    .Contains(u.Id))
+                    .Take(3)
+                    .ToList()
+            }).ToList();
+
+            var rawJoinedEvents = allEvents
+                .Where(ev => ev.Participants.Any(p => p.UserId == targetId && p.Status == ParticipationStatus.Confirmed))
+                .ToList();
+
+            viewModel.JoinedEvents = rawJoinedEvents.Select(ev => new EventDisplayModel
+            {
+                EventData = ev,
+                ParticipantAvatars = allUsers.Where(u => ev.Participants
+                    .Where(p => p.Status == ParticipationStatus.Confirmed)
+                    .Select(p => p.UserId)
+                    .Contains(u.Id))
+                    .Take(3)
+                    .ToList()
+            }).ToList();
+
+            // --- 3. จัดการ Reviews ---
+            if (currentUser.Reviewslist != null && currentUser.Reviewslist.Any())
+            {
+                viewModel.Reviews = currentUser.Reviewslist.Select(r => new ReviewDisplayModel
+                {
+                    ReviewData = r,
+                    Author = allUsers.FirstOrDefault(u => u.Id == r.UserId),
+                    EventTitle = allEvents.FirstOrDefault(e => e.Id == r.EventId)?.Title ?? "Unknown Event"
+                }).ToList();
+            }
+
             return View(viewModel);
         }
 
-        private List<Event> GetMyHostedEvents(List<Event> allEvents ,int UserID)
-        {
-            if (allEvents == null) return new List<Event>();
-
-            return allEvents.Where(ev => ev.UserHostId == UserID).ToList();
-        }
+        private List<Event> GetMyHostedEvents(List<Event> allEvents, int UserID)
+            {
+                if (allEvents == null) return new List<Event>();
+                return allEvents.Where(ev => ev.UserHostId == UserID).ToList();
+            }
 
         [HttpPost]
         public async Task<IActionResult> UpdateProfile(User editUser, bool IsPublic, bool ShowEmail, bool ShowJoinedEvents, bool ShowHostedEvents, IFormFile uploadImage)
         {
-            var ogUser = MockDB.UsersList.FirstOrDefault(u => u.Id == editUser.Id);
+            if (CurrentUserId == 0)
+            {
+                TempData["ErrorMessage"] = "คุณยังไม่ได้ login เข้าสู่ระบบ";
+                return RedirectToAction("Login", "Account");
+            }
+            var ogUser = _context.Users.FirstOrDefault(u => u.Id == editUser.Id);
             if (ogUser == null)
             {
                 return NotFound();
@@ -61,12 +121,18 @@ namespace WebApplicationProject.Controllers
                 ogUser.FName = editUser.FName;
                 ogUser.SName = editUser.SName;
                 ogUser.Email = editUser.Email;
+                ogUser.Gender = editUser.Gender;
+
+                if (ogUser.Settings == null)
+                {
+                    ogUser.Settings = new UserSettings();
+                }
                 ogUser.Settings.PrivateAccount = IsPublic;
                 ogUser.Settings.ShowEmail = ShowEmail;
                 ogUser.Settings.ShowHostedEvents = ShowHostedEvents;
                 ogUser.Settings.ShowJoinedEvents = ShowJoinedEvents;
             }
-
+            _context.SaveChanges();
             return RedirectToAction("profilepage");
         }
 

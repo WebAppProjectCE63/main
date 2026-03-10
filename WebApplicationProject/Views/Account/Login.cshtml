@@ -1,15 +1,12 @@
 ﻿@model IEnumerable<WebApplicationProject.Models.Event>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+@{
+    ViewData["Title"] = "Login";
+}
+
+@section Styles {
     <link rel="stylesheet" href="~/css/validationstyle.css">
-    <script type="text/javascript" src="~/js/validation.js" defer></script>
-</head>
-<body>
-    <main>
+}
+<div class="login-container">
         <div class="wrapper">
             <h1>Login</h1>
             <p id="error-message"></p>
@@ -21,7 +18,7 @@
             {
                 <p style="color:green">@ViewBag.Success</p>
             }
-            <form id="form" form method="post" asp-controller="Account" asp-action="Login">
+            <form id="form" method="post" asp-controller="Account" asp-action="Login">
                 <div>
                     <label for="email-input">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope-at-fill" viewBox="0 0 16 16">
@@ -43,6 +40,7 @@
             </form>
             <p>Don't have an Account? <a href="https://localhost:7293/account/signup">Create an Account</a></p>
         </div>
-    </main>
-</body>
-</html>
+</div>
+@section Scripts {
+    <script type="text/javascript" src="~/js/validation.js" defer></script>
+}

@@ -1,96 +1,269 @@
-﻿.head {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: #f4f4f4;
-    height: 200px;
+﻿body {
+    background-color: #FFF0D9;
+    color: #6B5A45;
+}
+
+.my-container {
     width: 100%;
-    margin: 0;
+    max-width: 1800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    box-sizing: border-box;
 }
 
 h3 {
-    margin: 20px 0;
+    margin: 30px 0 20px 0;
+    color: #7A4300;
+    font-size: 24px;
 }
 
-.eventPrev {
-    border: 1px solid;
+.eventForm {
+    border: 2px solid #FFD89A;
+    background-color: #FFFDF8;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-sizing: border-box;
+}
+
+    .eventForm div > label {
+        font-weight: bold;
+        color: #7A4300;
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .eventForm input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 10px 15px;
+        border: 1px solid #FFD89A;
+        border-radius: 8px;
+        background: #FFF8ED;
+        color: #6B5A45;
+        outline: none;
+        font-family: inherit;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+        .eventForm input:focus {
+            border-color: #FF9F1C;
+            box-shadow: 0 0 5px rgba(255, 159, 28, 0.3);
+        }
+
+        .eventForm input:disabled {
+            background-color: #f5f5f5;
+            color: #999;
+            cursor: not-allowed;
+        }
+
+.period,
+.parti {
+    display: flex;
+    gap: 15px;
+    margin-top: 5px;
+}
+
+    .period .start,
+    .period .end,
+    .parti .start,
+    .parti .waiting {
+        flex: 1;
+    }
+
+.eventForm button {
+    margin-top: 15px;
+    margin-right: 10px;
+    background: linear-gradient(90deg, #FFD166, #FF9F1C);
+    color: #5A3200;
+    border: 1px solid #F4B860;
+    padding: 10px 20px;
     border-radius: 8px;
-    padding: 10px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: filter 0.2s;
+}
+
+    .eventForm button:hover {
+        filter: brightness(0.95);
+    }
+
+#btnRst {
+    background: #FFF3D6;
+    color: #6B3E00;
+}
+
+    #btnRst:hover {
+        background: #FFE2A8;
+    }
+
+.eventPrev {
+    border: 2px solid #FFD89A;
+    background: #FFFDF8;
+    border-radius: 12px;
+    padding: 20px;
     display: flex;
     gap: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .eventImage Img {
     flex: 1;
     width: 250px;
-    height: 200px;
+    height: 100%;
+    max-height: 220px;
     object-fit: cover;
     border-radius: 8px;
+    background: #FFE7C2;
 }
 
 .eventDetail {
     flex: 2;
+    color: #6B5A45;
+    line-height: 1.6;
+}
+
+    .eventDetail h4 {
+        margin: 0 0 10px 0;
+        font-size: 20px;
+        color: #6B3E00;
+    }
+
+    .eventDetail p {
+        margin: 0 0 10px 0;
+        color: #7c7b7b;
+    }
+
+.meta-info {
+    margin-bottom: 8px;
+    font-size: 14px;
 }
 
 .tag-badge {
-    background-color: black;
+    background-color: #FF9F1C;
     color: white;
-    padding: 1px;
-    border-radius: 5px;
-}
-
-.eventForm {
-    border: 1px solid;
-    border-radius: 8px;
-    padding: 10px;
-}
-
-.eventForm input {
-    flex: 2;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.eventForm button {
-    margin-top: 10px;
-    background-color: black;
-    color: white;
-    border-radius: 8px;
+    padding: 4px 12px;
+    border-radius: 18px;
+    font-size: 12px;
+    font-weight: bold;
+    display: inline-block;
+    margin-right: 5px;
+    margin-bottom: 10px;
 }
 
 .btnLink {
     display: inline-block;
-    padding: 3px 5px;
-    margin-top: 10px;
-    background-color: black;
-    color: white;
+    border: 1px solid #F4B860;
+    background: #FFF3D6;
+    padding: 8px 16px;
+    margin-top: 15px;
+    margin-right: 10px;
     border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    color: #6B3E00;
     text-decoration: none;
+    transition: all 0.2s;
 }
 
-.period{
-    display: flex;
-    gap: 15px
+    .btnLink:hover {
+        background: #FFE2A8;
+        color: #6B3E00;
+    }
+
+.btn-toggle {
+    display: inline-block;
+    border: 1px solid #F4B860;
+    background: #FFF3D6;
+    color: #6B3E00;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    margin-top: 15px;
 }
 
-.period .start{
-    flex: 1;
+.btn-toggle-open {
+    color: #28a745;
+    border-color: #28a745;
+    background: transparent;
 }
 
-.period .end{
-    flex: 1;
+    .btn-toggle-open:hover {
+        background: #28a745;
+        color: white;
+    }
+
+.btn-toggle-close {
+    color: #dc3545;
+    border-color: #dc3545;
+    background: transparent;
 }
 
-.parti{
-    display: flex;
-    gap: 15px
+    .btn-toggle-close:hover {
+        background: #dc3545;
+        color: white;
+    }
+
+/* Responsive สำหรับหน้าจอมือถือและแท็บเล็ต */
+@media (max-width: 768px) {
+    /* แก้ปัญหากล่องเวลาและจำนวนคนทะลุจอ */
+    .period,
+    .parti {
+        flex-direction: column; /* เปลี่ยนจากเรียงแนวนอนเป็นแนวตั้ง */
+        gap: 10px;
+    }
+
+    /* ปรับปุ่มกดให้กางเต็มจอเพื่อให้นิ้วกดง่ายขึ้น */
+    .eventForm button {
+        width: 100%;
+        margin-right: 0;
+        margin-top: 10px;
+    }
+
+    #btnRst {
+        margin-top: 10px;
+    }
+
+    .eventPrev {
+        flex-direction: column;
+        padding: 15px;
+    }
+
+    .eventImage Img {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+    }
+
+    .mngParti {
+        width: 100%;
+        display: flex;
+        flex-direction: column; /* ถ้ามีตารางตัวสำรองด้วย ลงข้างล่าง */
+        gap: 20px;
+        box-sizing: border-box;
+    }
+
+    .partiTable {
+        width: 100%;
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        box-sizing: border-box;
+    }
+
+    .table-responsive {
+        width: 100%;
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
 }
 
-.parti .start{
-    flex: 1;
-}
-
-.parti .waiting{
-    flex: 1;
-}

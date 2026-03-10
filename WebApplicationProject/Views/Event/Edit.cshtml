@@ -1,6 +1,6 @@
 ﻿@model WebApplicationProject.Models.Event
 <link rel="stylesheet" href="~/css/eventPrev_eventForm.css" asp-append-version="true" />
-<div class="head">
+<div class="pagebanner">
     <h1>Edit Event</h1>
     <p>แก้ไขกิจกรรม</p>
 </div>
@@ -76,11 +76,16 @@
             <div class="parti">
                 <div class="start">
                     <label>ตัวจริง</label>
-                    <input asp-for="MaxParticipants" id="inputMaxParti" placeholder="ใส่ตัวเลข(ไม่รวมตนเอง)" min="1" required />
+                    @{
+                        int minRequiredParti = Math.Max(1, Model.CurrentParticipants);
+                        int minPartiForWait = Model.CurrentWaiting > 0 ? (Model.CurrentWaiting * 2 - 1) : 1;
+                        int absoluteMinParti = Math.Max(minRequiredParti, minPartiForWait);
+                    }
+                    <input asp-for="MaxParticipants" id="inputMaxParti" placeholder="ใส่ตัวเลข(ไม่รวมตนเอง)" min="@absoluteMinParti" required />
                 </div>
                 <div class="waiting">
                     <label>ตัวสำรอง</label>
-                    <input asp-for="MaxWaiting" id="inputMaxWait" placeholder="กรอกจำนวนตัวจริงก่อน" min="0" required />
+                    <input asp-for="MaxWaiting" id="inputMaxWait" placeholder="กรอกจำนวนตัวจริงก่อน" min="@Model.CurrentWaiting" required />
                 </div>
             </div>
         </div>
