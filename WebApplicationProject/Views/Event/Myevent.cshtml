@@ -249,20 +249,18 @@
                                         }
                                         else
                                         {
-                                            <button type="button" class="view-btn btn-disabled" disabled>
-                                                @if (participantInfo?.Status == WebApplicationProject.Models.ParticipationStatus.Confirmed)
-                                                {
-                                                    <text>Joined</text>
-                                                }
-                                                else if (ev.IsRegistrationClosed)
-                                                {
-                                                    <text>Event Closed (Not Selected)</text>
-                                                }
-                                                else
-                                                {
-                                                    <text>Waiting for Confirmation</text>
-                                                }
-                                            </button>
+                                            @if (participantInfo?.Status == WebApplicationProject.Models.ParticipationStatus.Confirmed)
+                                            {
+                                                <a href="@Url.Action("Participants", "Event", new { id = ev.Id })" class="view-btn">View Participants</a>
+                                            }
+                                            else if (ev.IsRegistrationClosed)
+                                            {
+                                                <button type="button" class="view-btn btn-disabled" disabled>Event Closed (Not Selected)</button>
+                                            }
+                                            else
+                                            {
+                                                <button type="button" class="view-btn btn-disabled" disabled>Waiting for Confirmation</button>
+                                            }
 
                                             @if (!ev.IsRegistrationClosed)
                                             {
@@ -280,7 +278,7 @@
                         </div>
 
                         <div class="event-stats">
-                            <div class="members">@ev.CurrentParticipants/@ev.MaxParticipants Members</div>
+                            <div class="members">@ev.CurrentParticipants/@ev.MaxParticipants Participants</div>
                             <div class="members waiting-box">@currentWaiting/@maxWaiting Reserve</div>
                         </div>
                     </div>
