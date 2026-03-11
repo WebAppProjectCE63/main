@@ -60,7 +60,7 @@
                     // 🟢 2.3 จัดการปุ่ม Join (หน้า Home)
                     if (text === 'Join' || text === 'Closed') {
                         if (isActuallyLocked) {
-                            btn.textContent = 'Closed';
+                            btn.textContent = 'Join';
                             btn.disabled = true;
                             btn.style.backgroundColor = '#6c757d';
                         } else {
