@@ -95,8 +95,8 @@
 
         @foreach (var ev in Model)
         {
-            bool isTooClose = DateTime.Now >= ev.DateTime.AddMinutes(-2);
-            if (ev.DateTime < DateTime.Now || ev.IsRegistrationClosed || isTooClose)
+            bool isPastDeadline = DateTime.Now >= ev.RegistrationDeadline;
+            if (ev.DateTime < DateTime.Now || ev.IsRegistrationClosed || isPastDeadline)
             {
                 continue;
             }
@@ -141,6 +141,10 @@
                         <div class="event-row">
                             <span>@ev.Location</span>
                             <span>@ev.DateTime.ToString("dd MMM yyyy")</span>
+                        </div>
+                        <div class="event-row">
+                            <strong>Registration Deadline: </strong>
+                            <span>@ev.RegistrationDeadline.ToString("dd MMM yyyy HH:mm")</span>
                         </div>
                         <div class="event-row">
                             <strong>Host:</strong>

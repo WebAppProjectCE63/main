@@ -6,16 +6,16 @@
     <p>จัดการกิจกรรม</p>
 </div>
 <div class="my-container">
-    <h3>กิจกรรมที่กำลังจัดการ</h3>
+    <h3>Event To Manage</h3>
     <div id="eventPrev" class="eventPrev">
         <div class="eventImage">
             <img id="prevImage" src=@Model.Image />
         </div>
         <div class="eventDetail">
-            <h4><b>ชื่อ: </b><span id="prevTitle">@Model.Title</span></h4>
-            <p><b>คำอธิบาย: </b><span id="prevDesc">@Model.Description</span></p>
+            <h4><b>Title: </b><span id="prevTitle">@Model.Title</span></h4>
+            <p><b>Description: </b><span id="prevDesc">@Model.Description</span></p>
             <div>
-                <b>แท็ก: </b>
+                <b>Tag(s): </b>
                 <span id="prevTags">
                     @if (Model.Tags != null)
                     {
@@ -27,17 +27,17 @@
                 </span>
             </div>
             <div class="meta-info">
-                <b>จำนวนคน: </b>
+                <b>Participants: </b>
                 <span id="prevMaxParti">
                     @Model.MaxParticipants
                     @if (Model.MaxWaiting > 0)
                     {
-                        <text>(สำรอง @Model.MaxWaiting)</text>
+                        <text>(@Model.MaxWaiting)</text>
                     }
-                </span> คน
+                </span>
             </div>
             <div class="meta-info">
-                <b>ระยะเวลากิจกรรม: </b>
+                <b>Period: </b>
                 <span>
                     @if (Model.DateTime.Date == Model.EndDateTime.Date)
                     {
@@ -49,12 +49,13 @@
                     }
                 </span>
             </div>
-            <div class="meta-info"><b>สถานที่: </b><span id="prevLocation">@Model.Location</span></div>
-            <a href="@Url.Action("Edit", "Event", new {id = Model.Id})" class="btnLink">แก้ไขกิจกรรม</a>
+            <div class="meta-info"><b>Regesteration Deadline: </b><span id="prevDeadline">@Model.RegistrationDeadline.ToString("d MMM yyyy ( HH:mm )")</span></div>
+            <div class="meta-info"><b>Location: </b><span id="prevLocation">@Model.Location</span></div>
+            <a href="@Url.Action("Edit", "Event", new {id = Model.Id})" class="btnLink">Edit</a>
             <button id="toggleRegBtn" type="button"
                     class="btn-toggle @(Model.IsRegistrationClosed ? "btn-toggle-open" : "btn-toggle-close")"
                     onclick="toggleRegistrationStatus(@Model.Id)">
-                @(Model.IsRegistrationClosed ? "✅ เปิดรับสมัครอีกครั้ง" : "❌ ปิดรับสมัคร")
+                @(Model.IsRegistrationClosed ? "✅ Open Registeration" : "❌ Close Registeration")
             </button>
         </div>
     </div>
@@ -64,7 +65,7 @@
         }
         <div class="partiTable">
             <div class="tableHeader">
-                <h4>รายชื่อตัวจริง</h4>
+                <h4>Participants</h4>
                 <div class="numOfParti"><span id="currentParti">@Model.CurrentParticipants</span> / @Model.MaxParticipants Participants</div>
             </div>
             <hr />
@@ -72,11 +73,11 @@
                 <table>
                 <thead>
                     <tr>
-                        <th>ลำดับ</th>
-                        <th>ชื่อ</th>
-                        <th>คะแนน</th>
-                        <th>เวลาที่เข้าร่วม</th>
-                        <th>จัดการ</th>
+                        <th>No.</th>
+                        <th>Name</th>
+                        <th>Rating</th>
+                        <th>Join Time</th>
+                        <th>Manage</th>
                     </tr>
                 </thead>
                 <tbody id="confirmedTable">
@@ -108,7 +109,7 @@
                                         }
                                     </td>
                                     <td>@ticket.JoinedAt.ToString("dd MMM yyyy HH:mm")</td>
-                                    <td><button onclick="removeUser(@Model.Id, @user.Id)">ลบ</button></td>
+                                    <td><button onclick="removeUser(@Model.Id, @user.Id)">Remove</button></td>
                                 </tr>
                                 order += 1;
                             }
@@ -122,7 +123,7 @@
         {
             <div class="partiTable">
                 <div class="tableHeader">
-                    <h4>รายชื่อสำรอง</h4>
+                    <h4>Reserve</h4>
                     <div class="numOfParti"><span id="currentWait">@Model.CurrentWaiting</span> / @Model.MaxWaiting Reserve</div>
                 </div>
                 <hr />
@@ -130,11 +131,11 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>ลำดับ</th>
-                            <th>ชื่อ</th>
-                            <th>คะแนน</th>
-                            <th>เวลาที่เข้าร่วม</th>
-                            <th>จัดการ</th>
+                            <th>No.</th>
+                            <th>Name</th>
+                            <th>Rating</th>
+                            <th>Join Time</th>
+                            <th>Manage</th>
                         </tr>
                     </thead>
                     <tbody id="waitingTable">
@@ -169,8 +170,8 @@
                                         </td>
                                         <td>@ticket.JoinedAt.ToString("dd/MM/yy HH:mm")</td>
                                         <td>
-                                            <button onclick="promoteUser(@Model.Id, @user.Id)">เพิ่ม</button>
-                                            <button onclick="removeWaitingUser(@Model.Id, @user.Id)">ลบ</button>
+                                            <button onclick="promoteUser(@Model.Id, @user.Id)">Add</button>
+                                            <button onclick="removeWaitingUser(@Model.Id, @user.Id)">Remove</button>
                                         </td>
                                     </tr>
                                     order += 1;
@@ -186,15 +187,15 @@
 </div>
 <div class="my-container" style="padding-top: 0;">
     <div class="manage-danger-zone" style="margin-top: 20px; border-top: 2px solid #FFD89A; padding-top: 20px; margin-bottom: 40px;">
-        <h3 style="color: #dc3545; font-weight: bold; margin-top: 0;">ลบกิจกรรม</h3>
+        <h3 style="color: #dc3545; font-weight: bold; margin-top: 0;">Delete Event</h3>
         <p style="color: #6B5A45; margin-bottom: 15px;">การลบกิจกรรมจะทำให้ข้อมูลทั้งหมดหายไปและไม่สามารถกู้คืนได้</p>
 
         <form action="@Url.Action("Delete", "Event")" method="post"
-              onsubmit="return confirm('🚨 คุณแน่ใจหรือไม่ว่าต้องการลบกิจกรรมนี้? ข้อมูลผู้เข้าร่วมและรีวิวทั้งหมดจะถูกลบถาวร!');">
+              onsubmit="return confirm('แน่ใจหรือไม่ว่าต้องการลบกิจกรรมนี้? ข้อมูลผู้เข้าร่วมและรีวิวทั้งหมดจะถูกลบถาวร!');">
             <input type="hidden" name="id" value="@Model.Id" />
 
             <button type="submit" class="btn-toggle btn-toggle-close" style="width: auto; padding: 10px 25px; cursor: pointer;">
-                <i class="fa-solid fa-trash-can"></i> ลบกิจกรรมนี้
+                <i class="fa-solid fa-trash-can"></i> Delete
             </button>
         </form>
     </div>

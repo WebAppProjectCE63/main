@@ -89,6 +89,7 @@ namespace WebApplicationProject.Controllers
                     MaxWaiting = mEvent.MaxWaiting,
                     DateTime = mEvent.DateTime,
                     EndDateTime = mEvent.EndDateTime,
+                    RegistrationDeadline = mEvent.RegistrationDeadline,
                     Location = mEvent.Location,
                     UserHostId = userIdMap.ContainsKey(mEvent.UserHostId) ? userIdMap[mEvent.UserHostId] : userIdMap.Values.First(),
                     CurrentParticipants = mEvent.CurrentParticipants,

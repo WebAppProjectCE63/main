@@ -12,8 +12,8 @@ using WebApplicationProject.Data;
 namespace WebApplicationProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260310161543_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260311155316_InitialDB")]
+    partial class InitialDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -65,6 +65,9 @@ namespace WebApplicationProject.Migrations
 
                     b.Property<int>("MaxWaiting")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("RegistrationDeadline")
+                        .HasColumnType("datetime2");
 
                     b.PrimitiveCollection<string>("Tags")
                         .IsRequired()

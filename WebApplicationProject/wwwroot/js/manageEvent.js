@@ -39,9 +39,8 @@ function promoteUser(eventId, userId) {
                 const rowToPromote = document.getElementById(`row_${userId}`);
                 confirmedTable.appendChild(rowToPromote);
 
-                const actionBtn = rowToPromote.querySelector("button");
-                actionBtn.setAttribute("onclick", `removeUser(${eventId}, ${userId})`);
-                actionBtn.innerText = "ลบ";
+                const actionTd = rowToPromote.lastElementChild;
+                actionTd.innerHTML = `<button onclick="removeUser(${eventId}, ${userId})">Remove</button>`;
 
                 const waitSpan = document.getElementById("currentWait");
                 if (waitSpan) {
@@ -113,11 +112,11 @@ function toggleRegistrationStatus(eventId) {
         .then(data => {
             if (data.success) {
                 if (data.isClosed) {
-                    btn.innerHTML = '✅ เปิดรับสมัครอีกครั้ง';
+                    btn.innerHTML = '✅ Open Registeration';
                     btn.classList.remove('btn-toggle-close');
                     btn.classList.add('btn-toggle-open');
                 } else {
-                    btn.innerHTML = '❌ ปิดรับสมัคร';
+                    btn.innerHTML = '❌ Close Registeration';
                     btn.classList.remove('btn-toggle-open');
                     btn.classList.add('btn-toggle-close');
                 }

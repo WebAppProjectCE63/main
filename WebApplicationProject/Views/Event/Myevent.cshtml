@@ -60,7 +60,6 @@
 
                 <div class="search-input">
                     <input type="text" id="searchTagInput" placeholder="ค้นหาตาม Tag (เช่น music)..." style="border:none; outline:none; width:100%; background:transparent; font-family:inherit;">
-                    <button id="searchTagBtn" style="background:none; border:none; cursor:pointer; font-weight:bold; color:#333;">ค้นหา</button>
                 </div>
 
                 <div class="sort-filter">
@@ -148,8 +147,8 @@
                                 }
                                 else if (participantInfo != null)
                                 {
-                                    bool isWithinOneHour = DateTime.Now >= ev.DateTime.AddMinutes(-1);
-                                    bool isClosedWaitlist = (ev.IsRegistrationClosed || isWithinOneHour) && participantInfo.Status == ParticipationStatus.Waiting;
+                                    bool isPastDeadline = DateTime.Now >= ev.RegistrationDeadline;
+                                    bool isClosedWaitlist = (ev.IsRegistrationClosed || isPastDeadline) && participantInfo.Status == ParticipationStatus.Waiting;
                                     var statusText = participantInfo.Status == ParticipationStatus.Confirmed ? "Joined" :
                                     (isClosedWaitlist ? "Not Selected" : "Waiting");
 

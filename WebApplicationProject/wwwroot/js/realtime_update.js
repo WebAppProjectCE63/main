@@ -14,8 +14,7 @@
                 const data = await response.json();
 
                 const now = new Date();
-                const eventStartTime = new Date(data.dateTime);
-                const closeTime = new Date(eventStartTime.getTime() - (2 * 60 * 1000));
+                const closeTime = new Date(data.registrationDeadline);
                 const isActuallyLocked = data.isRegistrationClosed || (now >= closeTime);
 
                 // =========================================
@@ -60,7 +59,7 @@
                     // 🟢 2.3 จัดการปุ่ม Join (หน้า Home)
                     if (text === 'Join' || text === 'Closed') {
                         if (isActuallyLocked) {
-                            btn.textContent = 'Closed';
+                            btn.textContent = 'Join';
                             btn.disabled = true;
                             btn.style.backgroundColor = '#6c757d';
                         } else {

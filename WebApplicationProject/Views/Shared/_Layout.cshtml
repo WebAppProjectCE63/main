@@ -77,17 +77,14 @@
                         <img src="@image" alt="Profile" />
                     </a>
 
-                    <div id="navnoti">
-                        <a asp-controller="Notification" asp-action="Index" title="Notifications">
-                            <span style="position:relative; display:inline-block;">
-                                🔔
-                                @if (unreadCount > 0)
-                                {
-                                    <span style="position:absolute; top:-8px; right:-8px; background:#dc3545; color:white; border-radius:50%; padding:2px 6px; font-size:0.75rem;">@unreadCount</span>
-                                }
-                            </span>
-                        </a>
-                    </div>
+                <div id="navnoti">
+                    <a asp-controller="Notification" asp-action="Index" title="Notifications">
+                        <span id="notiBell" style="position:relative; display:inline-block;">
+                            🔔
+                            <span id="notiBadge" style="position:absolute; top:-8px; right:-8px; background:#dc3545; color:white; border-radius:50%; padding:2px 6px; font-size:0.75rem; display:@(unreadCount>0?"inline-block":"none");">@unreadCount</span>
+                        </span>
+                    </a>
+                </div>
                 }
             </div>
             </div>
@@ -161,6 +158,7 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/noti_polling.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
     <script src="~/js/realtime_update.js" asp-append-version="true"></script>

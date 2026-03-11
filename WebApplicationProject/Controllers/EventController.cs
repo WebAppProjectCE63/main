@@ -73,6 +73,11 @@ namespace WebApplicationProject.Controllers
                 TempData["ErrorMessage"] = "วันที่ไม่ถูกต้อง";
                 return RedirectToAction("Create", "Event");
             }
+            if (newEvent.RegistrationDeadline >= newEvent.DateTime)
+            {
+                TempData["ErrorMessage"] = "เวลาปิดรับสมัคร ต้องมาก่อนเวลาเริ่มต้นกิจกรรม";
+                return RedirectToAction("Create", "Event");
+            }
             string ImageUrl = await UploadImageAsync(uploadImage);
             newEvent.Image = ImageUrl ?? "https://img2.pic.in.th/image-icon-symbol-design-illustration-vector.md.jpg";
             newEvent.Tags = ProcessTags(Request.Form["Tag"]);
@@ -129,15 +134,15 @@ namespace WebApplicationProject.Controllers
                     TempData["ErrorMessage"] = "กิจกรรมกำลังดำเนินการหรือจบลงแล้ว ไม่สามารถบันทึกการแก้ไขได้";
                     return RedirectToAction("Myevent");
                 }
-                if (editEvent.DateTime <= DateTime.Now.AddMinutes(2))
-                {
-                    TempData["ErrorMessage"] = "วันที่ไม่ถูกต้อง";
-                    return RedirectToAction("Create", "Event");
-                }
                 if (editEvent.DateTime > editEvent.EndDateTime)
                 {
                     TempData["ErrorMessage"] = "วันที่ไม่ถูกต้อง";
-                    return RedirectToAction("Create", "Event");
+                    return RedirectToAction("Edit", "Event", new { id = editEvent.Id });
+                }
+                if (editEvent.RegistrationDeadline >= editEvent.DateTime)
+                {
+                    TempData["ErrorMessage"] = "เวลาปิดรับสมัคร ต้องมาก่อนเวลาเริ่มต้นกิจกรรม";
+                    return RedirectToAction("Edit", "Event", new { id = editEvent.Id });
                 }
                 if (editEvent.MaxParticipants < ogEvent.CurrentParticipants || editEvent.MaxParticipants < 1)
                 {
@@ -173,13 +178,18 @@ namespace WebApplicationProject.Controllers
                 ogEvent.MaxWaiting = editEvent.MaxWaiting;
                 ogEvent.DateTime = editEvent.DateTime;
                 ogEvent.EndDateTime = editEvent.EndDateTime;
+                ogEvent.RegistrationDeadline = editEvent.RegistrationDeadline;
                 ogEvent.Location = editEvent.Location;
                 _context.SaveChanges();
                 // notify participants about event update (excluding editor)
                 try
                 {
                     var actorName = _context.Users.Where(u => u.Id == CurrentUserId).Select(u => u.Username).FirstOrDefault() ?? "Host";
-                    var participantIds = ogEvent.Participants.Select(p => p.UserId).Distinct().Where(id => id != CurrentUserId).ToList();
+                    var participantIds = ogEvent.Participants
+                         .Where(p => p.Status == ParticipationStatus.Confirmed && p.UserId != CurrentUserId)
+                         .Select(p => p.UserId)
+                         .Distinct()
+                         .ToList();
                     foreach (var pid in participantIds)
                     {
                         _notiService.TryCreate(pid, "event_update", "Event updated", $"{actorName} updated event {ogEvent.Title}", out var _ , $"/Event/Participants/{ogEvent.Id}");
@@ -366,9 +376,9 @@ namespace WebApplicationProject.Controllers
                 TempData["ErrorMessage"] = "กิจกรรมนี้ปิดรับสมัครแล้ว";
                 return RedirectToAction("Home", "Home");
             }
-            if (ev.DateTime <= DateTime.Now.AddMinutes(2))
+            if (DateTime.Now >= ev.RegistrationDeadline)
             {
-                TempData["ErrorMessage"] = "กิจกรรมนี้เริ่มไปแล้ว ไม่สามารถเข้าร่วมได้ครับ";
+                TempData["ErrorMessage"] = "กิจกรรมนี้หมดเขตเวลาปิดรับสมัครแล้วครับ";
                 return RedirectToAction("Home", "Home");
             }
 
@@ -542,7 +552,7 @@ namespace WebApplicationProject.Controllers
             return Json(new
             {
                 isRegistrationClosed = ev.IsRegistrationClosed,
-                dateTime = ev.DateTime
+                registrationDeadline = ev.RegistrationDeadline
             });
         }
 

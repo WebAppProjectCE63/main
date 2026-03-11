@@ -196,6 +196,17 @@ main {
 @media (max-width: 900px) {
     #navbar {
         flex-wrap: wrap;
+        position: relative;
+    }
+
+    #weblogo {
+        width: 45%;
+    }
+
+    #mobileMenuBtn {
+        display: flex;
+        width: 45%;
+        text-align: end;
     }
 
     #mobileMenuBtn {
@@ -204,12 +215,16 @@ main {
 
     #navContent {
         display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        z-index: 1000;
         width: 100%;
         flex-direction: column;
         gap: 15px;
         padding-bottom: 15px;
         border-top: 1px solid rgba(255, 255, 255, 0.3);
-        margin-top: 10px;
+        background: linear-gradient(90deg, #FFD166, #FF8C42);
     }
 
         #navContent.show {

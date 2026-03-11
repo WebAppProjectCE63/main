@@ -63,6 +63,9 @@ namespace WebApplicationProject.Migrations
                     b.Property<int>("MaxWaiting")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("RegistrationDeadline")
+                        .HasColumnType("datetime2");
+
                     b.PrimitiveCollection<string>("Tags")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
