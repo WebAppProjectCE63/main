@@ -179,7 +179,11 @@ namespace WebApplicationProject.Controllers
                 try
                 {
                     var actorName = _context.Users.Where(u => u.Id == CurrentUserId).Select(u => u.Username).FirstOrDefault() ?? "Host";
-                    var participantIds = ogEvent.Participants.Select(p => p.UserId).Distinct().Where(id => id != CurrentUserId).ToList();
+                    var participantIds = ogEvent.Participants
+                         .Where(p => p.Status == ParticipationStatus.Confirmed && p.UserId != CurrentUserId)
+                         .Select(p => p.UserId)
+                         .Distinct()
+                         .ToList();
                     foreach (var pid in participantIds)
                     {
                         _notiService.TryCreate(pid, "event_update", "Event updated", $"{actorName} updated event {ogEvent.Title}", out var _ , $"/Event/Participants/{ogEvent.Id}");
