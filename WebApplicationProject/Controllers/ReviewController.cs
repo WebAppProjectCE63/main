@@ -15,10 +15,12 @@ namespace WebApplicationProject.Controllers
     public class ReviewController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly WebApplicationProject.Services.NotificationService _notiService;
 
-        public ReviewController(ApplicationDbContext context)
+        public ReviewController(ApplicationDbContext context, WebApplicationProject.Services.NotificationService notiService)
         {
             _context = context;
+            _notiService = notiService;
         }
         private int CurrentUserId => HttpContext.Session.GetInt32("UserId") ?? 0;
         public IActionResult Review(int id)
@@ -111,6 +113,7 @@ namespace WebApplicationProject.Controllers
                                 r.EventId == EventId &&
                                 r.UserId == UserId &&
                                 r.TargetUserId == TargetUserId);
+            bool isNew = false;
             if (existing != null)
             {
                 existing.stars = stars;
@@ -131,8 +134,27 @@ namespace WebApplicationProject.Controllers
                     IsAnonymous = showname
                 };
                 _context.Reviews.Add(newReview);
+                isNew = true;
             }
             _context.SaveChanges();
+
+            // create notification to target user and capture errors for debugging
+            var actorName = _context.Users.Where(u => u.Id == UserId).Select(u => u.Username).FirstOrDefault() ?? "Someone";
+            // If reviewer chose to be anonymous, don't expose their name in the notification
+            if (showname)
+            {
+                actorName = "Anonymous";
+            }
+            var evt = _context.Events.Find(EventId);
+            var title = isNew ? $"New review from {actorName}" : $"Updated review from {actorName}";
+            var message = reviewtitle;
+            var url = evt != null ? $"/Profile/ProfilePage/{TargetUserId}" : "/";
+
+            if (!_notiService.TryCreate(TargetUserId, "review", title, message, out var notiError, url))
+            {
+                // store a lightweight debug info in TempData so developer can see it after redirect
+                TempData["NotificationError"] = "Notification create failed: " + notiError;
+            }
             return RedirectToAction("Review", new { id = EventId });
         }
     }

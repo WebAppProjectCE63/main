@@ -2,10 +2,17 @@
 
 <!DOCTYPE html>
 <html lang="en">
+@using WebApplicationProject.Services
+@inject NotificationService NotiService
 @{
     var username = Context.Session.GetString("Username");
     var userId = Context.Session.GetInt32("UserId");
     var image = Context.Session.GetString("Userimage");
+    int unreadCount = 0;
+    if (userId.HasValue)
+    {
+        try { unreadCount = NotiService.GetUnreadCount(userId.Value); } catch { unreadCount = 0; }
+    }
 }
 <head>
     <meta charset="utf-8" />
@@ -24,7 +31,7 @@
         <nav id="navbar">
 
             <div id="weblogo">
-                <img src="https://i.ibb.co/5WhJMddb/Expedition-Express-Logo.png" alt="Logo">
+                <img src="https://i.ibb.co/23sXzpHQ/Expedition-Express-Logo-Grad-Final.png" alt="Logo">
             </div>
             
             <button id="mobileMenuBtn">
@@ -69,6 +76,18 @@
                     <a asp-controller="Profile" asp-action="profilepage" asp-route-id="@userId.Value">
                         <img src="@image" alt="Profile" />
                     </a>
+
+                    <div id="navnoti">
+                        <a asp-controller="Notification" asp-action="Index" title="Notifications">
+                            <span style="position:relative; display:inline-block;">
+                                🔔
+                                @if (unreadCount > 0)
+                                {
+                                    <span style="position:absolute; top:-8px; right:-8px; background:#dc3545; color:white; border-radius:50%; padding:2px 6px; font-size:0.75rem;">@unreadCount</span>
+                                }
+                            </span>
+                        </a>
+                    </div>
                 }
             </div>
             </div>

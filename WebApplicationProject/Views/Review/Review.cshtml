@@ -6,6 +6,12 @@
     <h1>Review Event</h1>
     <p>รีวิวกิจกรรม</p>
 </div>
+@if (TempData["NotificationError"] != null)
+{
+    <div class="temp-alert error-alert" style="margin:10px 0;padding:8px;">
+        <span>@TempData["NotificationError"]</span>
+    </div>
+}
 <div class="my-container">
     <h3>กิจกรรมที่กำลังรีวิว</h3>
     <div id="eventPrev" class="eventPrev">

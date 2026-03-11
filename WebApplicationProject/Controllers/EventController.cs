@@ -11,10 +11,12 @@ namespace WebApplicationProject.Controllers
     public class EventController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly WebApplicationProject.Services.NotificationService _notiService;
 
-        public EventController(ApplicationDbContext context)
+        public EventController(ApplicationDbContext context, WebApplicationProject.Services.NotificationService notiService)
         {
             _context = context;
+            _notiService = notiService;
         }
         private int CurrentUserId => HttpContext.Session.GetInt32("UserId") ?? 0;
         public IActionResult Myevent()
@@ -114,7 +116,7 @@ namespace WebApplicationProject.Controllers
                 TempData["ErrorMessage"] = "คุณยังไม่ได้ login เข้าสู่ระบบ";
                 return RedirectToAction("Login", "Account");
             }
-            var ogEvent = _context.Events.FirstOrDefault(e => e.Id == editEvent.Id);
+            var ogEvent = _context.Events.Include(e => e.Participants).FirstOrDefault(e => e.Id == editEvent.Id);
             if (ogEvent != null)
             {
                 if(!IsHost(ogEvent))
@@ -172,8 +174,20 @@ namespace WebApplicationProject.Controllers
                 ogEvent.DateTime = editEvent.DateTime;
                 ogEvent.EndDateTime = editEvent.EndDateTime;
                 ogEvent.Location = editEvent.Location;
-
                 _context.SaveChanges();
+                // notify participants about event update (excluding editor)
+                try
+                {
+                    var actorName = _context.Users.Where(u => u.Id == CurrentUserId).Select(u => u.Username).FirstOrDefault() ?? "Host";
+                    var participantIds = ogEvent.Participants.Select(p => p.UserId).Distinct().Where(id => id != CurrentUserId).ToList();
+                    foreach (var pid in participantIds)
+                    {
+                        _notiService.TryCreate(pid, "event_update", "Event updated", $"{actorName} updated event {ogEvent.Title}", out var _ , $"/Event/Participants/{ogEvent.Id}");
+                    }
+                }
+                catch {
+                    TempData["ErrorMessage"] = "Error ไม่สามารถสร้างการแจ้งเตือนไปยังผู้ใช้";
+                }
             }
             else
             {
@@ -228,6 +242,14 @@ namespace WebApplicationProject.Controllers
             ticket.Status = ParticipationStatus.Remove;
             eventToManage.CurrentParticipants = eventToManage.Participants.Count(p => p.Status == ParticipationStatus.Confirmed);
             _context.SaveChanges();
+            try
+            {
+                _notiService.TryCreate(userId, "removed", "Removed from list", $"You were removed from list of {eventToManage.Title}", out var _, "/Event/Myevent");
+            }
+            catch
+            {
+
+            }
             return Ok();
         }
         [HttpPost]
@@ -252,6 +274,14 @@ namespace WebApplicationProject.Controllers
             eventToManage.CurrentParticipants = eventToManage.Participants.Count(p => p.Status == ParticipationStatus.Confirmed);
             eventToManage.CurrentWaiting = eventToManage.Participants.Count(p => p.Status == ParticipationStatus.Waiting);
             _context.SaveChanges();
+            try
+            {
+                _notiService.TryCreate(userId, "Promote", "You're in! 🎉", $"your participation in {eventToManage.Title} is now confirmed.", out var _, $"/Event/Participants/{eventToManage.Id}");
+            }
+            catch
+            {
+
+            }
             return Ok();
         }
         private List<string> ProcessTags(string rawTags)
@@ -309,6 +339,14 @@ namespace WebApplicationProject.Controllers
             ticket.Status = ParticipationStatus.Remove;
             eventToManage.CurrentWaiting = eventToManage.Participants.Count(p => p.Status == ParticipationStatus.Waiting);
             _context.SaveChanges();
+            // notify removed user from waiting list
+            try
+            {
+                _notiService.TryCreate(userId, "removed", "Removed from waiting list", $"You were removed from waiting list of {eventToManage.Title}", out var _ , "/Event/Myevent");
+            }
+            catch {
+                
+            }
             return Ok();
         }
 
@@ -414,6 +452,16 @@ namespace WebApplicationProject.Controllers
             {
                 TempData["SuccessMessage"] = "📝 เข้าร่วมกิจกรรมสำเร็จ! คุณอยู่ในรายชื่อ 'ตัวสำรอง' โปรดรอการยืนยันจากโฮสต์";
             }
+            // notify host that a user joined
+            try
+            {
+                if (ev.UserHostId != userId)
+                {
+                    var username = _context.Users.Where(u => u.Id == userId).Select(u => u.Username).FirstOrDefault() ?? "Someone";
+                    _notiService.TryCreate(ev.UserHostId, "join", "New participant", $"{username} joined {ev.Title}", out var _ , $"/Event/Manage/{ev.Id}");
+                }
+            }
+            catch { }
             return RedirectToAction("Myevent");
         }
 
@@ -441,6 +489,16 @@ namespace WebApplicationProject.Controllers
                 ev.CurrentWaiting = ev.Participants.Count(p => p.Status == ParticipationStatus.Waiting);
                 ev.CurrentParticipants = ev.Participants.Count(p => p.Status == ParticipationStatus.Confirmed);
                 _context.SaveChanges();
+                // notify host that user canceled
+                try
+                {
+                    var username = _context.Users.Where(u => u.Id == userId).Select(u => u.Username).FirstOrDefault() ?? "Someone";
+                    if (ev.UserHostId != userId)
+                    {
+                        _notiService.TryCreate(ev.UserHostId, "cancel", "Participant canceled", $"{username} canceled their participation in {ev.Title}", out var _ , $"/Event/Manage/{ev.Id}");
+                    }
+                }
+                catch { }
             }
 
             return RedirectToAction("Myevent");
@@ -449,13 +507,30 @@ namespace WebApplicationProject.Controllers
         [HttpPost]
         public IActionResult ToggleRegistration(int id)
         {
-            var ev = _context.Events.FirstOrDefault(e => e.Id == id);
+            var ev = _context.Events.Include(e => e.Participants).FirstOrDefault(e => e.Id == id);
             if (ev == null) return Json(new { success = false, message = "ไม่พบกิจกรรมนี้" });
 
             if (!IsHost(ev)) return Json(new { success = false, message = "คุณไม่มีสิทธิ์เข้าถึงหน้านี้" });
 
             ev.IsRegistrationClosed = !ev.IsRegistrationClosed;
             _context.SaveChanges();
+
+            if (ev.IsRegistrationClosed)
+            {
+                try
+                {
+                    var actorName = _context.Users.Where(u => u.Id == CurrentUserId).Select(u => u.Username).FirstOrDefault() ?? "Host";
+                    var participantIds = ev.Participants.Select(p => p.UserId).Distinct().Where(pid => pid != CurrentUserId).ToList();
+                    foreach (var pid in participantIds)
+                    {
+                        _notiService.TryCreate(pid, "event_closed", "Registration closed", $"{actorName} closed registration for {ev.Title}", out var _, $"/Event/Participants/{ev.Id}");
+                    }
+                }
+                catch
+                {
+                    
+                }
+            }
 
             return Json(new { success = true, isClosed = ev.IsRegistrationClosed });
         }

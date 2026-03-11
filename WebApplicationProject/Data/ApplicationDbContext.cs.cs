@@ -12,6 +12,7 @@ namespace WebApplicationProject.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<Review> Reviews { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
         public DbSet<EventParticipation> EventParticipations { get; set; }
 
         // (ตัวเลือกเสริม) ถ้าอยากให้ UserSettings เข้าไปอยู่ในตาราง Users ด้วย ให้เพิ่ม OnModelCreating แบบนี้ครับ
