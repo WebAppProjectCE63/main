@@ -81,7 +81,9 @@
 
             const matchDate = !currentSelectedDate || dateStr === currentSelectedDate;
             const matchName = !searchText || title.includes(searchText);
-            const matchTag = searchTags.length === 0 || searchTags.every(searchTag => eventTags.includes(searchTag));
+            const matchTag = searchTags.length === 0 || searchTags.every(searchTag =>
+                eventTags.some(eventTag => eventTag === searchTag) 
+            );
 
             if (matchDate && matchName && matchTag) {
                 card.style.display = 'block';
@@ -157,14 +159,7 @@
 
         if (searchInput) searchInput.addEventListener('input', applyFilters);
         if (searchTagBtn) searchTagBtn.addEventListener('click', applyFilters);
-        if (searchTagInput) {
-            searchTagInput.addEventListener('keypress', function (e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    applyFilters();
-                }
-            });
-        }
+        if (searchTagInput) searchTagInput.addEventListener('input', applyFilters);
 
         if (sortSelect) {
             sortSelect.addEventListener('change', handleSort);
