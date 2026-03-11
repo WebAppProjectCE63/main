@@ -534,7 +534,6 @@ namespace WebApplicationProject.Controllers
                 return RedirectToAction("Myevent");
             }
 
-            // 5. ค้นหารีวิวทั้งหมดที่เกี่ยวข้องกับกิจกรรมนี้และลบออก (ป้องกัน Error Foreign Key)
             var relatedReviews = _context.Reviews.Where(r => r.EventId == id).ToList();
             if (relatedReviews.Any())
             {
