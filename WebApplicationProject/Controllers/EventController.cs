@@ -182,7 +182,7 @@ namespace WebApplicationProject.Controllers
                     var participantIds = ogEvent.Participants.Select(p => p.UserId).Distinct().Where(id => id != CurrentUserId).ToList();
                     foreach (var pid in participantIds)
                     {
-                        _notiService.TryCreate(pid, "event_update", "Event updated", $"{actorName} updated event {ogEvent.Title}", out var _ , "/Event/Myevent");
+                        _notiService.TryCreate(pid, "event_update", "Event updated", $"{actorName} updated event {ogEvent.Title}", out var _ , $"/Event/Participants/{ogEvent.Id}");
                     }
                 }
                 catch {
@@ -276,7 +276,7 @@ namespace WebApplicationProject.Controllers
             _context.SaveChanges();
             try
             {
-                _notiService.TryCreate(userId, "Promote", "You're in! 🎉", $"your participation in {eventToManage.Title} is now confirmed.", out var _, "/Event/Myevent");
+                _notiService.TryCreate(userId, "Promote", "You're in! 🎉", $"your participation in {eventToManage.Title} is now confirmed.", out var _, $"/Event/Participants/{eventToManage.Id}");
             }
             catch
             {
@@ -523,7 +523,7 @@ namespace WebApplicationProject.Controllers
                     var participantIds = ev.Participants.Select(p => p.UserId).Distinct().Where(pid => pid != CurrentUserId).ToList();
                     foreach (var pid in participantIds)
                     {
-                        _notiService.TryCreate(pid, "event_closed", "Registration closed", $"{actorName} closed registration for {ev.Title}", out var _, "/Event/Myevent");
+                        _notiService.TryCreate(pid, "event_closed", "Registration closed", $"{actorName} closed registration for {ev.Title}", out var _, $"/Event/Participants/{ev.Id}");
                     }
                 }
                 catch
