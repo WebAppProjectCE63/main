@@ -39,9 +39,8 @@ function promoteUser(eventId, userId) {
                 const rowToPromote = document.getElementById(`row_${userId}`);
                 confirmedTable.appendChild(rowToPromote);
 
-                const actionBtn = rowToPromote.querySelector("button");
-                actionBtn.setAttribute("onclick", `removeUser(${eventId}, ${userId})`);
-                actionBtn.innerText = "ลบ";
+                const actionTd = rowToPromote.lastElementChild;
+                actionTd.innerHTML = `<button onclick="removeUser(${eventId}, ${userId})">ลบ</button>`;
 
                 const waitSpan = document.getElementById("currentWait");
                 if (waitSpan) {
