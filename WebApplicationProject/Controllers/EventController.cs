@@ -578,6 +578,49 @@ namespace WebApplicationProject.Controllers
 
             return View(ev);
         }
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            if (CurrentUserId == 0)
+            {
+                TempData["ErrorMessage"] = "คุณยังไม่ได้ login เข้าสู่ระบบ";
+                return RedirectToAction("Login", "Account");
+            }
+
+            var ev = _context.Events
+                             .Include(e => e.Participants)
+                             .FirstOrDefault(e => e.Id == id);
+
+            if (ev == null)
+            {
+                TempData["ErrorMessage"] = "ไม่พบกิจกรรมนี้";
+                return RedirectToAction("Myevent");
+            }
+
+            if (!IsHost(ev))
+            {
+                TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์ลบกิจกรรมนี้ เนื่องจากไม่ใช่เจ้าของกิจกรรม";
+                return RedirectToAction("Myevent");
+            }
+
+            if (DateTime.Now >= ev.DateTime)
+            {
+                TempData["ErrorMessage"] = "ไม่สามารถลบกิจกรรมที่กำลังดำเนินการหรือจบลงแล้วได้";
+                return RedirectToAction("Myevent");
+            }
+
+            var relatedReviews = _context.Reviews.Where(r => r.EventId == id).ToList();
+            if (relatedReviews.Any())
+            {
+                _context.Reviews.RemoveRange(relatedReviews);
+            }
+
+            _context.Events.Remove(ev);
+            _context.SaveChanges();
+
+            TempData["SuccessMessage"] = "ลบกิจกรรมสำเร็จเรียบร้อยแล้ว";
+            return RedirectToAction("Myevent");
+        }
 
     }
 }

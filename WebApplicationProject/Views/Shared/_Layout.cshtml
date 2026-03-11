@@ -163,55 +163,6 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
-    <script>
-        async function updateEventStatusRealtime() {
-            const now = new Date();
-            for (const card of document.querySelectorAll('.Event')) {
-                const eventId = card.querySelector('input[name="eventId"]')?.value;
-                if (!eventId) continue;
-
-                try {
-                    const response = await fetch(`/Event/CheckStatus/${eventId}`);
-                    const data = await response.json();
-
-                    const eventStartTime = new Date(data.dateTime);
-                    const closeTime = new Date(eventStartTime.getTime() - (2 * 60 * 1000));
-
-                    const isActuallyLocked = data.isRegistrationClosed || (now >= closeTime);
-
-                    const imageColumn = card.querySelector('.image-column');
-                    const lockedBadge = card.querySelector('.statis-close');
-                    const badge = card.querySelector('.badge');
-
-                    if (isActuallyLocked) {
-                        if (imageColumn && !lockedBadge) {
-                            const newLockedBadge = document.createElement('span');
-                            newLockedBadge.className = 'status-badge statis-close';
-                            newLockedBadge.style.cssText = 'width: 100%; box-sizing: border-box; background-color: #dc3545; color: white; margin-top: -4px; font-size: 0.85em; padding: 2px; text-align: center; display: block;';
-                            newLockedBadge.innerHTML = '🔒 Locked';
-                            imageColumn.appendChild(newLockedBadge);
-                        }
-
-                        if (badge && (badge.textContent.trim() === "Waiting" || badge.classList.contains('badge-waiting'))) {
-                            badge.textContent = "Not Selected";
-                            badge.className = "badge badge-closed";
-                        }
-                        } else {
-                        if (lockedBadge) lockedBadge.remove();
-
-                        if (badge && (badge.textContent.trim() === "Not Selected" || badge.classList.contains('badge-closed'))) {
-                            badge.textContent = "Waiting";
-                            badge.className = "badge badge-waiting";
-                        }
-                    }
-                } catch (e) {
-                    console.error("Polling error:", e);
-                }
-            }
-        }
-
-        setInterval(updateEventStatusRealtime, 10000);
-        updateEventStatusRealtime();
-    </script>
+    <script src="~/js/realtime_update.js" asp-append-version="true"></script>
 </body>
 </html>
