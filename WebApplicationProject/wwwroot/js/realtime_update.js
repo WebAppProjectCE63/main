@@ -14,8 +14,7 @@
                 const data = await response.json();
 
                 const now = new Date();
-                const eventStartTime = new Date(data.dateTime);
-                const closeTime = new Date(eventStartTime.getTime() - (2 * 60 * 1000));
+                const closeTime = new Date(data.registrationDeadline);
                 const isActuallyLocked = data.isRegistrationClosed || (now >= closeTime);
 
                 // =========================================

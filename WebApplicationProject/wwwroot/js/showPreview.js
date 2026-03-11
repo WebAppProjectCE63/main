@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const inputMaxWait = document.getElementById("inputMaxWait");
     const inputDateTime = document.getElementById("inputDateTime");
     const inputEndDateTime = document.getElementById("inputEndDateTime");
+    const inputDeadline = document.getElementById("inputDeadline");
     const inputLocation = document.getElementById("inputLocation");
 
     const prevImage = document.getElementById("prevImage");
@@ -16,6 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const prevTags = document.getElementById("prevTags");
     const prevMaxParti = document.getElementById("prevMaxParti");
     const prevDate = document.getElementById("prevDate");
+    const prevDeadline = document.getElementById("prevDeadline")
     const prevLocation = document.getElementById("prevLocation");
 
     const resetbutton = document.getElementById("btnRst");
@@ -29,6 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
         MaxWait: inputMaxWait.value,
         DateTime: inputDateTime.value,
         EndDateTime: inputEndDateTime ? inputEndDateTime.value : "",
+        Deadline: inputDeadline ? inputDeadline.value : "",
         Location: inputLocation.value,
     };
 
@@ -84,7 +87,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!inputMaxParti.value) {
             prevMaxParti.innerHTML = 'XX';
         } else {
-            let waitText = inputMaxWait && inputMaxWait.value ? ` (สำรอง ${inputMaxWait.value})` : "";
+            let waitText = inputMaxWait && inputMaxWait.value ? ` (${inputMaxWait.value})` : "";
             prevMaxParti.innerHTML = inputMaxParti.value + waitText;
         }
     }
@@ -108,7 +111,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const startTime = startObj.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 
         if (!inputEndDateTime || !inputEndDateTime.value) {
-            prevDate.innerHTML = `${startDate} ( ${startTime} น. )`;
+            prevDate.innerHTML = `${startDate} ( ${startTime} )`;
             return;
         }
 
@@ -131,13 +134,38 @@ document.addEventListener("DOMContentLoaded", function () {
             if (inputEndDateTime.value && inputEndDateTime.value < this.value) {
                 inputEndDateTime.value = "";
             }
+
+            if (inputDeadline) {
+                inputDeadline.disabled = false;
+                inputDeadline.max = this.value;
+
+                if (inputDeadline.value && inputDeadline.value >= this.value) {
+                    inputDeadline.value = "";
+                }
+            }
         } else {
             inputEndDateTime.disabled = true;
             inputEndDateTime.value = "";
+            if (inputDeadline) {
+                inputDeadline.disabled = true;
+                inputDeadline.value = "";
+                inputDeadline.max = "";
+            }
         }
         updateDatePreview();
     });
 
+    inputDeadline.addEventListener("input", function () {
+        if (!inputDeadline.value) {
+            prevDeadline.innerHTML = 'XX เดือน XXXX - XX:XX น.';
+            return;
+        }
+        const DLObj = new Date(inputDeadline.value);
+        const DLDate = DLObj.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+        const DLTime = DLObj.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+        prevDeadline.innerHTML = `${DLDate} ( ${DLTime} )`;
+
+    });
 
     if (inputEndDateTime) {
         inputEndDateTime.addEventListener("input", updateDatePreview);
@@ -165,6 +193,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (inputMaxWait) inputMaxWait.value = originalData.MaxWait;
         if (inputDateTime) inputDateTime.value = originalData.DateTime;
         if (inputEndDateTime) inputEndDateTime.value = originalData.EndDateTime;
+        if (inputDeadline) inputDeadline.value = originalData.Deadline;
         if (inputLocation) inputLocation.value = originalData.Location;
         if (inputImg) {
             inputImg.value = "";
@@ -180,6 +209,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (inputMaxWait) inputMaxWait.dispatchEvent(event);
         if (inputDateTime) inputDateTime.dispatchEvent(event);
         if (inputEndDateTime) inputEndDateTime.dispatchEvent(event);
+        if (inputDateTime) inputDateTime.dispatchEvent(event);
         if (inputLocation) inputLocation.dispatchEvent(event);
     })
     if (inputTag) inputTag.dispatchEvent(new Event('input'));

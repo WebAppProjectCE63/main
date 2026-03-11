@@ -13,16 +13,16 @@
     </div>
 }
 <div class="my-container">
-    <h3>กิจกรรมที่กำลังรีวิว</h3>
+    <h3>Event To Review</h3>
     <div id="eventPrev" class="eventPrev">
         <div class="eventImage">
             <img id="prevImage" src=@Model.EventData.Image />
         </div>
         <div class="eventDetail">
-            <h4><b>ชื่อ: </b><span id="prevTitle">@Model.EventData.Title</span></h4>
-            <p><b>คำอธิบาย: </b><span id="prevDesc">@Model.EventData.Description</span></p>
+            <h4><b>Title: </b><span id="prevTitle">@Model.EventData.Title</span></h4>
+            <p><b>Description: </b><span id="prevDesc">@Model.EventData.Description</span></p>
             <div>
-                <b>แท็ก: </b>
+                <b>Tag(s): </b>
                 <span id="prevTags">
                     @if (Model.EventData.Tags != null)
                     {
@@ -34,17 +34,17 @@
                 </span>
             </div>
             <div class="meta-info">
-                <b>จำนวนคน: </b>
+                <b>Participants: </b>
                 <span id="prevMaxParti">
                     @Model.EventData.MaxParticipants
                     @if (Model.EventData.MaxWaiting > 0)
                     {
-                        <text>(สำรอง @Model.EventData.MaxWaiting)</text>
+                        <text>(@Model.EventData.MaxWaiting)</text>
                     }
-                </span> คน
+                </span>
             </div>
             <div class="meta-info">
-                <b>ระยะเวลากิจกรรม: </b>
+                <b>Period: </b>
                 <span>
                     @if (Model.EventData.DateTime.Date == Model.EventData.EndDateTime.Date)
                     {
@@ -56,14 +56,15 @@
                     }
                 </span>
             </div>
-            <div class="meta-info"><b>สถานที่: </b><span id="prevLocation">@Model.EventData.Location</span></div>
+            <div class="meta-info"><b>Regesteration Deadline: </b><span id="prevDeadline">@Model.EventData.RegistrationDeadline.ToString("d MMM yyyy ( HH:mm )")</span></div>
+            <div class="meta-info"><b>Location: </b><span id="prevLocation">@Model.EventData.Location</span></div>
 
         </div>
     </div>
     <div class="mngParti">
         <div class="partiTable">
             <div class="tableHeader">
-                <h4>รายชื่อคนในกิจกรรม</h4>
+                <h4>Participations</h4>
                 <div class="numOfParti"><span id="currentParti">@Model.EventData.CurrentParticipants</span> / @Model.EventData.MaxParticipants Participants</div>
             </div>
             <hr />
@@ -71,12 +72,12 @@
             <table>
                 <thead>
                     <tr>
-                        <th>ลำดับ</th>
-                        <th>ชื่อ</th>
-                        <th>สถานะ</th>
-                        <th>คะแนน</th>
-                        <th>เวลาที่เข้าร่วม</th>
-                        <th>จัดการ</th>
+                        <th>No.</th>
+                        <th>Name</th>
+                        <th>Role</th>
+                        <th>Rating</th>
+                        <th>Join Time</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody id="confirmedTable">
@@ -104,7 +105,7 @@
                                 }
                                 else
                                 {
-                                    <span class="status-badge">เข้าร่วม</span>
+                                    <span class="status-badge">ผู้เข้าร่วม</span>
                                 }
                             </td>
                             <td>
@@ -123,12 +124,12 @@
                                 {
                                     <button type="button" class="btn-edit"
                                             onclick="openEditReviewModal(@user.Id, '@user.FName @user.SName', '@user.Image', @reviewToThisUser.Id, @reviewToThisUser.stars, '@reviewToThisUser.reviewtitle', '@reviewToThisUser.reviewbody', @(reviewToThisUser.IsAnonymous ? "true" : "false"))">
-                                        แก้ไข
+                                        Edit
                                     </button>
                                 }
                                 else
                                 {
-                                    <button type="button" class="btn-review" onclick="openReviewModal(@user.Id, '@user.FName @user.SName', '@user.Image')">รีวิว</button>
+                                    <button type="button" class="btn-review" onclick="openReviewModal(@user.Id, '@user.FName @user.SName', '@user.Image')">Review</button>
                                 }
                             </td>
                         </tr>

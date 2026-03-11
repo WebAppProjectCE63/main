@@ -147,8 +147,8 @@
                                 }
                                 else if (participantInfo != null)
                                 {
-                                    bool isWithinOneHour = DateTime.Now >= ev.DateTime.AddMinutes(-1);
-                                    bool isClosedWaitlist = (ev.IsRegistrationClosed || isWithinOneHour) && participantInfo.Status == ParticipationStatus.Waiting;
+                                    bool isPastDeadline = DateTime.Now >= ev.RegistrationDeadline;
+                                    bool isClosedWaitlist = (ev.IsRegistrationClosed || isPastDeadline) && participantInfo.Status == ParticipationStatus.Waiting;
                                     var statusText = participantInfo.Status == ParticipationStatus.Confirmed ? "Joined" :
                                     (isClosedWaitlist ? "Not Selected" : "Waiting");
 

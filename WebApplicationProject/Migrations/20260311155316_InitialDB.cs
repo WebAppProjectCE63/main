@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace WebApplicationProject.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -23,6 +23,7 @@ namespace WebApplicationProject.Migrations
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RegistrationDeadline = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Tags = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MaxParticipants = table.Column<int>(type: "int", nullable: false),
                     MaxWaiting = table.Column<int>(type: "int", nullable: false),
