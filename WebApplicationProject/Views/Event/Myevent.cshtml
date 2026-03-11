@@ -217,11 +217,6 @@
                                         {
                                             <a href="@Url.Action("Manage", "Event", new { id = ev.Id })" class="view-btn btn-dark-link">Manage Event</a>
                                             <a href="@Url.Action("Edit", "Event", new { id = ev.Id })" class="view-btn btn-link">Edit</a>
-
-                                            <form action="@Url.Action("Delete", "Event")" method="post" style="display:inline;" onsubmit="return confirm('Are you sure?');">
-                                                <input type="hidden" name="id" value="@ev.Id" />
-                                                <button type="submit" class="view-btn btn-danger-outline">Delete</button>
-                                            </form>
                                         }
                                         else
                                         {
@@ -253,23 +248,18 @@
                                             {
                                                 <a href="@Url.Action("Participants", "Event", new { id = ev.Id })" class="view-btn">View Participants</a>
                                             }
-                                            else if (ev.IsRegistrationClosed)
-                                            {
-                                                <button type="button" class="view-btn btn-disabled" disabled>Event Closed (Not Selected)</button>
-                                            }
                                             else
                                             {
-                                                <button type="button" class="view-btn btn-disabled" disabled>Waiting for Confirmation</button>
+                                                <button type="button" class="view-btn btn-disabled realtime-waiting-btn" disabled>
+                                                    @(ev.IsRegistrationClosed ? "Event Closed (Not Selected)" : "Waiting for Confirmation")
+                                                </button>
                                             }
 
-                                            @if (!ev.IsRegistrationClosed)
-                                            {
-                                                <form action="@Url.Action("CancelJoin", "Event")" method="post" style="display:inline;"
-                                                      onsubmit="return confirm('คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการเข้าร่วมกิจกรรมนี้?');">
-                                                    <input type="hidden" name="eventId" value="@ev.Id" />
-                                                    <button type="submit" class="view-btn btn-danger-outline">Cancel Join</button>
-                                                </form>
-                                            }
+                                            <form class="realtime-cancel-form" action="@Url.Action("CancelJoin", "Event")" method="post" style="display:@(ev.IsRegistrationClosed ? "none" : "inline-block");"
+                                                  onsubmit="return confirm('คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการเข้าร่วมกิจกรรมนี้?');">
+                                                <input type="hidden" name="eventId" value="@ev.Id" />
+                                                <button type="submit" class="view-btn btn-danger-outline">Cancel Join</button>
+                                            </form>
                                         }
                                     }
                                     <button type="button" class="view-btn btn-link close-info-btn">Close</button>
