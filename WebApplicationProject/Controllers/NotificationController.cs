@@ -13,6 +13,29 @@ namespace WebApplicationProject.Controllers
             _context = context;
         }
 
+        [HttpGet]
+        public JsonResult UnreadCount()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (!userId.HasValue) return Json(new { success = false, count = 0 });
+            var count = _context.Notifications.Count(n => n.RecipientUserId == userId.Value && !n.IsRead);
+            return Json(new { success = true, count = count });
+        }
+
+        [HttpGet]
+        public JsonResult Recent(int limit = 5)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (!userId.HasValue) return Json(new { success = false, items = new object[0] });
+            var items = _context.Notifications
+                .Where(n => n.RecipientUserId == userId.Value)
+                .OrderByDescending(n => n.CreatedAt)
+                .Take(limit)
+                .Select(n => new { n.Id, n.Title, n.Message, n.Url, createdAt = n.CreatedAt })
+                .ToList();
+            return Json(new { success = true, items = items });
+        }
+
         // List notifications for current user
         public IActionResult Index()
         {
