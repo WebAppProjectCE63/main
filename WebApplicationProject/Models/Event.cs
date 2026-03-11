@@ -9,6 +9,7 @@
         public string Location { get; set; }
         public DateTime DateTime { get; set; }
         public DateTime EndDateTime { get; set; }
+        public DateTime RegistrationDeadline { get; set; }
         public List<string> Tags { get; set; } = new List<string>();
         public int MaxParticipants { get; set; }
         public int MaxWaiting { get; set; }

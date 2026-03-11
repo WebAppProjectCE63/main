@@ -5,14 +5,14 @@
     <p>แก้ไขกิจกรรม</p>
 </div>
 <div class="my-container">
-    <h3>กิจกรรมที่แก้ไข</h3>
+    <h3>Event To Edit</h3>
     <div id="eventPrev" class="eventPrev">
         <div class="eventImage">
             <img id="prevImage" src=@Model.Image />
         </div>
         <div class="eventDetail">
-            <h4><b>ชื่อ: </b><span id="prevTitle">@Model.Title</span></h4>
-            <p><b>คำอธิบาย: </b><span id="prevDesc">@Model.Description</span></p>
+            <h4><b>Title: </b><span id="prevTitle">@Model.Title</span></h4>
+            <p><b>Description: </b><span id="prevDesc">@Model.Description</span></p>
             <div>
                 <b>Tag(s): </b>
                 <span id="prevTags">
@@ -26,16 +26,16 @@
                 </span>
             </div>
             <div class="meta-info">
-                <b>จำนวนคน: </b><span id="prevMaxParti">
+                <b>Participants: </b><span id="prevMaxParti">
                     @Model.MaxParticipants
                     @if (Model.MaxWaiting > 0)
                     {
-                        <text>(สำรอง @Model.MaxWaiting)</text>
+                        <text>(@Model.MaxWaiting)</text>
                     }
-                </span> คน
+                </span>
             </div>
             <div class="meta-info">
-                <b>ระยะเวลากิจกรรม: </b>
+                <b>Period: </b>
                 <span id="prevDate">
                     @if (Model.DateTime.Date == Model.EndDateTime.Date)
                     {
@@ -47,35 +47,36 @@
                     }
                 </span>
             </div>
-            <div class="meta-info"><b>สถานที่: </b><span id="prevLocation">@Model.Location</span></div>
-            <a href="@Url.Action("Manage", "Event", new { id = Model.Id })" class="btnLink">จัดการกิจกรรม</a>
+            <div class="meta-info"><b>Regesteration Deadline: </b><span id="prevDeadline">@Model.RegistrationDeadline.ToString("d MMM yyyy ( HH:mm )")</span></div>
+            <div class="meta-info"><b>Location: </b><span id="prevLocation">@Model.Location</span></div>
+            <a href="@Url.Action("Manage", "Event", new { id = Model.Id })" class="btnLink">Manage</a>
         </div>
     </div>
-    <h3>ฟอร์มแก้ไขข้อมูล</h3>
+    <h3>Edit Form</h3>
     <form asp-action="Edit" method="post" class="eventForm" id="eventForm" enctype="multipart/form-data">
         <input type="hidden" asp-for="Id" />
         <input type="hidden" asp-for="Image" id="oldImageUrl" />
         <div class="title">
-            <label>ชื่อ Event:</label>
+            <label>Title:</label>
             <input asp-for="Title" id="inputTitle" required />
         </div>
         <div class="description">
-            <label>คำอธิบาย</label>
+            <label>Description:</label>
             <input asp-for="Description" id="inputDesc" required />
         </div>
         <div class="imageUpload">
-            <label>อัพโหลดรูปภาพ</label>
+            <label>Image:</label>
             <input type="file" name="uploadImage" id="inputImg" class="form-control" accept="image/*" />
         </div>
         <div class="tag">
-            <label>ใส่ Tag (คั่นด้วยลูกน้ำ)</label>
+            <label>Tag(s):</label>
             <input name="Tag" id="inputTag" value="@(Model.Tags != null ? string.Join(", ", Model.Tags) : "")" />
         </div>
         <div class="maxParti">
-            <label>จำนวนคน</label>
+            <label>Number of participants:</label>
             <div class="parti">
                 <div class="start">
-                    <label>ตัวจริง</label>
+                    <label>Participant:</label>
                     @{
                         int minRequiredParti = Math.Max(1, Model.CurrentParticipants);
                         int minPartiForWait = Model.CurrentWaiting > 0 ? (Model.CurrentWaiting * 2 - 1) : 1;
@@ -84,30 +85,34 @@
                     <input asp-for="MaxParticipants" id="inputMaxParti" placeholder="ใส่ตัวเลข(ไม่รวมตนเอง)" min="@absoluteMinParti" required />
                 </div>
                 <div class="waiting">
-                    <label>ตัวสำรอง</label>
+                    <label>Reserve:</label>
                     <input asp-for="MaxWaiting" id="inputMaxWait" placeholder="กรอกจำนวนตัวจริงก่อน" min="@Model.CurrentWaiting" required />
                 </div>
             </div>
         </div>
         <div class="time">
-            <label>ระยะเวลากิจกรรม</label>
+            <label>Period:</label>
             <div class="period">
                 <div class="start">
-                    <label>เริ่มต้น</label>
+                    <label>Start:</label>
                     <input asp-for="DateTime" id="inputDateTime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" type="datetime-local" value="@Model.DateTime.ToString("yyyy-MM-ddTHH:mm")" required />
                 </div>
                 <div class="end">
-                    <label>สิ้นสุด</label>
+                    <label>End:</label>
                     <input asp-for="EndDateTime" id="inputEndDateTime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" type="datetime-local" value="@Model.EndDateTime.ToString("yyyy-MM-ddTHH:mm")" required />
                 </div>
             </div>
         </div>
+        <div class="deadline" style="margin-bottom: 15px;">
+            <label>Regesteration Deadline:</label>
+            <input asp-for="RegistrationDeadline" id="inputDeadline" type="datetime-local" value="@Model.RegistrationDeadline.ToString("yyyy-MM-ddTHH:mm")" required />
+        </div>
         <div class="location">
-            <label>สถานที่</label>
+            <label>Location:</label>
             <input asp-for="Location" id="inputLocation" required />
         </div>
-        <button type="submit">บันทึก</button>
-        <button id="btnRst" type="button">รีเซ็ท</button>
+        <button type="submit">Save</button>
+        <button id="btnRst" type="button">Reset</button>
     </form>
 </div>
 @section Scripts {

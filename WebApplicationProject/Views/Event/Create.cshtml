@@ -7,69 +7,74 @@
 <div class="my-container">
     <form asp-action="Create" method="post" class="eventForm" id="eventForm" enctype="multipart/form-data">
         <div class="title">
-            <label>ชื่อ Event:</label>
+            <label>Title:</label>
             <input asp-for="Title" id="inputTitle" placeholder="เช่น งานดนตรีในสวน, ติวหนังสือสอบปลายภาค" required />
         </div>
         <div class="description">
-            <label>คำอธิบาย</label>
+            <label>Description:</label>
             <input asp-for="Description" id="inputDesc" placeholder="เช่น รายละเอียดกิจกรรม สิ่งที่ต้องเตรียมมา..." required />
         </div>
         <div class="imageUpload">
-            <label>อัพโหลดรูปภาพ</label>
+            <label>Image:</label>
             <input type="file" name="uploadImage" id="inputImg" class="form-control" accept="image/*" />
         </div>
         <div class="tag">
-            <label>ใส่ Tag (คั่นด้วยลูกน้ำ)</label>
+            <label>Tag(s):</label>
             <input name="Tag" id="inputTag" placeholder="เช่น ดนตรี, กลางแจ้ง, สวนสาธารณะ" />
         </div>
         <div class="maxParti">
-            <label>จำนวนคน</label>
+            <label>Number of participants:</label>
             <div class="parti">
                 <div class="start">
-                    <label>ตัวจริง</label>
+                    <label>Participant:</label>
                     <input asp-for="MaxParticipants" id="inputMaxParti" placeholder="ใส่ตัวเลข(ไม่รวมตนเอง)" min="1" required />
                 </div>
                 <div class="waiting">
-                    <label>ตัวสำรอง</label>
+                    <label>Reserve:</label>
                     <input asp-for="MaxWaiting" id="inputMaxWait" placeholder="กรอกจำนวนตัวจริงก่อน" min="0" disabled required />
                 </div>
             </div>
         </div>
         <div class="time">
-            <label>ระยะเวลากิจกรรม</label>
+            <label>Period:</label>
             <div class="period">
                 <div class="start">
-                    <label>เริ่มต้น</label>
+                    <label>Start:</label>
                     <input asp-for="DateTime" id="inputDateTime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" type="datetime-local" required />
                 </div>
                 <div class="end">
-                    <label>สิ้นสุด</label>
+                    <label>End:</label>
                     <input asp-for="EndDateTime" id="inputEndDateTime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" type="datetime-local" disabled required />
                 </div>
             </div>
         </div>
+        <div class="deadline" style="margin-bottom: 15px;">
+            <label>Regesteration Deadline:</label>
+            <input asp-for="RegistrationDeadline" id="inputDeadline" type="datetime-local" disabled required />
+        </div>
         <div class="location">
-            <label>สถานที่</label>
+            <label>Location:</label>
             <input asp-for="Location" id="inputLocation" placeholder="ระบุสถานที่จัดงาน หรือ ลิงก์ Google Maps" required />
         </div>
-        <button type="submit">บันทึก</button>
-        <button id="btnRst" type="button">รีเซ็ท</button>
+        <button type="submit">Save</button>
+        <button id="btnRst" type="button">Clear</button>
     </form>
-    <h3>ตัวอย่างที่จะแสดงผล</h3>
+    <h3>Preview</h3>
     <div id="eventPrev" class="eventPrev">
         <div class="eventImage">
             <img id="prevImage" src="https://img2.pic.in.th/image-icon-symbol-design-illustration-vector.md.jpg" />
         </div>
         <div class="eventDetail">
-            <h4><b>ชื่อ: </b><span id="prevTitle">(ชื่อกิจกรรมจะปรากฏที่นี่)</span></h4>
-            <p><b>คำอธิบาย: </b><span id="prevDesc">รายละเอียดต่างๆ ของกิจกรรม...</span></p>
+            <h4><b>Title: </b><span id="prevTitle">(ชื่อกิจกรรมจะปรากฏที่นี่)</span></h4>
+            <p><b>Description: </b><span id="prevDesc">รายละเอียดต่างๆ ของกิจกรรม...</span></p>
             <div>
                 <b>Tag(s): </b>
                 <span id="prevTags"><span class="tag-badge">ตัวอย่างแท็ก</span></span>
             </div>
-            <div class="meta-info"><b>จำนวนคน: </b><span id="prevMaxParti">XX สำรอง XX</span> คน</div>
-            <div class="meta-info"><b>ระยะเวลากิจกรรม: </b><span id="prevDate">XX เดือน XXXX ( XX:XX น. )</span></div>
-            <div class="meta-info"><b>สถานที่: </b><span id="prevLocation">ระบุสถานที่จัดงาน</span></div>
+            <div class="meta-info"><b>Participants: </b><span id="prevMaxParti">XX</span></div>
+            <div class="meta-info"><b>Period: </b><span id="prevDate">XX เดือน XXXX ( XX:XX น. )</span></div>
+            <div class="meta-info"><b>Regesteration Deadline: </b><span id="prevDeadline">XX เดือน XXXX ( XX:XX น. )</span></div>
+            <div class="meta-info"><b>Location: </b><span id="prevLocation">ระบุสถานที่จัดงาน</span></div>
         </div>
     </div> 
 </div>
