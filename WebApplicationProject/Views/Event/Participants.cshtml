@@ -1,0 +1,99 @@
+﻿@model WebApplicationProject.Models.Event
+<link rel="stylesheet" href="~/css/eventPrev_eventForm.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/partiTable.css" asp-append-version="true" />
+
+<div class="pagebanner">
+    <h1>Event Participants</h1>
+    <p>รายชื่อผู้เข้าร่วมกิจกรรม</p>
+</div>
+
+<div class="my-container">
+    <h3>ข้อมูลกิจกรรม</h3>
+    <div id="eventPrev" class="eventPrev">
+        <div class="eventImage">
+            <img id="prevImage" src="@Model.Image" />
+        </div>
+        <div class="eventDetail">
+            <h4><b>ชื่อ: </b><span id="prevTitle">@Model.Title</span></h4>
+            <p><b>คำอธิบาย: </b><span id="prevDesc">@Model.Description</span></p>
+            <div class="meta-info">
+                <b>จำนวนคน: </b><span id="prevMaxParti">@Model.MaxParticipants</span> คน
+            </div>
+            <div class="meta-info">
+                <b>ระยะเวลากิจกรรม: </b>
+                <span>@Model.DateTime.ToString("dd MMM yyyy HH:mm") - @Model.EndDateTime.ToString("dd MMM yyyy HH:mm")</span>
+            </div>
+            <div class="meta-info"><b>สถานที่: </b><span>@Model.Location</span></div>
+            <a href="@Url.Action("Myevent", "Event")" class="btnLink">กลับไปหน้ากิจกรรมของฉัน</a>
+        </div>
+    </div>
+
+    <div class="mngParti">
+        @{
+            var userInEvent = ViewBag.ParticipantList as List<WebApplicationProject.Models.User>;
+        }
+        <div class="partiTable">
+            <div class="tableHeader">
+                <h4>รายชื่อตัวจริง</h4>
+                <div class="numOfParti"><span>@Model.CurrentParticipants</span> / @Model.MaxParticipants Participants</div>
+            </div>
+            <hr />
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ลำดับ</th>
+                            <th>ชื่อ</th>
+                            <th>คะแนนรีวิว</th>
+                            <th>เวลาที่เข้าร่วม</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (userInEvent != null && userInEvent.Any())
+                        {
+                            int order = 1;
+                            @foreach (var ticket in Model.Participants.Where(p => p.Status == WebApplicationProject.Models.ParticipationStatus.Confirmed).OrderBy(p => p.JoinedAt))
+                            {
+                                var user = userInEvent.FirstOrDefault(u => u.Id == ticket.UserId);
+                                if (user != null)
+                                {
+                                    double avgRating = (user.Reviewslist != null && user.Reviewslist.Any())
+                                    ? user.Reviewslist.Average(r => r.stars)
+                                    : 0.0;
+
+                                    <tr id="row_@user.Id">
+                                        <td class="seqNumber">@order</td>
+                                        <td>
+                                            <a href="@Url.Action("profilepage", "Profile", new { id = user.Id })" class="profile-link">
+                                                <img src="@user.Image" style="width:30px; height:30px; border-radius:50%; object-fit:cover; margin-right:8px;" />
+                                                @user.FName @user.SName
+                                            </a>
+                                        </td>
+
+                                        <td class="reviewSC">
+                                            @if (avgRating > 0)
+                                            {
+                                                <span>@avgRating.ToString("0.0")★</span>
+                                            }
+                                            else
+                                            {
+                                                <span>ยังไม่มีรีวิว</span>
+                                            }
+                                        </td>
+
+                                        <td>@ticket.JoinedAt.ToString("dd MMM yyyy HH:mm")</td>
+                                    </tr>
+                                    order += 1;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="4" style="text-align:center;">ยังไม่มีผู้เข้าร่วม</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

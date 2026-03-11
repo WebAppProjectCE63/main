@@ -471,5 +471,38 @@ namespace WebApplicationProject.Controllers
             });
         }
 
+
+        [HttpGet]
+        public IActionResult Participants(int id)
+        {
+            if (CurrentUserId == 0)
+            {
+                TempData["ErrorMessage"] = "คุณยังไม่ได้ login เข้าสู่ระบบ";
+                return RedirectToAction("Login", "Account");
+            }
+
+            var ev = _context.Events.Include(e => e.Participants).FirstOrDefault(e => e.Id == id);
+            if (ev == null) return NotFound("ไม่พบกิจกรรมนี้");
+
+            bool isHost = IsHost(ev);
+            bool isConfirmed = ev.Participants.Any(p => p.UserId == CurrentUserId && p.Status == ParticipationStatus.Confirmed);
+
+            if (!isHost && !isConfirmed)
+            {
+                TempData["ErrorMessage"] = "คุณไม่มีสิทธิ์ดูรายชื่อ เนื่องจากยังไม่ได้เป็นผู้เข้าร่วมตัวจริงครับ";
+                return RedirectToAction("Myevent");
+            }
+
+            var confirmedParticipantIds = ev.Participants
+                .Where(p => p.Status == ParticipationStatus.Confirmed)
+                .Select(p => p.UserId)
+                .ToList();
+
+            var participants = _context.Users.Where(u => confirmedParticipantIds.Contains(u.Id)).ToList();
+            ViewBag.ParticipantList = participants;
+
+            return View(ev);
+        }
+
     }
 }
