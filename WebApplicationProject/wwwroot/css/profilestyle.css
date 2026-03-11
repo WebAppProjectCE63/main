@@ -557,6 +557,7 @@ input[type="file"].form-control {
     .profilebanner {
         grid-template-columns: 1fr;
         width: 95%;
+        margin-top: 50px;
     }
 
     .profileimg,
@@ -645,8 +646,8 @@ input[type="file"].form-control {
     .ratinglist {
         align-content: center;
         justify-content: center;
-/*        max-height: 600px;
-        overflow-y: auto;*/
+        max-height: 600px;
+        overflow-y: auto;
     }
 
     .reviewblock {
@@ -683,57 +684,4 @@ input[type="file"].form-control {
             text-align: center;
             font-size: 16px;
         }
-}
-
-@media (max-width: 480px) {
-    .pagebanner h1 {
-        font-size: 28px;
-    }
-
-    .pagebanner p {
-        font-size: 15px;
-    }
-
-    .edit-btn {
-        width: 100%;
-        margin-top: 16px;
-    }
-
-    .activity {
-        padding: 12px;
-    }
-
-    .taglist {
-        gap: 6px;
-    }
-
-    .tag {
-        font-size: 12px;
-        padding: 5px 10px;
-    }
-
-    .avatars img,
-    .more-users {
-        width: 30px;
-        height: 30px;
-    }
-
-    .member-count {
-        width: 100%;
-        text-align: center;
-    }
-
-    .switch {
-        width: 52px;
-        height: 30px;
-    }
-
-    .slider:before {
-        width: 22px;
-        height: 22px;
-    }
-
-    input:checked + .slider:before {
-        transform: translateX(22px);
-    }
 }
