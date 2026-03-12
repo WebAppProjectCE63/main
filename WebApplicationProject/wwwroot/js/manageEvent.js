@@ -97,7 +97,7 @@ function removeWaitingUser(eventId, userId) {
 function toggleRegistrationStatus(eventId) {
     const btn = document.getElementById('toggleRegBtn');
 
-    const isCurrentlyClosed = btn.innerText.includes('เปิดรับสมัครอีกครั้ง');
+    const isCurrentlyClosed = btn.innerText.includes('✅ Open Registeration');
 
     if (!isCurrentlyClosed) {
         if (!confirm('แน่ใจหรือไม่ว่าต้องการปิดรับสมัคร? กิจกรรมจะหายไปจากหน้าแรก')) {
