@@ -9,11 +9,11 @@
     padding: 40px 20px;
 }
 
-    .my-container h3 {
-        color: #7A4300;
-        font-size: 24px;
-        margin-bottom: 20px;
-    }
+.my-container h3 {
+    color: #7A4300;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
 
 .eventPrev {
     display: flex;
@@ -41,16 +41,16 @@
     line-height: 1.6;
 }
 
-    .eventDetail h4 {
-        margin: 0 0 10px 0;
-        font-size: 20px;
-        color: #6B3E00;
-    }
+.eventDetail h4 {
+    margin: 0 0 10px 0;
+    font-size: 20px;
+    color: #6B3E00;
+}
 
-    .eventDetail p {
-        margin: 0 0 10px 0;
-        color: #7c7b7b;
-    }
+.eventDetail p {
+    margin: 0 0 10px 0;
+    color: #7c7b7b;
+}
 
 .tag-badge {
     background: #FF9F1C;
@@ -87,11 +87,11 @@
     margin-right: 10px;
 }
 
-    .btnLink:hover,
-    .btn-toggle:hover {
-        background: #FFE2A8;
-        color: #6B3E00;
-    }
+.btnLink:hover,
+.btn-toggle:hover {
+    background: #FFE2A8;
+    color: #6B3E00;
+}
 
 .btn-toggle-close {
     color: #dc3545;
@@ -99,10 +99,10 @@
     background: transparent;
 }
 
-    .btn-toggle-close:hover {
-        background: #dc3545;
-        color: white;
-    }
+.btn-toggle-close:hover {
+    background: #dc3545;
+    color: white;
+}
 
 .mngParti {
     display: flex;
@@ -121,62 +121,62 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-    .partiTable th {
-        color: #7A4300;
-        padding: 12px 10px;
-        border-bottom: 2px solid #FFE0A8;
-    }
+.partiTable th {
+    color: #7A4300;
+    padding: 12px 10px;
+    border-bottom: 2px solid #FFE0A8;
+}
 
-    .partiTable td {
-        padding: 12px 10px;
-        color: #6B5A45;
-        border-bottom: 1px solid #FFF0D9;
-    }
+.partiTable td {
+    padding: 12px 10px;
+    color: #6B5A45;
+    border-bottom: 1px solid #FFF0D9;
+}
 
-        .partiTable th:first-child,
-        .partiTable td:first-child,
-        .partiTable th:nth-child(3),
-        .partiTable td:nth-child(3),
-        .partiTable th:nth-child(4),
-        .partiTable td:nth-child(4) {
-            text-align: center;
-        }
+.partiTable th:first-child,
+.partiTable td:first-child,
+.partiTable th:nth-child(3),
+.partiTable td:nth-child(3),
+.partiTable th:nth-child(4),
+.partiTable td:nth-child(4) {
+    text-align: center;
+}
 
-        .partiTable th:nth-child(2),
-        .partiTable td:nth-child(2) {
-            text-align: left;
-        }
+.partiTable th:nth-child(2),
+.partiTable td:nth-child(2) {
+    text-align: left;
+}
 
-        .partiTable th:last-child,
-        .partiTable td:last-child {
-            text-align: right;
-        }
+.partiTable th:last-child,
+.partiTable td:last-child {
+    text-align: right;
+}
 
-        .partiTable td img {
-            border-radius: 50%;
-            object-fit: cover;
-            height: 40px;
-            width: 40px;
-            margin-right: 10px;
-            vertical-align: middle;
-            border: 2px solid #FFD89A;
-        }
+.partiTable td img {
+    border-radius: 50%;
+    object-fit: cover;
+    height: 40px;
+    width: 40px;
+    margin-right: 10px;
+    vertical-align: middle;
+    border: 2px solid #FFD89A;
+}
 
-        .partiTable td button {
-            border-radius: 8px;
-            border: 1px solid #F4B860;
-            background: #FFF3D6;
-            color: #6B3E00;
-            padding: 6px 12px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.2s;
-            margin-left: 5px;
-        }
+.partiTable td button {
+    border-radius: 8px;
+    border: 1px solid #F4B860;
+    background: #FFF3D6;
+    color: #6B3E00;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+    margin-left: 5px;
+}
 
-            .partiTable td button:hover {
-                background: #FFE2A8;
-            }
+.partiTable td button:hover {
+    background: #FFE2A8;
+}
 
 .tableHeader {
     display: flex;
@@ -185,11 +185,11 @@
     margin-bottom: 15px;
 }
 
-    .tableHeader h4 {
-        margin: 0;
-        color: #6B3E00;
-        font-size: 20px;
-    }
+.tableHeader h4 {
+    margin: 0;
+    color: #6B3E00;
+    font-size: 20px;
+}
 
 .numOfParti {
     border: 1px solid #F4C56A;
@@ -234,10 +234,10 @@ table {
     font-weight: bold;
 }
 
-    .profile-link:hover {
-        color: #FF9F1C;
-        text-decoration: underline;
-    }
+.profile-link:hover {
+    color: #FF9F1C;
+    text-decoration: underline;
+}
 
 .table_img {
     width: 30px;
@@ -252,13 +252,13 @@ table {
         padding: 40px 15px;
     }
 
-        .head h1 {
-            font-size: 32px;
-        }
+    .head h1 {
+        font-size: 32px;
+    }
 
-        .head p {
-            font-size: 18px;
-        }
+    .head p {
+        font-size: 18px;
+    }
 
     .my-container {
         padding: 20px 15px;
