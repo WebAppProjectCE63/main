@@ -625,10 +625,28 @@ namespace WebApplicationProject.Controllers
                 _context.Reviews.RemoveRange(relatedReviews);
             }
 
+            try
+            {
+                var actorName = _context.Users.Where(u => u.Id == CurrentUserId).Select(u => u.Username).FirstOrDefault() ?? "Host";
+                var participantIds = ev.Participants
+                     .Where(p => p.Status == ParticipationStatus.Confirmed && p.UserId != CurrentUserId)
+                     .Select(p => p.UserId)
+                     .Distinct()
+                     .ToList();
+                foreach (var pid in participantIds)
+                {
+                    _notiService.TryCreate(pid, "Delete", "Event Delete", $"{actorName} Delete event {ev.Title}", out var _, $"/Event/Myevent");
+                }
+            }
+            catch
+            {
+                TempData["ErrorMessage"] = "Error ไม่สามารถสร้างการแจ้งเตือนไปยังผู้ใช้";
+            }
+
             _context.Events.Remove(ev);
             _context.SaveChanges();
 
-            TempData["SuccessMessage"] = "ลบกิจกรรมสำเร็จเรียบร้อยแล้ว";
+            TempData["ErrorMessage"] = "ลบกิจกรรมสำเร็จเรียบร้อยแล้ว";
             return RedirectToAction("Myevent");
         }
 
