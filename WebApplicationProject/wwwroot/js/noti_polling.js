@@ -19,7 +19,6 @@
         }catch(e){ console.error('noti poll', e); }
     }
 
-    // also expose a method to fetch recent notifications and optionally render a dropdown (future)
     window.NotiPolling = {
         fetchRecent: async function(limit){
             try{

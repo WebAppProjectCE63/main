@@ -62,9 +62,6 @@
         }
     }
 
-    // ==========================================
-    // Filter & Search Functions (ระบบค้นหาและกรอง)
-    // ==========================================
     function applyFilters() {
         const searchText = searchInput ? searchInput.value.toLowerCase().trim() : '';
         const searchTagText = searchTagInput ? searchTagInput.value.toLowerCase().trim() : '';
@@ -98,9 +95,6 @@
         }
     }
 
-    // ==========================================
-    // Sorting Functions (ระบบจัดเรียงลำดับ)
-    // ==========================================
     function handleSort() {
         if (!sortSelect || !eventContainer) return;
 
@@ -133,9 +127,6 @@
         cards.forEach(card => eventContainer.appendChild(card));
     }
 
-    // ==========================================
-    // UI Toggling (ระบบเปิด/ปิดหน้าต่างข้อมูล)
-    // ==========================================
     function toggleEventInfo(targetBtn, isOpening) {
         const cardMain = targetBtn.closest('.event-main');
         if (!cardMain) return;
@@ -147,8 +138,8 @@
         if (normalActions) normalActions.style.display = isOpening ? 'none' : 'flex';
     }
 
+    // Calendar
     function init() {
-        // เซ็ตค่าเริ่มต้นให้ Calendar
         const today = new Date();
         if (monthSelect) monthSelect.value = today.getMonth();
         if (yearSelect) yearSelect.value = today.getFullYear();

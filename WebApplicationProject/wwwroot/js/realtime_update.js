@@ -17,9 +17,6 @@
                 const closeTime = new Date(data.registrationDeadline);
                 const isActuallyLocked = data.isRegistrationClosed || (now >= closeTime);
 
-                // =========================================
-                // 1. จัดการป้าย Locked ด้านหน้า
-                // =========================================
                 const imgCol = card.querySelector('.image-column');
                 let lockedBadge = card.querySelector('.statis-close');
                 if (isActuallyLocked) {
@@ -34,29 +31,22 @@
                     lockedBadge.remove();
                 }
 
-                // =========================================
-                // 🚨 2. ท่าไม้ตาย: สแกนปุ่มจาก "ตัวอักษร" โดยตรง
-                // =========================================
                 const allButtons = card.querySelectorAll('button');
 
                 allButtons.forEach(btn => {
                     const text = btn.textContent.trim();
 
-                    // 🔴 2.1 จัดการปุ่ม "Cancel Join" (หน้า My Event)
                     if (text === 'Cancel Join') {
                         const form = btn.closest('form');
                         if (form) {
-                            // ถ้าล็อค ให้ซ่อนฟอร์มทิ้งทันที ถ้าปลดล็อคให้โชว์กลับมา
                             form.style.setProperty('display', isActuallyLocked ? 'none' : 'inline-block', 'important');
                         }
                     }
 
-                    // 🟡 2.2 จัดการปุ่มตัวสำรอง (หน้า My Event)
                     if (text === 'Waiting for Confirmation' || text === 'Event Closed (Not Selected)') {
                         btn.textContent = isActuallyLocked ? 'Event Closed (Not Selected)' : 'Waiting for Confirmation';
                     }
 
-                    // 🟢 2.3 จัดการปุ่ม Join (หน้า Home)
                     if (text === 'Join' || text === 'Closed') {
                         if (isActuallyLocked) {
                             btn.textContent = 'Join';
@@ -70,9 +60,6 @@
                     }
                 });
 
-                // =========================================
-                // 3. จัดการป้ายมุมขวาบน (Badge) ของตัวสำรอง
-                // =========================================
                 const badge = card.querySelector('.badge');
                 if (badge) {
                     const bText = badge.textContent.trim();

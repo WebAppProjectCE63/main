@@ -84,7 +84,6 @@ body {
         text-align: center;
         background: #FFF8ED;
         color: #6B3E00;
-        /* 🌟 ยันต์กันกล่องทับกัน (สำคัญมาก!) */
         box-sizing: border-box;
         min-width: 0;
     }
@@ -259,7 +258,6 @@ body {
     gap: 30px;
     flex-wrap: wrap;
     padding: 30px;
-/*    align-content: space-between;*/
     justify-content: space-between;
 }
 

@@ -212,16 +212,14 @@ h3 {
         color: white;
     }
 
-/* Responsive สำหรับหน้าจอมือถือและแท็บเล็ต */
+/* Responsive สำหรับหน้าจอมือถือ */
 @media (max-width: 768px) {
-    /* แก้ปัญหากล่องเวลาและจำนวนคนทะลุจอ */
     .period,
     .parti {
-        flex-direction: column; /* เปลี่ยนจากเรียงแนวนอนเป็นแนวตั้ง */
+        flex-direction: column;
         gap: 10px;
     }
 
-    /* ปรับปุ่มกดให้กางเต็มจอเพื่อให้นิ้วกดง่ายขึ้น */
     .eventForm button {
         width: 100%;
         margin-right: 0;
@@ -246,7 +244,7 @@ h3 {
     .mngParti {
         width: 100%;
         display: flex;
-        flex-direction: column; /* ถ้ามีตารางตัวสำรองด้วย ลงข้างล่าง */
+        flex-direction: column;
         gap: 20px;
         box-sizing: border-box;
     }

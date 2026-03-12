@@ -181,7 +181,7 @@ namespace WebApplicationProject.Controllers
                 ogEvent.RegistrationDeadline = editEvent.RegistrationDeadline;
                 ogEvent.Location = editEvent.Location;
                 _context.SaveChanges();
-                // notify participants about event update (excluding editor)
+                // notify
                 try
                 {
                     var actorName = _context.Users.Where(u => u.Id == CurrentUserId).Select(u => u.Username).FirstOrDefault() ?? "Host";
@@ -349,7 +349,7 @@ namespace WebApplicationProject.Controllers
             ticket.Status = ParticipationStatus.Remove;
             eventToManage.CurrentWaiting = eventToManage.Participants.Count(p => p.Status == ParticipationStatus.Waiting);
             _context.SaveChanges();
-            // notify removed user from waiting list
+            // notify removed user
             try
             {
                 _notiService.TryCreate(userId, "removed", "Removed from waiting list", $"You were removed from waiting list of {eventToManage.Title}", out var _ , "/Event/Myevent");
@@ -462,7 +462,7 @@ namespace WebApplicationProject.Controllers
             {
                 TempData["SuccessMessage"] = "📝 เข้าร่วมกิจกรรมสำเร็จ! คุณอยู่ในรายชื่อ 'ตัวสำรอง' โปรดรอการยืนยันจากโฮสต์";
             }
-            // notify host that a user joined
+            // notify host user joined
             try
             {
                 if (ev.UserHostId != userId)
@@ -499,7 +499,7 @@ namespace WebApplicationProject.Controllers
                 ev.CurrentWaiting = ev.Participants.Count(p => p.Status == ParticipationStatus.Waiting);
                 ev.CurrentParticipants = ev.Participants.Count(p => p.Status == ParticipationStatus.Confirmed);
                 _context.SaveChanges();
-                // notify host that user canceled
+                // notify host user canceled
                 try
                 {
                     var username = _context.Users.Where(u => u.Id == userId).Select(u => u.Username).FirstOrDefault() ?? "Someone";
