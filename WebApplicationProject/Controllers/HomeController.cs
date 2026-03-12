@@ -39,17 +39,17 @@ namespace WebApplicationProject.Controllers
         [HttpGet]
         public IActionResult SeedMockData()
         {
-            // 1. เช็คก่อนว่ามีข้อมูลหรือยัง จะได้ไม่เสกเบิ้ล
+            //เช็คข้อมูล
             if (_context.Users.Any())
             {
                 return Content("⚠️ Database มีข้อมูลอยู่แล้วครับ! ไม่สามารถเสกซ้ำได้ ป้องกันข้อมูลเบิ้ลครับ");
             }
 
-            // 2. สร้างตัวแปลภาษา (จดจำว่า Id เก่าจาก Mock คือ Id ใหม่เบอร์อะไรใน DB)
+            //จำ Id เก่าจาก Mock คือ Id ใหม่เบอร์อะไรใน DB
             var userIdMap = new Dictionary<int, int>();
             var eventIdMap = new Dictionary<int, int>();
 
-            // 3. ก๊อปปี้ Users
+            // Users
             foreach (var mUser in MockDB.UsersList)
             {
                 var newUser = new User
@@ -72,12 +72,12 @@ namespace WebApplicationProject.Controllers
                 };
 
                 _context.Users.Add(newUser);
-                _context.SaveChanges(); // สั่งเซฟเพื่อให้ DB รัน Id ใหม่ให้
+                _context.SaveChanges();
 
-                userIdMap[mUser.Id] = newUser.Id; // จดลงสมุด (เช่น นาย A รหัสเก่า 1 กลายเป็นรหัสใหม่ 5)
+                userIdMap[mUser.Id] = newUser.Id;
             }
 
-            // 4. ก๊อปปี้ Events และ Participants
+            // Events และ Participants
             foreach (var mEvent in MockDB.EventList)
             {
                 var newEvent = new Event
@@ -97,7 +97,6 @@ namespace WebApplicationProject.Controllers
                     CurrentWaiting = mEvent.CurrentWaiting
                 };
 
-                // ใส่รายชื่อคนเข้าร่วม โดยอิงจากรหัสใหม่
                 if (mEvent.Participants != null)
                 {
                     foreach (var mParti in mEvent.Participants)
@@ -116,10 +115,9 @@ namespace WebApplicationProject.Controllers
 
                 _context.Events.Add(newEvent);
                 _context.SaveChanges();
-                eventIdMap[mEvent.Id] = newEvent.Id; // จดรหัส Event ใหม่
+                eventIdMap[mEvent.Id] = newEvent.Id;
             }
 
-            // 5. ก๊อปปี้ Reviews
             foreach (var mUser in MockDB.UsersList)
             {
                 if (mUser.Reviewslist != null && mUser.Reviewslist.Any())
@@ -148,13 +146,12 @@ namespace WebApplicationProject.Controllers
 
             return Content("🎉 เสกข้อมูลจาก MockDB ลง Database เรียบร้อยแล้วครับ! กลับไปหน้าเว็บแล้วล็อกอินได้เลย!");
         }
-        // 🚨 ฟังก์ชันลับสำหรับล้างข้อมูลทั้งหมดใน Database
+
         [HttpGet]
         public IActionResult ClearDatabase()
         {
-            // ต้องเรียงลำดับการลบจากตารางลูกไปหาตารางแม่ ป้องกัน Error Foreign Key ครับ
             _context.Reviews.RemoveRange(_context.Reviews);
-            _context.Events.SelectMany(e => e.Participants).ToList().Clear(); // ลบคนเข้าร่วม
+            _context.Events.SelectMany(e => e.Participants).ToList().Clear();
             _context.Events.RemoveRange(_context.Events);
             _context.Users.RemoveRange(_context.Users);
 

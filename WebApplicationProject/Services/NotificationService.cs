@@ -32,7 +32,6 @@ namespace WebApplicationProject.Services
             return n;
         }
 
-        // Safe create that returns success flag and error message if any
         public bool TryCreate(int recipientUserId, string type, string title, string message, out string error, string url = null, string data = null)
         {
             error = null;
@@ -44,7 +43,6 @@ namespace WebApplicationProject.Services
             catch (System.Exception ex)
             {
                 _logger.LogError(ex, "Notification create failed for recipient {Recipient}", recipientUserId);
-                // surface the innermost exception message to help debugging (safe for dev)
                 error = ex.GetBaseException()?.Message ?? ex.Message;
                 return false;
             }

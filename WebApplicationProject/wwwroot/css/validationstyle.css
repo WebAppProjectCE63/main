@@ -6,7 +6,7 @@
 
 .login-container {
     width: 100%;
-    min-height: calc(100vh - 120px); /* ลบพื้นที่ Navbar ด้านบนออก */
+    min-height: calc(100vh - 120px);
     display: flex;
     justify-content: center;
     align-items: center;

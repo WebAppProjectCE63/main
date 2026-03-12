@@ -36,7 +36,7 @@ namespace WebApplicationProject.Controllers
             return Json(new { success = true, items = items });
         }
 
-        // List notifications for current user
+        // List noti
         public IActionResult Index()
         {
             var userId = HttpContext.Session.GetInt32("UserId");
@@ -75,7 +75,7 @@ namespace WebApplicationProject.Controllers
             return Ok();
         }
 
-        // simple API to create a notification (for testing/seed)
+        // create noti
         [HttpPost]
         public IActionResult Create(int recipientUserId, string type, string title, string message, string url)
         {

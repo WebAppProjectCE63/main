@@ -55,7 +55,6 @@
     margin-bottom: 15px;
 }
 
-    /* ตกแต่ง Label ของฟอร์ม */
     .form-group label {
         display: block;
         margin-bottom: 0.5rem;
@@ -63,7 +62,6 @@
         color: #5C3B12;
     }
 
-/* กล่องกรอกข้อความรีวิว */
 .form-control {
     display: block;
     width: 100%;
@@ -79,7 +77,6 @@
     transition: all 0.2s ease-in-out;
 }
 
-    /* เวลาผู้ใช้คลิกพิมพ์ ให้เปลี่ยนสีขอบและมีแสง */
     .form-control:focus {
         color: #5C3B12;
         background-color: #fff;
@@ -91,7 +88,7 @@
 .btn-submit {
     width: 100%;
     margin-top: 20px;
-    background: linear-gradient(90deg, #FFD166, #FF9F1C); /* ไล่สีเหลือง-ส้ม */
+    background: linear-gradient(90deg, #FFD166, #FF9F1C);
     border: none;
     border-radius: 10px;
     color: #5A3200;

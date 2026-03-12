@@ -25,7 +25,7 @@ namespace WebApplicationProject.Controllers
         private int CurrentUserId => HttpContext.Session.GetInt32("UserId") ?? 0;
         public IActionResult Review(int id)
         {
-            // 1. ดึงข้อมูล Event
+            // ดึงข้อมูล Event
             var ev = _context.Events.Include(e => e.Participants).FirstOrDefault(e => e.Id == id);
             if (ev == null) 
             {
@@ -56,7 +56,7 @@ namespace WebApplicationProject.Controllers
                 TargetUsers = new List<ReviewTargetUserModel>()
             };
 
-            // 2. ดึงรายชื่อคนเข้าร่วม (Confirmed และไม่ใช่ตัวเอง)
+            // ดึงรายชื่อคนเข้าร่วม (ไม่รวมตัวเอง)
             var participants = ev.Participants
                 .Where(p => p.Status == ParticipationStatus.Confirmed && p.UserId != currentUserId)
                 .OrderBy(p => p.JoinedAt)
@@ -86,7 +86,6 @@ namespace WebApplicationProject.Controllers
                 }
             }
 
-            // 3. ดึงข้อมูล Host (ถ้า Host ไม่ใช่ตัวเอง และยังไม่อยู่ในลิสต์เข้าร่วมด้านบน)
             if (ev.UserHostId != currentUserId && !viewModel.TargetUsers.Any(t => t.UserInfo.Id == ev.UserHostId))
             {
                 var hostUser = relatedUsers.FirstOrDefault(u => u.Id == ev.UserHostId);
@@ -97,7 +96,7 @@ namespace WebApplicationProject.Controllers
                     {
                         UserInfo = hostUser,
                         IsHost = true,
-                        JoinedAt = DateTime.MinValue, // หรือตั้งเป็นเวลาสร้าง Event ก็ได้
+                        JoinedAt = DateTime.MinValue,
                         MyReviewToThisUser = existingReview
                     });
                 }
@@ -138,9 +137,7 @@ namespace WebApplicationProject.Controllers
             }
             _context.SaveChanges();
 
-            // create notification to target user and capture errors for debugging
             var actorName = _context.Users.Where(u => u.Id == UserId).Select(u => u.Username).FirstOrDefault() ?? "Someone";
-            // If reviewer chose to be anonymous, don't expose their name in the notification
             if (showname)
             {
                 actorName = "Anonymous";
@@ -152,7 +149,6 @@ namespace WebApplicationProject.Controllers
 
             if (!_notiService.TryCreate(TargetUserId, "review", title, message, out var notiError, url))
             {
-                // store a lightweight debug info in TempData so developer can see it after redirect
                 TempData["NotificationError"] = "Notification create failed: " + notiError;
             }
             return RedirectToAction("Review", new { id = EventId });

@@ -56,7 +56,6 @@ async function checkEmail(email) {
 if (form) {
     form.addEventListener("submit", async (e) => {
 
-        // ถ้าเป็นหน้า login (ไม่มี fname_input) ให้ submit ปกติ
         if (!fname_input) {
             return
         }

@@ -77,7 +77,6 @@ namespace WebApplicationProject.Controllers
                     .ToList()
             }).ToList();
 
-            // --- 3. จัดการ Reviews ---
             if (currentUser.Reviewslist != null && currentUser.Reviewslist.Any())
             {
                 viewModel.Reviews = currentUser.Reviewslist.Select(r => new ReviewDisplayModel
@@ -161,7 +160,7 @@ namespace WebApplicationProject.Controllers
                 return doc.RootElement.GetProperty("data").GetProperty("url").GetString();
             }
 
-            return null; // ถ้าอัปโหลดล้มเหลว
+            return null;
         }
     }
 }
