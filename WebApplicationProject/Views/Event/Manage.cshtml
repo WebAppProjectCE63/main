@@ -185,16 +185,16 @@
         }
     </div>
 </div>
-<div class="my-container" style="padding-top: 0;">
-    <div class="manage-danger-zone" style="margin-top: 20px; border-top: 2px solid #FFD89A; padding-top: 20px; margin-bottom: 40px;">
-        <h3 style="color: #dc3545; font-weight: bold; margin-top: 0;">Delete Event</h3>
-        <p style="color: #6B5A45; margin-bottom: 15px;">การลบกิจกรรมจะทำให้ข้อมูลทั้งหมดหายไปและไม่สามารถกู้คืนได้</p>
+<div class="my-container">
+    <div class="manage-danger-zone">
+        <h3>Delete Event</h3>
+        <p>การลบกิจกรรมจะทำให้ข้อมูลทั้งหมดหายไปและไม่สามารถกู้คืนได้</p>
 
         <form action="@Url.Action("Delete", "Event")" method="post"
               onsubmit="return confirm('แน่ใจหรือไม่ว่าต้องการลบกิจกรรมนี้? ข้อมูลผู้เข้าร่วมและรีวิวทั้งหมดจะถูกลบถาวร!');">
             <input type="hidden" name="id" value="@Model.Id" />
 
-            <button type="submit" class="btn-toggle btn-toggle-close" style="width: auto; padding: 10px 25px; cursor: pointer;">
+            <button type="submit" class="btn-toggle btn-toggle-close">
                 <i class="fa-solid fa-trash-can"></i> Delete
             </button>
         </form>

@@ -239,9 +239,17 @@ table {
         text-decoration: underline;
     }
 
+.table_img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 8px;
+}
+
 @media (max-width: 768px) {
     .head {
-        padding: 40px 15px; 
+        padding: 40px 15px;
     }
 
         .head h1 {
@@ -255,6 +263,7 @@ table {
     .my-container {
         padding: 20px 15px;
     }
+
     .eventPrev {
         flex-direction: column;
         padding: 15px;
@@ -272,7 +281,7 @@ table {
     }
 
     table {
-        min-width: 600px; 
+        min-width: 600px;
     }
 
     .tableHeader {
@@ -281,7 +290,7 @@ table {
     }
 
     .btnLink, .btn-toggle {
-        width: 100%; 
+        width: 100%;
         text-align: center;
         margin-right: 0;
     }
