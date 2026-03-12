@@ -61,6 +61,7 @@ namespace WebApplicationProject.Controllers
                     SName = mUser.SName,
                     Image = mUser.Image,
                     Gender = mUser.Gender,
+                    Birthday = mUser.Birthday,
                     Settings = new UserSettings
                     {
                         PrivateAccount = mUser.Settings?.PrivateAccount ?? false,
