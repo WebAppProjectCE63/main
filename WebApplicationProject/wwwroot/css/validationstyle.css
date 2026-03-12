@@ -103,6 +103,14 @@ a {
     font-weight: 600;
 }
 
+.green {
+    color: green;
+}
+
+.red {
+    color: red;
+}
+
 @media (max-width: 768px) {
 
     .wrapper {

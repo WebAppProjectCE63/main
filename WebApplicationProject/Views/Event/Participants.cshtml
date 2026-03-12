@@ -94,7 +94,7 @@
                                         <td class="seqNumber">@order</td>
                                         <td>
                                             <a href="@Url.Action("profilepage", "Profile", new { id = user.Id })" class="profile-link">
-                                                <img src="@user.Image" style="width:30px; height:30px; border-radius:50%; object-fit:cover; margin-right:8px;" />
+                                                <img class="table_img" src="@user.Image" />
                                                 @user.FName @user.SName
                                             </a>
                                         </td>

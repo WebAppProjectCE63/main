@@ -385,6 +385,22 @@
     color: #444;
 }
 
+#searchInput {
+    border: none;
+    outline: none;
+    width: 100%;
+    background: transparent;
+    font-family: inherit;
+}
+
+#searchTagInput {
+    border: none;
+    outline: none;
+    width: 100%;
+    background: transparent;
+    font-family: inherit;
+}
+
 @media screen and (max-width: 768px) {
     .homepage-box {
         padding: 50px 16px;

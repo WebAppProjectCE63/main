@@ -79,9 +79,9 @@
 
                 <div id="navnoti">
                     <a asp-controller="Notification" asp-action="Index" title="Notifications">
-                        <span id="notiBell" style="position:relative; display:inline-block;">
+                        <span id="notiBell">
                             🔔
-                            <span id="notiBadge" style="position:absolute; top:-8px; right:-8px; background:#dc3545; color:white; border-radius:50%; padding:2px 6px; font-size:0.75rem; display:@(unreadCount>0?"inline-block":"none");">@unreadCount</span>
+                            <span id="notiBadge" style="display:@(unreadCount>0?"inline-block":"none");">@unreadCount</span>
                         </span>
                     </a>
                 </div>

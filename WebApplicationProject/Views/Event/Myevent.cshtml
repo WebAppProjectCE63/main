@@ -55,11 +55,11 @@
 
             <div class="filter-bar">
                 <div class="search-input">
-                    <input type="text" id="searchInput" placeholder="ค้นหาชื่อกิจกรรม..." style="border:none; outline:none; width:100%; background:transparent; font-family:inherit;">
+                    <input type="text" id="searchInput" placeholder="ค้นหาชื่อกิจกรรม...">
                 </div>
 
                 <div class="search-input">
-                    <input type="text" id="searchTagInput" placeholder="ค้นหาตาม Tag (เช่น music)..." style="border:none; outline:none; width:100%; background:transparent; font-family:inherit;">
+                    <input type="text" id="searchTagInput" placeholder="ค้นหาตาม Tag (เช่น music)...">
                 </div>
 
                 <div class="sort-filter">
@@ -98,7 +98,7 @@
                 <div class="Event" data-date="@ev.DateTime.ToString("yyyy-MM-dd")" data-event-date="@ev.DateTime.ToString("yyyy-MM-ddTHH:mm:ss")">
                     <input type="hidden" name="eventId" value="@ev.Id" />
                     <div class="event-card">
-                        <div class="image-column" style="display: flex; flex-direction: column; gap: 8px; align-items: center; flex-shrink: 0;">
+                        <div class="image-column">
                             <div class="event-image">
                                 @if (!string.IsNullOrEmpty(ev.Image))
                                 {
@@ -128,10 +128,10 @@
                                 }
                             }
 
-                            <span class="status-badge @statusClass" style="width: 100%; box-sizing: border-box;">@timeStatusText</span>
+                            <span class="status-badge @statusClass">@timeStatusText</span>
                             @if (ev.IsRegistrationClosed)
                             {
-                                <span class="status-badge statis-close" style="width: 100%; box-sizing: border-box; background-color: #dc3545; color: white; margin-top: -4px; font-size: 0.85em; padding: 2px;">
+                                <span class="status-badge statis-close">
                                     🔒 Locked
                                 </span>
                             }

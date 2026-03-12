@@ -376,6 +376,8 @@
     font-weight: bold;
     text-align: center;
     color: #fff;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .status-upcoming {
@@ -391,6 +393,13 @@
 }
 
 .statis-close {
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #dc3545;
+    color: white;
+    margin-top: -4px;
+    font-size: 0.85em;
+    padding: 2px;
 }
 
 .host-info-row {
@@ -457,6 +466,30 @@
 .info-row {
     margin: 0 0 10px 0;
     color: #444;
+}
+
+#searchInput {
+    border: none;
+    outline: none;
+    width: 100%;
+    background: transparent;
+    font-family: inherit;
+}
+
+#searchTagInput {
+    border: none;
+    outline: none;
+    width: 100%;
+    background: transparent;
+    font-family: inherit;
+}
+
+.image-column {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    flex-shrink: 0;
 }
 
 @media screen and (max-width: 768px) {
