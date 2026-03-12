@@ -29,36 +29,36 @@ h3 {
     box-sizing: border-box;
 }
 
-    .eventForm div > label {
-        font-weight: bold;
-        color: #7A4300;
-        display: block;
-        margin-bottom: 8px;
-    }
+.eventForm div > label {
+    font-weight: bold;
+    color: #7A4300;
+    display: block;
+    margin-bottom: 8px;
+}
 
-    .eventForm input {
-        width: 100%;
-        box-sizing: border-box;
-        padding: 10px 15px;
-        border: 1px solid #FFD89A;
-        border-radius: 8px;
-        background: #FFF8ED;
-        color: #6B5A45;
-        outline: none;
-        font-family: inherit;
-        transition: border-color 0.2s, box-shadow 0.2s;
-    }
+.eventForm input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 15px;
+    border: 1px solid #FFD89A;
+    border-radius: 8px;
+    background: #FFF8ED;
+    color: #6B5A45;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
 
-        .eventForm input:focus {
-            border-color: #FF9F1C;
-            box-shadow: 0 0 5px rgba(255, 159, 28, 0.3);
-        }
+.eventForm input:focus {
+    border-color: #FF9F1C;
+    box-shadow: 0 0 5px rgba(255, 159, 28, 0.3);
+}
 
-        .eventForm input:disabled {
-            background-color: #f5f5f5;
-            color: #999;
-            cursor: not-allowed;
-        }
+.eventForm input:disabled {
+    background-color: #f5f5f5;
+    color: #999;
+    cursor: not-allowed;
+}
 
 .period,
 .parti {
@@ -88,18 +88,18 @@ h3 {
     transition: filter 0.2s;
 }
 
-    .eventForm button:hover {
-        filter: brightness(0.95);
-    }
+.eventForm button:hover {
+    filter: brightness(0.95);
+}
 
 #btnRst {
     background: #FFF3D6;
     color: #6B3E00;
 }
 
-    #btnRst:hover {
-        background: #FFE2A8;
-    }
+#btnRst:hover {
+    background: #FFE2A8;
+}
 
 .eventPrev {
     border: 2px solid #FFD89A;
@@ -127,16 +127,16 @@ h3 {
     line-height: 1.6;
 }
 
-    .eventDetail h4 {
-        margin: 0 0 10px 0;
-        font-size: 20px;
-        color: #6B3E00;
-    }
+.eventDetail h4 {
+    margin: 0 0 10px 0;
+    font-size: 20px;
+    color: #6B3E00;
+}
 
-    .eventDetail p {
-        margin: 0 0 10px 0;
-        color: #7c7b7b;
-    }
+.eventDetail p {
+    margin: 0 0 10px 0;
+    color: #7c7b7b;
+}
 
 .meta-info {
     margin-bottom: 8px;
@@ -171,10 +171,10 @@ h3 {
     transition: all 0.2s;
 }
 
-    .btnLink:hover {
-        background: #FFE2A8;
-        color: #6B3E00;
-    }
+.btnLink:hover {
+    background: #FFE2A8;
+    color: #6B3E00;
+}
 
 .btn-toggle {
     display: inline-block;
@@ -196,10 +196,10 @@ h3 {
     background: transparent;
 }
 
-    .btn-toggle-open:hover {
-        background: #28a745;
-        color: white;
-    }
+.btn-toggle-open:hover {
+    background: #28a745;
+    color: white;
+}
 
 .btn-toggle-close {
     color: #dc3545;
@@ -207,10 +207,21 @@ h3 {
     background: transparent;
 }
 
-    .btn-toggle-close:hover {
-        background: #dc3545;
-        color: white;
-    }
+.btn-toggle-close:hover {
+    background: #dc3545;
+    color: white;
+}
+
+.deleteEvent h3 {
+    color: #dc3545;
+    font-weight: bold;
+    margin-top: 0;
+}
+
+.deleteEvent p {
+    color: #6B5A45;
+    margin-bottom: 15px;
+}
 
 /* Responsive สำหรับหน้าจอมือถือ */
 @media (max-width: 768px) {
