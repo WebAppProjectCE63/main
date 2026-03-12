@@ -127,6 +127,7 @@
         cards.forEach(card => eventContainer.appendChild(card));
     }
 
+
     function toggleEventInfo(targetBtn, isOpening) {
         const cardMain = targetBtn.closest('.event-main');
         if (!cardMain) return;
@@ -138,7 +139,6 @@
         if (normalActions) normalActions.style.display = isOpening ? 'none' : 'flex';
     }
 
-    // Calendar
     function init() {
         const today = new Date();
         if (monthSelect) monthSelect.value = today.getMonth();
