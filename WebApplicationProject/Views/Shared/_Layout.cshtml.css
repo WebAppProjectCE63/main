@@ -1,5 +1,4 @@
-﻿/* ================= Navbar (เหมือนเดิม เพิ่ม Z-index) ================= */
-#navbar {
+﻿#navbar {
   display: flex;
   align-items: center;
   background-color: white;
@@ -7,7 +6,7 @@
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   position: sticky;
   top: 0;
-  z-index: 1000; /* กันเนื้อหาอื่นทะลุขึ้นมาทับ Navbar */
+  z-index: 1000;
 }
 
 #navitem {
@@ -50,11 +49,9 @@
   object-fit: cover;
 }
 
-/* ================= 🌟 Footer (แก้ปัญหาทะลุขอบจอ) ================= */
 .my-footer {
   text-align: center;
   border-top: 1px solid #e5e5e5;
   padding: 20px 0;
   background-color: white;
-  /* ลบ position: absolute และ width: 100% ทิ้งไปเลย อาการทะลุขอบจะหายขาดครับ */
 }

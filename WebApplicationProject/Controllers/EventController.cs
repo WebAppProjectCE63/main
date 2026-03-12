@@ -5,15 +5,16 @@ using System.Text.Json;
 using System.IO;
 using WebApplicationProject.Data;
 using Microsoft.EntityFrameworkCore;
+using WebApplicationProject.Service;
 
 namespace WebApplicationProject.Controllers
 {
     public class EventController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly WebApplicationProject.Services.NotificationService _notiService;
+        private readonly NotificationService _notiService;
 
-        public EventController(ApplicationDbContext context, WebApplicationProject.Services.NotificationService notiService)
+        public EventController(ApplicationDbContext context, NotificationService notiService)
         {
             _context = context;
             _notiService = notiService;

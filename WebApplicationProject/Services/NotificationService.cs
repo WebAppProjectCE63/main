@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using WebApplicationProject.Data;
 using WebApplicationProject.Models;
 
-namespace WebApplicationProject.Services
+namespace WebApplicationProject.Service
 {
     public class NotificationService
     {

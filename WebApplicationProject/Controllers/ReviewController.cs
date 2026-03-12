@@ -9,15 +9,16 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System;
 using Microsoft.EntityFrameworkCore;
+using WebApplicationProject.Service;
 
 namespace WebApplicationProject.Controllers
 {
     public class ReviewController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly WebApplicationProject.Services.NotificationService _notiService;
+        private readonly NotificationService _notiService;
 
-        public ReviewController(ApplicationDbContext context, WebApplicationProject.Services.NotificationService notiService)
+        public ReviewController(ApplicationDbContext context, NotificationService notiService)
         {
             _context = context;
             _notiService = notiService;
